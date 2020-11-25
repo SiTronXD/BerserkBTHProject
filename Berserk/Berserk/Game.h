@@ -1,17 +1,26 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
+
+#include "MainMenuState.h"
+#include "PlayState.h"
 
 class Game
 {
 private:
 	sf::RenderWindow window;
-	sf::CircleShape shape;
+
+	GameState* currentState;
 
 	void handlePollEvent(const sf::Event& event);
 	void update();
-	void render(sf::RenderWindow& target);
+	void render();
+
+	void setState(State newState);
 
 public:
 	Game();
+	~Game();
 
 	void run();
 };
