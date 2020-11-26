@@ -2,18 +2,14 @@
 
 MainMenuState::MainMenuState(sf::RenderWindow& window)
 	: GameState(window),
-	playButton(400, 400, "PLAY"),
-	exitButton(400, 600, "EXIT")
+	playButton(-650, -100, "PLAY"),
+	exitButton(-650,  150, "EXIT")
 {
+	//this->backgroundTexture.loadFromFile("Resources/Textures/MainMenuBackgroundTextureAlignment.png");
 	this->backgroundTexture.loadFromFile("Resources/Textures/MainMenuBackgroundTexture.png");
 	this->backgroundSprite.setTexture(this->backgroundTexture);
 
-	float sizeFactor = SettingsHandler::getWindowSizeFactor(this->backgroundSprite.getGlobalBounds().height);
-	this->backgroundSprite.setScale(sizeFactor, sizeFactor);
-	this->backgroundSprite.setPosition(
-		SettingsHandler::getWidth() / 2.0f - this->backgroundSprite.getGlobalBounds().width / 2.0f,
-		SettingsHandler::getHeight() / 2.0f - this->backgroundSprite.getGlobalBounds().height / 2.0f
-	);
+	UITranslator::translateSprite(this->backgroundSprite, 0, 0, 2520, 1080);
 }
 
 MainMenuState::~MainMenuState()

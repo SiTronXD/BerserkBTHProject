@@ -1,23 +1,37 @@
 #include "Button.h"
 
-void Button::updateColor()
+void Button::updateLook()
 {
 	if (this->isPressing)
-		this->text.setFillColor(sf::Color::Yellow);
-	else if (this->isHovering)
-		this->text.setFillColor(sf::Color::White);
+	{
+		this->outlineText.setFillColor(sf::Color::Yellow);
+	}
 	else
-		this->text.setFillColor(sf::Color::Red);
+	{
+		this->outlineText.setFillColor(sf::Color::White);
+
+		if (this->isHovering)
+			this->text.setFillColor(sf::Color::White);
+		else
+			this->text.setFillColor(sf::Color::Red);
+	}
 }
 
 Button::Button(float middleX, float middleY, std::string text)
-	: isPressing(false), lastFrameIsPressing(false), isHovering(false), activate(false)
+	: middleX(middleX), middleY(middleY), isPressing(false), 
+	lastFrameIsPressing(false), isHovering(false), activate(false),
+	offsetSize(4), characterSize(50)
 {
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 	this->text.setFont(this->font);
-	this->text.setPosition(middleX, middleY);
 	this->text.setString(text);
 	this->text.setFillColor(sf::Color::Red);
+	this->outlineText.setFont(this->font);
+	this->outlineText.setString(text);
+	this->outlineText.setFillColor(sf::Color::White);
+
+	UITranslator::translateText(this->text, middleX, middleY, this->characterSize);
+	UITranslator::translateText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
 }
 
 void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
@@ -37,14 +51,17 @@ void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
 	else
 		this->isPressing = false;
 
-	this->updateColor();
+	this->updateLook();
 
 	this->lastFrameIsPressing = this->isPressing;
 }
 
 void Button::render(sf::RenderWindow& window)
 {
-	window.draw(text);
+	window.draw(this->outlineText);
+
+	if(!this->isPressing)
+		window.draw(this->text);
 }
 
 bool Button::hasBeenPressed()

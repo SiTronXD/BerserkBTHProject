@@ -9,8 +9,3 @@ unsigned int SettingsHandler::getHeight()
 {
 	return WINDOW_HEIGHT;
 }
-
-float SettingsHandler::getWindowSizeFactor(float height)
-{
-	return WINDOW_HEIGHT / height;
-}

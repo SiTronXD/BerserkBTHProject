@@ -38,6 +38,9 @@
     <ClCompile Include="PlayState.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
+    <ClCompile Include="UITranslator.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -57,6 +60,9 @@
     </ClInclude>
     <ClInclude Include="PlayState.h">
       <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="UITranslator.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
