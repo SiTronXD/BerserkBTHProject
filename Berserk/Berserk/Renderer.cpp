@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(EntityHandler& entityHandler) 
-	: entityHandler(entityHandler)
+	: entityHandler(entityHandler), timer(0.0f)
 {
 	// Set screen rectangle shape
 	shaderRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
@@ -25,6 +25,13 @@ Renderer::Renderer(EntityHandler& entityHandler)
 
 	// Load textures
 	this->map.loadFromFile("Resources/Maps/TestLevel.png");
+	this->wallTexture.loadFromFile("Resources/Textures/eclipseWallTexture.png");
+	this->floorTexture.loadFromFile("Resources/Textures/floorTexture2.png");
+}
+
+void Renderer::update(float deltaTime)
+{
+	this->timer += deltaTime;
 }
 
 sf::RenderTexture& Renderer::render()
@@ -32,8 +39,11 @@ sf::RenderTexture& Renderer::render()
 	sf::Glsl::Vec2 resolution(SettingsHandler::getWidth(), SettingsHandler::getHeight());
 
 	// Render rectangle using the shader
+	this->rayCastShader.setUniform("u_timer", this->timer);
 	this->rayCastShader.setUniform("u_camera", this->entityHandler.getPlayer().getPlayerCamera());
 	this->rayCastShader.setUniform("u_mapTexture", this->map);
+	this->rayCastShader.setUniform("u_wallTexture", this->wallTexture);
+	this->rayCastShader.setUniform("u_floorTexture", this->floorTexture);
 	this->rayCastShader.setUniform("u_resolution", resolution);
 	this->shaderRenderTexture.draw(this->shaderRenderRect, &this->rayCastShader);
 	this->shaderRenderTexture.display();

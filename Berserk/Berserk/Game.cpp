@@ -18,7 +18,9 @@ void Game::update()
     if(currentState->getSwitchToState() != State::NONE)
         setState(currentState->getSwitchToState());
 
-    currentState->update(0.001f);
+    // Update
+    float deltaTime = deltaTimeClock.restart().asSeconds();
+    currentState->update(deltaTime);
 }
 
 void Game::render()
@@ -56,7 +58,7 @@ Game::Game()
         ),
         currentState(nullptr)
 {
-    this->setState(State::PLAY);
+    this->setState(State::MAIN_MENU);
 }
 
 Game::~Game()

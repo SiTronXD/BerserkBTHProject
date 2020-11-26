@@ -9,7 +9,7 @@ MainMenuState::MainMenuState(sf::RenderWindow& window)
 	this->backgroundTexture.loadFromFile("Resources/Textures/MainMenuBackgroundTexture.png");
 	this->backgroundSprite.setTexture(this->backgroundTexture);
 
-	UITranslator::translateSprite(this->backgroundSprite, 0, 0, 2520, 1080);
+	UITranslator::transformSprite(this->backgroundSprite, 0, 0, 2520, 1080);
 }
 
 MainMenuState::~MainMenuState()

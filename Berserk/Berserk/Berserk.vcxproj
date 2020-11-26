@@ -161,6 +161,8 @@
     <ClCompile Include="PlayState.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SettingsHandler.cpp" />
+    <ClCompile Include="SMath.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="UITranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +175,8 @@
     <ClInclude Include="PlayState.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SettingsHandler.h" />
+    <ClInclude Include="SMath.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="UITranslator.h" />
   </ItemGroup>
   <ItemGroup>

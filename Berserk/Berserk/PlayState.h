@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameState.h"
+#include "UI.h"
 #include "EntityHandler.h"
 #include "Renderer.h"
 
@@ -10,6 +11,7 @@ private:
 	sf::RectangleShape screenRenderRect;
 	sf::Shader postProcessingShader;
 
+	UI ui;
 	EntityHandler entityHandler;
 	Renderer renderer;
 

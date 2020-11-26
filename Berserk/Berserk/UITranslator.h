@@ -10,9 +10,9 @@ private:
 	static const unsigned int INTERNAL_HEIGHT = 1080;
 
 public:
-	static void translateSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY, 
+	static void transformSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY, 
 		float spriteInternalWidth, float spriteInternalHeight);
 
-	static void translateText(sf::Text& text, float textMiddleX, float textMiddleY,
+	static void transformText(sf::Text& text, float textMiddleX, float textMiddleY,
 		float textCharacterSize);
 };

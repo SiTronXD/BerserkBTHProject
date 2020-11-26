@@ -12,14 +12,17 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{c0412e8d-2c6d-49f9-98b2-ba7d8d7bbb37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameStates">
-      <UniqueIdentifier>{74bfe1c8-5393-4a76-a211-166ee8ca2db4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{6153181c-b304-4429-97ce-614d0e79ca18}</UniqueIdentifier>
     </Filter>
     <Filter Include="Entities">
       <UniqueIdentifier>{f09b862b-8394-49dd-a618-48671ad718cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStateSpecifics">
+      <UniqueIdentifier>{74bfe1c8-5393-4a76-a211-166ee8ca2db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStateSpecifics\PlayState">
+      <UniqueIdentifier>{b442d853-7379-4fb2-9776-a400161e32bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,13 +39,10 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="MainMenuState.cpp">
-      <Filter>GameStates</Filter>
+      <Filter>GameStateSpecifics</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayState.cpp">
-      <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="UITranslator.cpp">
       <Filter>Engine</Filter>
@@ -50,10 +50,19 @@
     <ClCompile Include="Player.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="EntityHandler.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayState.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityHandler.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClCompile>
+    <ClCompile Include="SMath.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,13 +77,10 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuState.h">
-      <Filter>GameStates</Filter>
+      <Filter>GameStateSpecifics</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayState.h">
-      <Filter>GameStates</Filter>
     </ClInclude>
     <ClInclude Include="UITranslator.h">
       <Filter>Engine</Filter>
@@ -82,10 +88,19 @@
     <ClInclude Include="Player.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="EntityHandler.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayState.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityHandler.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClInclude>
+    <ClInclude Include="SMath.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

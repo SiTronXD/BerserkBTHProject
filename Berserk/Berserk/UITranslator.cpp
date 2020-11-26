@@ -1,6 +1,6 @@
 #include "UITranslator.h"
 
-void UITranslator::translateSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY, 
+void UITranslator::transformSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY,
 	float spriteInternalWidth, float spriteInternalHeight)
 {
 	float screenMidX = SettingsHandler::getWidth() / 2.0f;
@@ -19,7 +19,7 @@ void UITranslator::translateSprite(sf::Sprite& sprite, float spriteMiddleX, floa
 	);
 }
 
-void UITranslator::translateText(sf::Text& text, float textMiddleX, float textMiddleY, 
+void UITranslator::transformText(sf::Text& text, float textMiddleX, float textMiddleY,
 	float textCharacterSize)
 {
 	float screenMidX = SettingsHandler::getWidth() / 2.0f;

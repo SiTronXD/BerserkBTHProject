@@ -30,8 +30,8 @@ Button::Button(float middleX, float middleY, std::string text)
 	this->outlineText.setString(text);
 	this->outlineText.setFillColor(sf::Color::White);
 
-	UITranslator::translateText(this->text, middleX, middleY, this->characterSize);
-	UITranslator::translateText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
+	UITranslator::transformText(this->text, middleX, middleY, this->characterSize);
+	UITranslator::transformText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
 }
 
 void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)

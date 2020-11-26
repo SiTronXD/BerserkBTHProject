@@ -9,8 +9,11 @@ private:
 	// 2520, 1080	21:9	(2560, 1080)
 	static const unsigned int WINDOW_WIDTH = 1280;
 	static const unsigned int WINDOW_HEIGHT = 720;
+	static const float MOUSE_SENSITIVITY;
 
 public:
 	static unsigned int getWidth();
 	static unsigned int getHeight();
+
+	static float getMouseSensitivity();
 };

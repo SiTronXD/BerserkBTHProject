@@ -10,6 +10,7 @@ class Game
 {
 private:
 	sf::RenderWindow window;
+	sf::Clock deltaTimeClock;
 
 	GameState* currentState;
 
