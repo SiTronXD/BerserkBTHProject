@@ -10,10 +10,12 @@ private:
 	static const unsigned int WINDOW_WIDTH = 1280;
 	static const unsigned int WINDOW_HEIGHT = 720;
 	static const float MOUSE_SENSITIVITY;
+	static const float KEYBOARD_LOOK_SENSITIVITY;
 
 public:
 	static unsigned int getWidth();
 	static unsigned int getHeight();
 
 	static float getMouseSensitivity();
+	static float getKeyboardLookSensitivity();
 };

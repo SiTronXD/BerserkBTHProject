@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "UI.h"
 #include "EntityHandler.h"
+#include "MapHandler.h"
 #include "Renderer.h"
 
 class PlayState : public GameState
@@ -13,6 +14,7 @@ private:
 
 	UI ui;
 	EntityHandler entityHandler;
+	MapHandler mapHandler;
 	Renderer renderer;
 
 public:

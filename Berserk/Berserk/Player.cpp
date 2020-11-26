@@ -1,8 +1,11 @@
 #include "Player.h"
 
 Player::Player(int x, int y)
-	: x(x), y(y), direction(3.1415f * 0.5f), lastMouseX(0.0f)
+	: x(x), y(y), direction(0.0f)
 {
+	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
+
+	sf::Mouse::setPosition(this->monitorMiddle);
 }
 
 void Player::handleInput(float deltaTime)
@@ -19,12 +22,14 @@ void Player::handleInput(float deltaTime)
 	this->x += walkStep.x * MOVEMENT_SPEED * deltaTime;
 	this->y += walkStep.y * MOVEMENT_SPEED * deltaTime;
 
+	// Keyboard to turn the player
+	this->direction += (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) * 0.001f * SettingsHandler::getKeyboardLookSensitivity();
+	
 	// Mouse look
-	this->direction += (lastMouseX - sf::Mouse::getPosition().x) * 0.001f * SettingsHandler::getMouseSensitivity();
+	this->direction += (this->monitorMiddle.x - sf::Mouse::getPosition().x) * 0.001f * SettingsHandler::getMouseSensitivity();
 
 	// Move mouse to the middle of the monitor
-	sf::Mouse::setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2));
-	this->lastMouseX = sf::Mouse::getPosition().x;
+	sf::Mouse::setPosition(this->monitorMiddle);
 }
 
 const sf::Glsl::Vec3 Player::getPlayerCamera() const

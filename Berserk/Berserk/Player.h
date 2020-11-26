@@ -10,11 +10,11 @@ class Player
 private:
 	const float MOVEMENT_SPEED = 4.0f;
 
+	sf::Vector2i monitorMiddle;
+
 	float x;
 	float y;
 	float direction; // Direction is in radians
-
-	float lastMouseX;
 
 public:
 	Player(int x, int y);

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "MapHandler.h"
 #include "SettingsHandler.h"
 #include "EntityHandler.h"
 
@@ -12,18 +13,19 @@ private:
 	sf::RenderTexture shaderRenderTexture;
 	sf::RenderStates renderState;
 
-	sf::Texture map;
 	sf::Texture wallTexture;
 	sf::Texture floorTexture;
+	sf::Texture goalTexture;
 
 	sf::Shader rayCastShader;
 
+	MapHandler& mapHandler;
 	EntityHandler& entityHandler;
 
 	float timer;
 
 public:
-	Renderer(EntityHandler& entityHandler);
+	Renderer(MapHandler& mapHandler, EntityHandler& entityHandler);
 
 	void update(float deltaTime);
 

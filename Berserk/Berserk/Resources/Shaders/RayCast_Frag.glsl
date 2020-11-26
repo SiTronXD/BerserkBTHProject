@@ -3,7 +3,9 @@
 #define MARCH_STEP_SIZE 0.001
 #define MARCH_MAX_NUM_STEPS 1000
 
-#define ONE_OVER_SQRT_TWO 0.7071067811
+#define TILE_WALL_COLOR vec3(1.0f)
+#define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
+#define FOG_COLOR vec3(0.0f, 0.0f, 0.0f)
 
 // Constants
 const float PI = atan(-1.0f);
@@ -13,6 +15,7 @@ const float FOV = PI * 0.75f;
 uniform sampler2D u_mapTexture;
 uniform sampler2D u_wallTexture;
 uniform sampler2D u_floorTexture;
+uniform sampler2D u_goalTexture;
 
 // vec3(x, y, direction)
 uniform vec3 u_camera;
@@ -20,8 +23,6 @@ uniform vec3 u_camera;
 uniform vec2 u_resolution;
 
 uniform float u_timer;
-
-vec3 fogColor = vec3(0.0f, 0.0f, 0.0f);
 
 vec2 MAP_SIZE = textureSize(u_mapTexture, 0);
 vec2 ONE_OVER_MAP_SIZE = 1.0f / MAP_SIZE;
@@ -53,6 +54,7 @@ void main()
 
 	// March
 	bool foundWall = false;
+	bool wallIsGoal = false;
 	for(int i = 0; i < MARCH_MAX_NUM_STEPS && !foundWall; i++)
 	{
 		dist += MARCH_STEP_SIZE;
@@ -60,11 +62,19 @@ void main()
 
 		// Sample
 		vec3 foundCol = texture2D(u_mapTexture, rayPos).rgb;
-		vec3 diff = foundCol - vec3(1.0f);
+		vec3 diff = foundCol - TILE_WALL_COLOR;
 
 		// Hit wall
 		if(dot(diff, diff) <= 0.1f)
 			foundWall = true;
+
+		// Hit goal wall
+		diff = foundCol - TILE_GOAL_COLOR;
+		if(dot(diff, diff) <= 0.1f)
+		{
+			foundWall = true;
+			wallIsGoal = true;
+		}
 	}
 
 	// Fog and wall height
@@ -75,7 +85,7 @@ void main()
 	// Find wall uvs
 	vec2 hitPos = fract(rayPos * MAP_SIZE);
 	vec2 diff = hitPos - 0.5f;
-	float isNormalCloseToPositiveDiagonal = dot(diff, vec2(-ONE_OVER_SQRT_TWO)) > 0.0f ? 1.0 : 0.0;
+	float isNormalCloseToPositiveDiagonal = dot(diff, vec2(1)) < 0.0f ? 1.0 : 0.0;
 
 	// Choose correct U-value based on if the normal is close to the positive diagonal or not
 	float wallU = mix(min(hitPos.x, hitPos.y), max(hitPos.x, hitPos.y), isNormalCloseToPositiveDiagonal);
@@ -87,6 +97,23 @@ void main()
 		u_wallTexture, 
 		wallUV * vec2(0.5f, 1.0f) + vec2(floor(fract(u_timer) * 2.0f), 0.0f) * 0.5f
 	).rgb;
+
+	// Sample goal texture
+	if(wallIsGoal)
+	{
+		// Flip u-coordinate to animate
+		float tempWallU = fract(u_timer * 2.0f) < 0.5f ? 1.0f - wallUV.x : wallUV.x;
+
+		vec4 goalWallCol = texture2D(
+			u_goalTexture, 
+			vec2(
+				tempWallU,
+				wallUV.y
+			)
+		);
+
+		wallCol = mix(wallCol, goalWallCol.rgb, goalWallCol.a);
+	}
 
 	// Sample floor texture
 	float floorDist = (0.80f / -uv.y);
@@ -104,7 +131,7 @@ void main()
 	// Wall + floor
 	vec3 col = (wallCol * showWall) + (floorCol * showFloor);
 	col = mix(
-		fogColor, 
+		FOG_COLOR, 
 		col, 
 		(showWall + showFloor) * (uv.y > halfWallHeight ? 0.0f : 1.0f)
 	);
