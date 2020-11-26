@@ -15,6 +15,12 @@
     <Filter Include="GameStates">
       <UniqueIdentifier>{74bfe1c8-5393-4a76-a211-166ee8ca2db4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{6153181c-b304-4429-97ce-614d0e79ca18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{f09b862b-8394-49dd-a618-48671ad718cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -41,6 +47,15 @@
     <ClCompile Include="UITranslator.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityHandler.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -64,5 +79,28 @@
     <ClInclude Include="UITranslator.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityHandler.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\RayCast_Frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayCast_Vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing_Frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PostProcessing_Vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,2 +1,50 @@
-﻿  Button.cpp
+﻿  EntityHandler.cpp
+  Game.cpp
+  Main.cpp
+  PlayState.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(8,95): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(8,65): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(27,83): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(27,53): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Player.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(4,5): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(4,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Renderer.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(7,95): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(7,65): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(32,83): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(32,53): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Generating Code...
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

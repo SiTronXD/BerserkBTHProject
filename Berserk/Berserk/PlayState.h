@@ -1,10 +1,17 @@
 #pragma once
 
 #include "GameState.h"
+#include "EntityHandler.h"
+#include "Renderer.h"
 
 class PlayState : public GameState
 {
 private:
+	sf::RectangleShape screenRenderRect;
+	sf::Shader postProcessingShader;
+
+	EntityHandler entityHandler;
+	Renderer renderer;
 
 public:
 	PlayState(sf::RenderWindow& window);

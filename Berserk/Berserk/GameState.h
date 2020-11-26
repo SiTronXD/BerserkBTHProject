@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "SettingsHandler.h"
 #include "UITranslator.h"
 
 enum class State

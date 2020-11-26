@@ -14,11 +14,11 @@ void Game::handlePollEvent(const sf::Event& event)
 
 void Game::update()
 {
-    // Update state 
+    // Change state if necessary
     if(currentState->getSwitchToState() != State::NONE)
         setState(currentState->getSwitchToState());
 
-    currentState->update(0.0f);
+    currentState->update(0.001f);
 }
 
 void Game::render()
@@ -56,7 +56,7 @@ Game::Game()
         ),
         currentState(nullptr)
 {
-    this->setState(State::MAIN_MENU);
+    this->setState(State::PLAY);
 }
 
 Game::~Game()
