@@ -17,6 +17,8 @@ public:
 	void update(float deltaTime);
 	void placeGoal(sf::Vector2f goalPos);
 
+	void render(sf::RenderWindow& window);
+
 	const Player& getPlayer();
 	CollisionHandler& getCollisionHandler();
 };

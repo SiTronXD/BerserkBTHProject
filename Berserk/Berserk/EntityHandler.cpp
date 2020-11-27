@@ -8,6 +8,7 @@ EntityHandler::EntityHandler()
 void EntityHandler::update(float deltaTime)
 {
 	this->player.handleInput(deltaTime);
+	this->player.update(deltaTime);
 
 	this->collisionHandler.update();
 }
@@ -15,6 +16,11 @@ void EntityHandler::update(float deltaTime)
 void EntityHandler::placeGoal(sf::Vector2f goalPos)
 {
 	this->goal.setPosition(goalPos);
+}
+
+void EntityHandler::render(sf::RenderWindow& window)
+{
+	this->player.render(window);
 }
 
 const Player& EntityHandler::getPlayer()

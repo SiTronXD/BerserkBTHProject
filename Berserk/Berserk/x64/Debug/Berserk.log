@@ -1,2 +1,6 @@
-﻿  GameStatsHandler.cpp
+﻿  Player.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(19,5): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(19,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(40,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(41,19): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

@@ -9,6 +9,7 @@ void ResTranslator::transformSprite(sf::Sprite& sprite, float spriteMiddleX, flo
 	float screenSizeScaleY = (float) SettingsHandler::getHeight() / INTERNAL_HEIGHT;
 
 	// Apply transformation
+	sprite.setScale(1.0f, 1.0f);	// Set to default first
 	sprite.setScale(
 		(spriteInternalWidth / sprite.getGlobalBounds().width) * screenSizeScaleY,
 		(spriteInternalHeight / sprite.getGlobalBounds().height) * screenSizeScaleY

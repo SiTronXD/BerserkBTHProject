@@ -49,6 +49,9 @@ void PlayState::render()
 	this->postProcessingShader.setUniform("u_resolution", sf::Glsl::Vec2(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
 	window.draw(this->screenRenderRect, &this->postProcessingShader);
 
+	// Render entities
+	this->entityHandler.render(this->window);
+
 	// Render UI
 	ui.render(window);
 }
