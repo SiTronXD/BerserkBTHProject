@@ -1,20 +1,24 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include "UITranslator.h"
 #include <iostream>
 #include <string>
+#include <SFML/Graphics.hpp>
+#include "ResTranslator.h"
+#include "CollisionHandler.h"
 
 class UI
 {
 private:
 	sf::Font font;
 	sf::Text fpsText;
+	sf::Text enterGoalText;
+
+	CollisionHandler& collisionHandler;
 
 	float updateDtTimer;
 
 public:
-	UI();
+	UI(CollisionHandler& collisionHandler);
 
 	void update(float deltaTime);
 

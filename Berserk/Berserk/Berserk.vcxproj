@@ -152,9 +152,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CollisionHandler.cpp" />
     <ClCompile Include="EntityHandler.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameStatsHandler.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
@@ -165,13 +168,16 @@
     <ClCompile Include="SettingsHandler.cpp" />
     <ClCompile Include="SMath.cpp" />
     <ClCompile Include="UI.cpp" />
-    <ClCompile Include="UITranslator.cpp" />
+    <ClCompile Include="ResTranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="EntityHandler.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStatsHandler.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="MapHandler.h" />
@@ -181,7 +187,7 @@
     <ClInclude Include="SettingsHandler.h" />
     <ClInclude Include="SMath.h" />
     <ClInclude Include="UI.h" />
-    <ClInclude Include="UITranslator.h" />
+    <ClInclude Include="ResTranslator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\PostProcessing_Frag.glsl" />

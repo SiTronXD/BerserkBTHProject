@@ -1,8 +1,9 @@
 #include "PlayState.h"
 #include <iostream>
 
-PlayState::PlayState(sf::RenderWindow& window)
-	: GameState(window), mapHandler(entityHandler), renderer(mapHandler, entityHandler)
+PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
+	: GameState(window), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
+	ui(entityHandler.getCollisionHandler()), gameStats(gameStats)
 { 
 	// Set screen rectangle shape
 	screenRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
@@ -25,6 +26,17 @@ void PlayState::update(float deltaTime)
 	this->entityHandler.update(deltaTime);
 	this->renderer.update(deltaTime);
 	this->ui.update(deltaTime);
+
+	// Player can and wants to exit
+	if (this->entityHandler.getCollisionHandler().playerIsCloseToGoal() && 
+		this->entityHandler.getPlayer().playerTriesToExit())
+	{
+		// Player won!
+		this->gameStats.flagPlayerWon();
+
+		// Switch state
+		this->setState(State::GAME_OVER);
+	}
 }
 
 void PlayState::render()

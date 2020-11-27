@@ -1,10 +1,11 @@
 #pragma once
 
 #include "GameState.h"
-#include "UI.h"
 #include "EntityHandler.h"
 #include "MapHandler.h"
 #include "Renderer.h"
+#include "UI.h"
+#include "GameStatsHandler.h"
 
 class PlayState : public GameState
 {
@@ -12,13 +13,14 @@ private:
 	sf::RectangleShape screenRenderRect;
 	sf::Shader postProcessingShader;
 
-	UI ui;
 	EntityHandler entityHandler;
 	MapHandler mapHandler;
 	Renderer renderer;
+	UI ui;
+	GameStatsHandler& gameStats;
 
 public:
-	PlayState(sf::RenderWindow& window);
+	PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats);
 
 	// Inherited via GameState
 	virtual void handlePollEvent(const sf::Event& event) override;

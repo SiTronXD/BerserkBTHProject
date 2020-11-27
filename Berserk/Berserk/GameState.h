@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "SettingsHandler.h"
-#include "UITranslator.h"
+#include "ResTranslator.h"
 
 enum class State
 {

@@ -5,6 +5,8 @@
 class Goal
 {
 private:
+	static const float GOAL_RADIUS;
+
 	sf::Vector2f position;
 
 public:
@@ -13,4 +15,5 @@ public:
 	void setPosition(sf::Vector2f newPosition);
 
 	sf::Vector2f getPosition() const;
+	float getRadiusSqrd() const;
 };

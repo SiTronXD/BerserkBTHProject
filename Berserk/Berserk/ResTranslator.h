@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "SettingsHandler.h"
 
-class UITranslator
+class ResTranslator
 {
 private:
 	static const unsigned int INTERNAL_WIDTH = 1920;

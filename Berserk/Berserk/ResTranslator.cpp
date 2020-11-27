@@ -1,6 +1,6 @@
-#include "UITranslator.h"
+#include "ResTranslator.h"
 
-void UITranslator::transformSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY,
+void ResTranslator::transformSprite(sf::Sprite& sprite, float spriteMiddleX, float spriteMiddleY,
 	float spriteInternalWidth, float spriteInternalHeight)
 {
 	float screenMidX = SettingsHandler::getWidth() / 2.0f;
@@ -19,7 +19,7 @@ void UITranslator::transformSprite(sf::Sprite& sprite, float spriteMiddleX, floa
 	);
 }
 
-void UITranslator::transformText(sf::Text& text, float textMiddleX, float textMiddleY,
+void ResTranslator::transformText(sf::Text& text, float textMiddleX, float textMiddleY,
 	float textCharacterSize)
 {
 	float screenMidX = SettingsHandler::getWidth() / 2.0f;
@@ -28,11 +28,7 @@ void UITranslator::transformText(sf::Text& text, float textMiddleX, float textMi
 	float screenSizeScaleY = (float)SettingsHandler::getHeight() / INTERNAL_HEIGHT;
 
 	// Apply transformation
-	/*text.setScale(
-		(textCharacterSize / text.getGlobalBounds().height) * screenSizeScaleY,
-		(textCharacterSize / text.getGlobalBounds().height) * screenSizeScaleY
-	);
-	*/
+	text.setCharacterSize(30);	// Set to default first
 	text.setCharacterSize(
 		(int) (textCharacterSize * (textCharacterSize / text.getGlobalBounds().height) * screenSizeScaleY)
 	);

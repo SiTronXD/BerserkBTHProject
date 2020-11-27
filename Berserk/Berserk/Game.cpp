@@ -42,12 +42,25 @@ void Game::setState(State newState)
         currentState = new MainMenuState(window);
             break;
     case State::PLAY:
-        currentState = new PlayState(window);
+        currentState = new PlayState(window, gameStats);
+        break;
+    case State::GAME_OVER:
+        currentState = new GameOverState(window, gameStats);
         break;
     default:
         std::cout << "CAN'T FIND PLAYSTATE" << std::endl;
         break;
     }
+}
+
+void Game::setWindowIcon()
+{
+    // Load image
+    sf::Image iconImage;
+    iconImage.loadFromFile("Resources/Textures/berserkIcon.png");
+
+    // Apply image
+    this->window.setIcon(32, 32, iconImage.getPixelsPtr());
 }
 
 Game::Game()
@@ -58,7 +71,9 @@ Game::Game()
         ),
         currentState(nullptr)
 {
-    this->setState(State::MAIN_MENU);
+    this->setWindowIcon();
+
+    this->setState(State::PLAY);
 }
 
 Game::~Game()

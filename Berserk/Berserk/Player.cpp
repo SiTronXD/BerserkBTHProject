@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(int x, int y)
-	: x(x), y(y), direction(0.0f)
+	: x(x), y(y), direction(0.0f), tryToExit(false)
 {
 	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
 
@@ -10,6 +10,9 @@ Player::Player(int x, int y)
 
 void Player::handleInput(float deltaTime)
 {
+	// Try to exit
+	this->tryToExit = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F);
+
 	// Walking
 	float forwardInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
 	float rightInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
@@ -30,6 +33,16 @@ void Player::handleInput(float deltaTime)
 
 	// Move mouse to the middle of the monitor
 	sf::Mouse::setPosition(this->monitorMiddle);
+}
+
+const bool Player::playerTriesToExit() const
+{
+	return this->tryToExit;
+}
+
+const sf::Vector2f Player::getPlayerPosition() const
+{
+	return sf::Vector2f(x, y);
 }
 
 const sf::Glsl::Vec3 Player::getPlayerCamera() const

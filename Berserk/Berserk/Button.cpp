@@ -13,25 +13,22 @@ void Button::updateLook()
 		if (this->isHovering)
 			this->text.setFillColor(sf::Color::White);
 		else
-			this->text.setFillColor(sf::Color::Red);
+			this->text.setFillColor(defaultColor);
 	}
 }
 
 Button::Button(float middleX, float middleY, std::string text)
 	: middleX(middleX), middleY(middleY), isPressing(false), 
 	lastFrameIsPressing(false), isHovering(false), activate(false),
-	offsetSize(4), characterSize(50)
+	offsetSize(4), characterSize(DEFAULT_CHARACTER_SIZE), defaultColor(sf::Color::Red), buttonText(text)
 {
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 	this->text.setFont(this->font);
-	this->text.setString(text);
 	this->text.setFillColor(sf::Color::Red);
 	this->outlineText.setFont(this->font);
-	this->outlineText.setString(text);
 	this->outlineText.setFillColor(sf::Color::White);
 
-	UITranslator::transformText(this->text, middleX, middleY, this->characterSize);
-	UITranslator::transformText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
+	this->set(middleX, middleY, text);
 }
 
 void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
@@ -51,6 +48,7 @@ void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
 	else
 		this->isPressing = false;
 
+	// Update visual appearance
 	this->updateLook();
 
 	this->lastFrameIsPressing = this->isPressing;
@@ -62,6 +60,30 @@ void Button::render(sf::RenderWindow& window)
 
 	if(!this->isPressing)
 		window.draw(this->text);
+}
+
+// Sets the main text to a new color
+void Button::setTextColor(sf::Color newColor)
+{
+	defaultColor = newColor;
+}
+
+void Button::set(float middleX, float middleY)
+{
+	this->set(middleX, middleY, this->buttonText);
+}
+
+void Button::set(float middleX, float middleY, std::string text)
+{
+	this->characterSize = DEFAULT_CHARACTER_SIZE;
+
+	// Set text strings
+	this->text.setString(text);
+	this->outlineText.setString(text);
+
+	// Move
+	ResTranslator::transformText(this->text, middleX, middleY, this->characterSize);
+	ResTranslator::transformText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
 }
 
 bool Button::hasBeenPressed()

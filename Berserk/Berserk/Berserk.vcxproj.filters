@@ -24,6 +24,12 @@
     <Filter Include="GameStateSpecifics\PlayState">
       <UniqueIdentifier>{b442d853-7379-4fb2-9776-a400161e32bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameStateSpecifics\MainMenu">
+      <UniqueIdentifier>{50c5d9d3-ea0d-4d34-bb02-2a9e5c86bf83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStateSpecifics\GameOver">
+      <UniqueIdentifier>{bc9a8ec2-62b9-4cfb-bfbb-cf86282a8922}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -38,13 +44,7 @@
     <ClCompile Include="GameState.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuState.cpp">
-      <Filter>GameStateSpecifics</Filter>
-    </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="UITranslator.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -71,6 +71,21 @@
     <ClCompile Include="Goal.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="ResTranslator.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>GameStateSpecifics\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionHandler.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverState.cpp">
+      <Filter>GameStateSpecifics\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStatsHandler.cpp">
+      <Filter>GameStateSpecifics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -82,13 +97,7 @@
     <ClInclude Include="GameState.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuState.h">
-      <Filter>GameStateSpecifics</Filter>
-    </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="UITranslator.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -114,6 +123,21 @@
     </ClInclude>
     <ClInclude Include="Goal.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="ResTranslator.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>GameStateSpecifics\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionHandler.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverState.h">
+      <Filter>GameStateSpecifics\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStatsHandler.h">
+      <Filter>GameStateSpecifics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

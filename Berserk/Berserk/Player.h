@@ -16,10 +16,14 @@ private:
 	float y;
 	float direction; // Direction is in radians
 
+	bool tryToExit;
+
 public:
 	Player(int x, int y);
 
 	void handleInput(float deltaTime);
 
+	const bool playerTriesToExit() const;
+	const sf::Vector2f getPlayerPosition() const;
 	const sf::Glsl::Vec3 getPlayerCamera() const;
 };
