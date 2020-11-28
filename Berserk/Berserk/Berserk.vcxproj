@@ -151,7 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="CollisionHandler.cpp" />
     <ClCompile Include="EntityHandler.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -164,6 +166,7 @@
     <ClCompile Include="MapHandler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayState.cpp" />
+    <ClCompile Include="RenderEntity.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SettingsHandler.cpp" />
     <ClCompile Include="SMath.cpp" />
@@ -171,7 +174,9 @@
     <ClCompile Include="ResTranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Collectible.h" />
     <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="EntityHandler.h" />
     <ClInclude Include="Game.h" />
@@ -183,6 +188,7 @@
     <ClInclude Include="MapHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayState.h" />
+    <ClInclude Include="RenderEntity.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SettingsHandler.h" />
     <ClInclude Include="SMath.h" />
@@ -190,6 +196,8 @@
     <ClInclude Include="ResTranslator.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\AbilityIcon_Frag.glsl" />
+    <None Include="Resources\Shaders\AbilityIcon_Vert.glsl" />
     <None Include="Resources\Shaders\PostProcessing_Frag.glsl" />
     <None Include="Resources\Shaders\PostProcessing_Vert.glsl" />
     <None Include="Resources\Shaders\RayCast_Frag.glsl" />

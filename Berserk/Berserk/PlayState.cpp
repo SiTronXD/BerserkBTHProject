@@ -3,7 +3,7 @@
 
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	: GameState(window), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
-	ui(entityHandler.getCollisionHandler()), gameStats(gameStats)
+	ui(entityHandler.getCollisionHandler(), entityHandler.getPlayer()), gameStats(gameStats)
 { 
 	// Set screen rectangle shape
 	screenRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));

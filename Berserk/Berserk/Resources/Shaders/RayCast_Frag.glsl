@@ -10,19 +10,23 @@
 // Constants
 const float PI = atan(-1.0f);
 const float FOV = PI * 0.75f;
+const int MAX_RENDER_ENTITIES = 64;
 
 // Uniforms
 uniform sampler2D u_mapTexture;
 uniform sampler2D u_wallTexture;
 uniform sampler2D u_floorTexture;
 uniform sampler2D u_goalTexture;
+uniform sampler2D u_entityTexture;
 
-// vec3(x, y, direction)
-uniform vec3 u_camera;
+uniform vec3 u_camera;	// vec3(x, y, direction)
+uniform vec3 u_entityPositions[MAX_RENDER_ENTITIES];
 
 uniform vec2 u_resolution;
 
 uniform float u_timer;
+
+uniform int u_numEntities;
 
 vec2 MAP_SIZE = textureSize(u_mapTexture, 0);
 vec2 ONE_OVER_MAP_SIZE = 1.0f / MAP_SIZE;
@@ -40,7 +44,9 @@ void main()
 	// Make uvs go from -0.5 to 0.5 (with aspect correction)
 	vec2 uv = gl_FragCoord.xy / u_resolution;
 	uv -= 0.5;
-	uv.x *= u_resolution.x / u_resolution.y;
+
+	float aspectRatio = u_resolution.x / u_resolution.y;
+	uv.x *= aspectRatio;
 	
 	// Keep track of camera in the world
 	vec2 camPos = u_camera.xy * ONE_OVER_MAP_SIZE;
@@ -135,6 +141,51 @@ void main()
 		col, 
 		(showWall + showFloor) * (uv.y > halfWallHeight ? 0.0f : 1.0f)
 	);
+
+	// Render entities
+	float currentPixelDepth = length((rayDir * dist) * MAP_SIZE);
+	for(int i = 0; i < u_numEntities; i++)
+	{
+		// Convert position to normalized screen coordinates
+		vec2 camToTarget = vec2(u_entityPositions[i].x - u_camera.x, u_camera.y - u_entityPositions[i].y);
+		float spriteDist = length(camToTarget);
+
+		vec2 camToTargetDir = camToTarget / spriteDist;
+		vec2 dir = vec2(cos(u_camera.z), sin(u_camera.z));
+
+		float negateAngle = cross(vec3(camToTargetDir, 0.0f), vec3(dir, 0.0f)).z > 0.0f ? -1.0f : 1.0f;
+		float deltaAngle = acos(dot(dir, camToTargetDir)) * negateAngle;
+
+		float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
+		float screenPosY = u_entityPositions[i].z / spriteDist;
+
+		// Sprite size
+		float spriteSize = 1.0f / spriteDist;
+
+		// Is pixel close enough to the sprite?
+		if(abs(uv.x - screenPosX) <= spriteSize && 
+			abs(uv.y - screenPosY) <= spriteSize && spriteDist < currentPixelDepth)
+		{
+			// Sprite texture coordinates
+			vec2 spriteUV = vec2(
+				(uv.x - screenPosX) / spriteSize * 0.5f + 0.5f,
+				1.0f - ((uv.y - screenPosY) / spriteSize * 0.5f + 0.5f)
+			);
+
+			vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
+
+			// If pixel is not transparent
+			if(spriteCol.a > 0.0f)
+			{
+				// Update depth
+				currentPixelDepth = spriteDist;
+
+				// Apply color
+				col = spriteCol.rgb;
+				//col = mix(col, spriteCol.rgb, sin(u_timer)*0.5f+0.5f);
+			}
+		}	
+	}
 
 	gl_FragColor = vec4(col, 1.0);
 }

@@ -38,7 +38,7 @@ sf::RenderTexture& Renderer::render()
 {
 	sf::Glsl::Vec2 resolution(SettingsHandler::getWidth(), SettingsHandler::getHeight());
 
-	// Render rectangle using the shader
+	// Update shader uniforms
 	this->rayCastShader.setUniform("u_timer", this->timer);
 	this->rayCastShader.setUniform("u_camera", this->entityHandler.getPlayer().getPlayerCamera());
 	this->rayCastShader.setUniform("u_mapTexture", this->mapHandler.getMapTexture());
@@ -46,6 +46,18 @@ sf::RenderTexture& Renderer::render()
 	this->rayCastShader.setUniform("u_floorTexture", this->floorTexture);
 	this->rayCastShader.setUniform("u_goalTexture", this->goalTexture);
 	this->rayCastShader.setUniform("u_resolution", resolution);
+
+	// Fill array with entity positions
+	sf::Glsl::Vec3 entityPositionsArray[64] { };
+	int arraySize = 0;
+	this->entityHandler.fillArrayWithEntityPositions(entityPositionsArray, arraySize);
+
+	// Update entity uniforms
+	this->rayCastShader.setUniform("u_entityTexture", this->entityHandler.getRenderEntityTexture());
+	this->rayCastShader.setUniformArray("u_entityPositions", entityPositionsArray, arraySize);
+	this->rayCastShader.setUniform("u_numEntities", arraySize);
+
+	// Render
 	this->shaderRenderTexture.draw(this->shaderRenderRect, &this->rayCastShader);
 	this->shaderRenderTexture.display();
 

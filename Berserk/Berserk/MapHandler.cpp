@@ -3,6 +3,7 @@
 void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 {
 	const sf::Color GOAL_COLOR = sf::Color(0, 255, 0, 255);
+	const sf::Color COLLECTIBLE_COLOR = sf::Color(255, 255, 0, 255);
 
 	// Load image and size
 	sf::Image image(this->map.copyToImage());
@@ -17,13 +18,24 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 			sf::Color pixelColor = image.getPixel(x, y);
 			
 			// Goal
-			sf::Color goalTarget = pixelColor - GOAL_COLOR;
-			if (SMath::dot(goalTarget, goalTarget) <= COLOR_DIFFERENCE_THRESHOLD)
-			{
-				entityHandler.placeGoal(sf::Vector2f(x - 0.5f, mapHeight + 1 - (y - 0.5f)));
-			}
+			if (this->evaluatePixel(pixelColor, GOAL_COLOR))
+				entityHandler.placeGoal(sf::Vector2f(x + 0.5f, y + 0.5f));
+
+			// Collectible
+			if (this->evaluatePixel(pixelColor, COLLECTIBLE_COLOR))
+				entityHandler.addCollectible(sf::Vector2f(x + 0.5f, y + 0.5f));
 		}
 	}
+}
+
+bool MapHandler::evaluatePixel(sf::Color currentPixel, sf::Color targetPixel)
+{
+	sf::Vector3f currentPixelCol(currentPixel.r / 255.0f, currentPixel.g / 255.0f, currentPixel.b / 255.0f);
+	sf::Vector3f targetPixelCol(targetPixel.r / 255.0f, targetPixel.g / 255.0f, targetPixel.b / 255.0f);
+
+	sf::Vector3f targetCol = currentPixelCol - targetPixelCol;
+
+	return SMath::dot(targetCol, targetCol) <= COLOR_DIFFERENCE_THRESHOLD;
 }
 
 MapHandler::MapHandler(EntityHandler& entityHandler)

@@ -13,6 +13,8 @@ private:
 
 	void loadEntitiesFromMap(EntityHandler& entityHandler);
 
+	bool evaluatePixel(sf::Color currentPixel, sf::Color targetPixel);
+
 public:
 	MapHandler(EntityHandler& entityHandler);
 

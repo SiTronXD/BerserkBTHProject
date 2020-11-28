@@ -86,6 +86,15 @@
     <ClCompile Include="GameStatsHandler.cpp">
       <Filter>GameStateSpecifics</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectible.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEntity.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -139,6 +148,15 @@
     <ClInclude Include="GameStatsHandler.h">
       <Filter>GameStateSpecifics</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Collectible.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEntity.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\RayCast_Frag.glsl">
@@ -151,6 +169,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\PostProcessing_Vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\AbilityIcon_Frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\AbilityIcon_Vert.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
