@@ -9,6 +9,8 @@
 class Renderer
 {
 private:
+	static const int MAX_ENTITIES = 64;
+
 	sf::RectangleShape shaderRenderRect;
 	sf::RenderTexture shaderRenderTexture;
 	sf::RenderStates renderState;
@@ -16,6 +18,7 @@ private:
 	sf::Texture wallTexture;
 	sf::Texture floorTexture;
 	sf::Texture goalTexture;
+	sf::Texture entitiesTexture;
 
 	sf::Shader rayCastShader;
 

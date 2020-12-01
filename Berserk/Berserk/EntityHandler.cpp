@@ -18,6 +18,10 @@ void EntityHandler::update(float deltaTime)
 	this->player.update(deltaTime);
 
 	this->collisionHandler.update();
+
+	// Update collectibles
+	for (unsigned int i = 0; i < nrOfCollectibles; ++i)
+		this->collectibles[i]->update(deltaTime);
 }
 
 void EntityHandler::placeGoal(sf::Vector2f goalPos)
@@ -46,15 +50,20 @@ CollisionHandler& EntityHandler::getCollisionHandler()
 	return this->collisionHandler;
 }
 
-const sf::Texture& EntityHandler::getRenderEntityTexture() const
+void EntityHandler::fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[], 
+	sf::Glsl::Vec4 textureRectsArray[], sf::Glsl::Vec2 worldScaleArray[], int& arraySize)
 {
-	return this->collectibles[0]->getTexture();
-}
-
-void EntityHandler::fillArrayWithEntityPositions(sf::Glsl::Vec3 positionArray[], int& arraySize)
-{
-	for(unsigned int i = 0; i < nrOfCollectibles; ++i)
+	for (unsigned int i = 0; i < nrOfCollectibles; ++i)
+	{
+		// Position
 		positionArray[i] = this->collectibles[i]->getPosition();
+
+		// Texture rect
+		textureRectsArray[i] = this->collectibles[i]->getTextureRect();
+
+		// Scale
+		worldScaleArray[i] = this->collectibles[i]->getWorldScale();
+	}
 
 	arraySize = nrOfCollectibles;
 }

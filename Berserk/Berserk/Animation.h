@@ -15,9 +15,14 @@ private:
 
 	bool repeat;
 
+	void cleanUpMemory();
+
 public:
 	Animation();
+	Animation(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat);
+	Animation(const Animation &other);
 	~Animation();
+	Animation& operator=(const Animation& other);
 
 	void init(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat);
 	void update(float deltaTime);

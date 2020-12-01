@@ -1,13 +1,39 @@
 #include "Animation.h"
 
+void Animation::cleanUpMemory()
+{
+	delete[] this->textureRects;
+}
+
 Animation::Animation()
 	: numTextureRects(0), textureRects(nullptr), frameTime(0), 
 	currentTextureRectIndex(0), timer(0), repeat(true)
 { }
 
+Animation::Animation(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat)
+	: numTextureRects(0), textureRects(nullptr), frameTime(0),
+	currentTextureRectIndex(0), timer(0), repeat(true)
+{
+	this->init(numTextureRects, textureRects, frameTime, repeat);
+}
+
+Animation::Animation(const Animation& other)
+{
+	this->init(other.numTextureRects, other.textureRects, other.frameTime, other.repeat);
+}
+
 Animation::~Animation()
 {
-	delete[] this->textureRects;
+	this->cleanUpMemory();
+}
+
+Animation& Animation::operator=(const Animation& other)
+{
+	this->cleanUpMemory();
+
+	this->init(other.numTextureRects, other.textureRects, other.frameTime, other.repeat);
+
+	return *this;
 }
 
 void Animation::init(int numTextureRects, sf::IntRect tr[], float frameTime, bool repeat)

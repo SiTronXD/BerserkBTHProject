@@ -19,10 +19,13 @@ uniform sampler2D u_floorTexture;
 uniform sampler2D u_goalTexture;
 uniform sampler2D u_entityTexture;
 
+uniform vec4 u_entityTexRects[MAX_RENDER_ENTITIES];
+
 uniform vec3 u_camera;	// vec3(x, y, direction)
 uniform vec3 u_entityPositions[MAX_RENDER_ENTITIES];
 
 uniform vec2 u_resolution;
+uniform vec2 u_entityWorldScales[MAX_RENDER_ENTITIES];
 
 uniform float u_timer;
 
@@ -30,6 +33,7 @@ uniform int u_numEntities;
 
 vec2 MAP_SIZE = textureSize(u_mapTexture, 0);
 vec2 ONE_OVER_MAP_SIZE = 1.0f / MAP_SIZE;
+vec2 ONE_OVER_ENTITY_TEXTURE_SIZE = 1.0f / textureSize(u_entityTexture, 0);
 
 mat2x2 rotate(float a)
 {
@@ -156,21 +160,26 @@ void main()
 		float negateAngle = cross(vec3(camToTargetDir, 0.0f), vec3(dir, 0.0f)).z > 0.0f ? -1.0f : 1.0f;
 		float deltaAngle = acos(dot(dir, camToTargetDir)) * negateAngle;
 
+		float oneOverSpriteDist = 1.0f / spriteDist;
+
 		float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
-		float screenPosY = u_entityPositions[i].z / spriteDist;
+		float screenPosY = u_entityPositions[i].z * oneOverSpriteDist;
 
 		// Sprite size
-		float spriteSize = 1.0f / spriteDist;
+		vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
 
 		// Is pixel close enough to the sprite?
-		if(abs(uv.x - screenPosX) <= spriteSize && 
-			abs(uv.y - screenPosY) <= spriteSize && spriteDist < currentPixelDepth)
+		if(abs(uv.x - screenPosX) <= spriteSize.x && 
+			abs(uv.y - screenPosY) <= spriteSize.y && spriteDist < currentPixelDepth)
 		{
 			// Sprite texture coordinates
 			vec2 spriteUV = vec2(
-				(uv.x - screenPosX) / spriteSize * 0.5f + 0.5f,
-				1.0f - ((uv.y - screenPosY) / spriteSize * 0.5f + 0.5f)
+				(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
+				1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
 			);
+
+			spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
+			spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
 
 			vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
 

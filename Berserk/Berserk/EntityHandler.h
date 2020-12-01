@@ -22,13 +22,12 @@ public:
 
 	void placeGoal(sf::Vector2f goalPos);
 	void addCollectible(sf::Vector2f newCollectiblePos);
-	void fillArrayWithEntityPositions(sf::Glsl::Vec3 positionArray[], int& arraySize);
+	void fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[], 
+		sf::Glsl::Vec4 textureRectsArray[], sf::Glsl::Vec2 worldScaleArray[], int& arraySize);
 
 	void update(float deltaTime);
 	void render(sf::RenderWindow& window);
 
 	Player& getPlayer();
 	CollisionHandler& getCollisionHandler();
-
-	const sf::Texture& getRenderEntityTexture() const;
 };
