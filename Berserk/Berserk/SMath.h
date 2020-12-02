@@ -18,6 +18,7 @@ public:
 		return val;
 	}
 
+	static float sign(const float& val);
 	static float dot(const sf::Vector2f& v1, const sf::Vector2f& v2);
 	static float dot(const sf::Vector3f& v1, const sf::Vector3f& v2);
 	static void vectorNormalize(sf::Vector2f& vector);

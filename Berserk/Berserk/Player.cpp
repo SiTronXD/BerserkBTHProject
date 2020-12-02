@@ -76,8 +76,8 @@ void Player::updateSwordPosition()
 }
 
 Player::Player(int x, int y)
-	: x(x), y(y), direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f),
-	tryToExit(false), hasStartedAttackAnimation(false),
+	: x(x), y(y), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
+	isAttackingTimer(0.0f), tryToExit(false), hasStartedAttackAnimation(false),
 	currentSwordAnimation(&swordIdleAnimation)
 {
 	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
@@ -121,7 +121,7 @@ void Player::handleInput(float deltaTime)
 
 	sf::Vector2f forwardDir(std::cos(-this->direction), std::sin(-this->direction));
 	sf::Vector2f rightDir(-forwardDir.y, forwardDir.x);
-	sf::Vector2f walkStep = forwardDir * forwardInput + rightDir * rightInput;
+	walkStep = forwardDir * forwardInput + rightDir * rightInput;
 	SMath::vectorNormalize(walkStep);
 
 	if (SMath::dot(walkStep, walkStep) > 0.0f)
@@ -129,9 +129,14 @@ void Player::handleInput(float deltaTime)
 	else
 		this->walkTimer = 0.0f;
 
+	walkStep.x *= MOVEMENT_SPEED * deltaTime;
+	walkStep.y *= MOVEMENT_SPEED * deltaTime;
+
 	// Move position
-	this->x += walkStep.x * MOVEMENT_SPEED * deltaTime;
-	this->y += walkStep.y * MOVEMENT_SPEED * deltaTime;
+	this->lastFrameX = this->x;
+	this->lastFrameY = this->y;
+	this->x += walkStep.x;
+	this->y += walkStep.y;
 
 
 	// Keyboard to turn the player
@@ -161,6 +166,12 @@ void Player::render(sf::RenderWindow& window)
 	window.draw(this->swordSprite);
 }
 
+void Player::setPlayerPosition(sf::Vector2f newPos)
+{
+	this->x = newPos.x;
+	this->y = newPos.y;
+}
+
 const bool Player::playerTriesToExit() const
 {
 	return this->tryToExit;
@@ -171,7 +182,17 @@ const sf::Vector2f Player::getPlayerPosition() const
 	return sf::Vector2f(x, y);
 }
 
-const sf::Glsl::Vec3 Player::getPlayerCamera() const
+const sf::Vector2f Player::getPlayerWalkStep() const
+{
+	return walkStep;
+}
+
+const sf::Vector2f Player::getPlayerLastFramePosition() const
+{
+	return sf::Vector2f(lastFrameX, lastFrameY);
+}
+
+const sf::Glsl::Vec3 Player::getOrientation() const
 {
 	return sf::Glsl::Vec3(x, y, direction);
 }
@@ -184,4 +205,9 @@ float Player::getGrenadeCooldownPercent() const
 float Player::getBerserkerCooldownPercent() const
 {
 	return this->berserkerCooldownTimer / ABILITY_BERSERKER_MAX_COOLDOWN_TIME;
+}
+
+float Player::getPlayerCollisionBoxSize() const
+{
+	return 0.15f;
 }

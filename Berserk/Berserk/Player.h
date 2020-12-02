@@ -26,6 +26,7 @@ private:
 
 	sf::Vector2i monitorMiddle;
 	sf::Vector2f swordPosition;
+	sf::Vector2f walkStep;
 
 	Animation* currentSwordAnimation;
 	Animation swordIdleAnimation;
@@ -33,6 +34,8 @@ private:
 
 	float x;
 	float y;
+	float lastFrameX;
+	float lastFrameY;
 	float direction; // Direction is in radians
 	float walkTimer;
 	float isAttackingTimer;
@@ -53,10 +56,15 @@ public:
 	void update(float deltaTime);
 	void render(sf::RenderWindow& window);
 
+	void setPlayerPosition(sf::Vector2f newPos);
+
 	const bool playerTriesToExit() const;
 	const sf::Vector2f getPlayerPosition() const;
-	const sf::Glsl::Vec3 getPlayerCamera() const;
+	const sf::Vector2f getPlayerWalkStep() const;
+	const sf::Vector2f getPlayerLastFramePosition() const;
+	const sf::Glsl::Vec3 getOrientation() const;
 
 	float getGrenadeCooldownPercent() const;
 	float getBerserkerCooldownPercent() const;
+	float getPlayerCollisionBoxSize() const;
 };

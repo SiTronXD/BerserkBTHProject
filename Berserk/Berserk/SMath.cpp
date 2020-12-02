@@ -1,5 +1,13 @@
 #include "SMath.h"
 
+float SMath::sign(const float& val)
+{
+	if (val > 0.0f)
+		return 1.0f;
+
+	return -1.0f;
+}
+
 // Dot product between v1 and v2
 float SMath::dot(const sf::Vector2f& v1, const sf::Vector2f& v2)
 {

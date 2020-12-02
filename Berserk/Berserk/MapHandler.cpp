@@ -2,8 +2,11 @@
 
 void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 {
+	const sf::Color WALL_COLOR = sf::Color(255, 255, 255, 255);
 	const sf::Color GOAL_COLOR = sf::Color(0, 255, 0, 255);
 	const sf::Color COLLECTIBLE_COLOR = sf::Color(255, 255, 0, 255);
+
+	CollisionHandler& collisionHandler = entityHandler.getCollisionHandler();
 
 	// Load image and size
 	sf::Image image(this->map.copyToImage());
@@ -17,9 +20,18 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 		{
 			sf::Color pixelColor = image.getPixel(x, y);
 			
+			// Wall
+			if(this->evaluatePixel(pixelColor, WALL_COLOR))
+				collisionHandler.setWallAt(sf::Vector2i(x, y));
+
 			// Goal
 			if (this->evaluatePixel(pixelColor, GOAL_COLOR))
+			{
 				entityHandler.placeGoal(sf::Vector2f(x + 0.5f, y + 0.5f));
+
+				// Set wall
+				collisionHandler.setWallAt(sf::Vector2i(x, y));
+			}
 
 			// Collectible
 			if (this->evaluatePixel(pixelColor, COLLECTIBLE_COLOR))

@@ -41,7 +41,7 @@ sf::RenderTexture& Renderer::render()
 
 	// Update shader uniforms
 	this->rayCastShader.setUniform("u_timer", this->timer);
-	this->rayCastShader.setUniform("u_camera", this->entityHandler.getPlayer().getPlayerCamera());
+	this->rayCastShader.setUniform("u_camera", this->entityHandler.getPlayer().getOrientation());
 	this->rayCastShader.setUniform("u_mapTexture", this->mapHandler.getMapTexture());
 	this->rayCastShader.setUniform("u_wallTexture", this->wallTexture);
 	this->rayCastShader.setUniform("u_floorTexture", this->floorTexture);
