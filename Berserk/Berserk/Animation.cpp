@@ -92,3 +92,8 @@ bool Animation::isDone() const
 {
 	return !repeat && this->currentTextureRectIndex >= this->numTextureRects;
 }
+
+int Animation::getCurrentRectIndex() const
+{
+	return this->currentTextureRectIndex;
+}

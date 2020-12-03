@@ -15,9 +15,12 @@ private:
 	const float BERSERKER_ICON_X = -880;
 	const float BERSERKER_ICON_Y = 470;
 
+	const float MAX_SHOW_MESSAGE_TIME = 2.0f;
+
 	sf::Font font;
 	sf::Text fpsText;
 	sf::Text enterGoalText;
+	sf::Text messageText;
 
 	sf::Texture grenadeIconTexture;
 	sf::Texture berserkerIconTexture;
@@ -34,6 +37,7 @@ private:
 	float updateDtTimer;
 	float grenadeActiveTimer;
 	float berserkerActiveTimer;
+	float showMessageTimer;
 
 public:
 	UI(CollisionHandler& collisionHandler, Player& player);

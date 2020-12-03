@@ -17,6 +17,11 @@ UI::UI(CollisionHandler& collisionHandler, Player& player)
 	this->enterGoalText.setString("PRESS [F] TO EXIT");
 	ResTranslator::transformText(this->enterGoalText, 0, -100, 40);
 
+	// Message text
+	this->messageText.setFont(this->font);
+	this->messageText.setFillColor(sf::Color::Green);
+	this->messageText.setString("<Message>");
+
 	// Grenade icon
 	this->grenadeIconTexture.loadFromFile("Resources/Textures/GrenadeIcon.png");
 	this->grenadeIconSprite.setTexture(this->grenadeIconTexture);
@@ -66,6 +71,19 @@ void UI::update(float deltaTime)
 	// Update berserker scale
 	float berserkerScaleFactor = (1.0f + 0.2f * abs(sin(this->berserkerActiveTimer * 4.0f)));
 	ResTranslator::transformSprite(this->berserkerIconSprite, BERSERKER_ICON_X, BERSERKER_ICON_Y, 100 * berserkerScaleFactor, 100 * berserkerScaleFactor);
+
+	// Message timer
+	this->showMessageTimer -= deltaTime;
+	this->showMessageTimer = std::max(this->showMessageTimer, 0.0f);
+
+	// Set message
+	std::string collisionMsgText = this->collisionHandler.getUIMessage();
+	if (collisionMsgText != "")
+	{
+		this->showMessageTimer = MAX_SHOW_MESSAGE_TIME;
+		this->messageText.setString(collisionMsgText);
+		ResTranslator::transformText(this->messageText, 0, -300, 60);
+	}
 }
 
 void UI::render(sf::RenderWindow& window)
@@ -80,6 +98,9 @@ void UI::render(sf::RenderWindow& window)
 	this->abilityIconShader.setUniform("u_percentage", this->player.getBerserkerCooldownPercent());
 	window.draw(this->berserkerIconSprite, &this->abilityIconShader);
 
+	// Message
+	if(this->showMessageTimer > 0.0f)
+		window.draw(this->messageText);
 
 	// Show exit text if necessary
 	if (collisionHandler.playerIsCloseToGoal())

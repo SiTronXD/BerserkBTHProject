@@ -1,9 +1,10 @@
 #include "Player.h"
+#include "EntityHandler.h"
 
 void Player::loadAnimations()
 {
 	// Load idle animation
-	sf::IntRect swordIdleTextureRects[1]{ sf::IntRect(0, 0, SWORD_SPRITE_WIDTH, SWORD_SPRITE_HEIGHT) };
+	sf::IntRect swordIdleTextureRects[1]{ sf::IntRect(0, 0, FIRST_PERSON_SPRITE_WIDTH, FIRST_PERSON_SPRITE_HEIGHT) };
 	this->swordIdleAnimation.init(
 		1,
 		swordIdleTextureRects,
@@ -16,10 +17,10 @@ void Player::loadAnimations()
 	sf::IntRect swordAttackTextureRects[NUM_SWORD_ATTACK_TEXTURE_RECTS]{ };
 	for (unsigned int i = 0; i < NUM_SWORD_ATTACK_TEXTURE_RECTS; ++i)
 	{
-		swordAttackTextureRects[i].left = (i % 2) * SWORD_SPRITE_WIDTH;
-		swordAttackTextureRects[i].top = (i / 2) * SWORD_SPRITE_HEIGHT;
-		swordAttackTextureRects[i].width = SWORD_SPRITE_WIDTH;
-		swordAttackTextureRects[i].height = SWORD_SPRITE_HEIGHT;
+		swordAttackTextureRects[i].left = (i % 2) * FIRST_PERSON_SPRITE_WIDTH;
+		swordAttackTextureRects[i].top = (i / 2) * FIRST_PERSON_SPRITE_HEIGHT;
+		swordAttackTextureRects[i].width = FIRST_PERSON_SPRITE_WIDTH;
+		swordAttackTextureRects[i].height = FIRST_PERSON_SPRITE_HEIGHT;
 	}
 	this->swordAttackAnimation.init(
 		NUM_SWORD_ATTACK_TEXTURE_RECTS,
@@ -27,72 +28,199 @@ void Player::loadAnimations()
 		0.1f,
 		false
 	);
+
+	// Load grenade throw animation
+	const unsigned int NUM_GRENADE_THROW_TEXTURE_RECTS = 5;
+	sf::IntRect grenadeThrowTextureRects[NUM_GRENADE_THROW_TEXTURE_RECTS]{ };
+	for (unsigned int i = 0; i < NUM_GRENADE_THROW_TEXTURE_RECTS; ++i)
+	{
+		grenadeThrowTextureRects[i].left = 0;
+		grenadeThrowTextureRects[i].top = i * FIRST_PERSON_SPRITE_HEIGHT;
+		grenadeThrowTextureRects[i].width = FIRST_PERSON_SPRITE_WIDTH;
+		grenadeThrowTextureRects[i].height = FIRST_PERSON_SPRITE_HEIGHT;
+	}
+	this->grenadeThrowAnimation.init(
+		NUM_GRENADE_THROW_TEXTURE_RECTS,
+		grenadeThrowTextureRects,
+		0.11f,
+		false
+	);
+
+	// Load start berserk animation
+	const unsigned int NUM_START_BERSERK_TEXTURE_RECTS = 5;
+	sf::IntRect startBerserkTextureRects[NUM_START_BERSERK_TEXTURE_RECTS];
+	for (unsigned int i = 0; i < NUM_START_BERSERK_TEXTURE_RECTS; ++i)
+	{
+		startBerserkTextureRects[i].left = 0;
+		startBerserkTextureRects[i].top = i * BERSERK_SPRITE_HEIGHT;
+		startBerserkTextureRects[i].width = BERSERK_SPRITE_WIDTH;
+		startBerserkTextureRects[i].height = BERSERK_SPRITE_HEIGHT;
+	}
+	this->startBerserkAnimation.init(
+		NUM_START_BERSERK_TEXTURE_RECTS,
+		startBerserkTextureRects,
+		0.12f,
+		false
+	);
+
+	// Load end berserk animation
+	const unsigned int NUM_END_BERSERK_TEXTURE_RECTS = NUM_START_BERSERK_TEXTURE_RECTS;
+	sf::IntRect endBerserkTextureRects[NUM_END_BERSERK_TEXTURE_RECTS];
+	for (unsigned int i = 0; i < NUM_END_BERSERK_TEXTURE_RECTS; ++i)
+	{
+		endBerserkTextureRects[i].left = 0;
+		endBerserkTextureRects[i].top = (NUM_END_BERSERK_TEXTURE_RECTS - 1 - i) * BERSERK_SPRITE_HEIGHT;
+		endBerserkTextureRects[i].width = BERSERK_SPRITE_WIDTH;
+		endBerserkTextureRects[i].height = BERSERK_SPRITE_HEIGHT;
+	}
+	this->endBerserkAnimation.init(
+		NUM_END_BERSERK_TEXTURE_RECTS,
+		endBerserkTextureRects,
+		0.12f,
+		false
+	);
+
+	this->berserkSprite.setTexture(startBerserkTextureSheet);
 }
 
-void Player::updateSwordAnimationLogic(float deltaTime)
+void Player::spawnGrenade()
+{
+	// Remove these, just to be sure
+	delete this->grenade;
+	delete this->grenadeExplosion;
+	this->grenade = nullptr;
+	this->grenadeExplosion = nullptr;
+
+	float playerAngle = this->getOrientation().z;
+	sf::Vector2f direction = sf::Vector2f(cos(playerAngle), -sin(playerAngle));
+	sf::Vector2f spawnPos = this->getPlayerPosition() + direction;
+	this->grenade = new Grenade(spawnPos, direction);
+}
+
+void Player::updateAnimationLogic(float deltaTime)
 {
 	this->isAttackingTimer -= deltaTime;
 	this->isAttackingTimer = std::max(this->isAttackingTimer, 0.0f);
 
-	// Update animation
-	this->currentSwordAnimation->update(deltaTime);
+	// Update animations
+	this->currentFpsAnimation->update(deltaTime);
+
+	if(this->currentBerserkAnimation)
+		this->currentBerserkAnimation->update(deltaTime);
 
 	// Switch from attack animation to idle animation
-	if (this->currentSwordAnimation == &this->swordAttackAnimation &&
-		this->currentSwordAnimation->isDone())
+	if (this->currentFpsAnimation == &this->swordAttackAnimation &&
+		this->currentFpsAnimation->isDone())
 	{
-		this->currentSwordAnimation = &this->swordIdleAnimation;
+		this->currentFpsAnimation = &this->swordIdleAnimation;
 	}
 
 	// Switch to attack animation
 	if (this->isAttackingTimer > 0.0f && !hasStartedAttackAnimation && 
-		this->currentSwordAnimation != &this->swordAttackAnimation)
+		this->currentFpsAnimation != &this->swordAttackAnimation)
 	{
 		this->hasStartedAttackAnimation = true;
 
-		this->currentSwordAnimation = &this->swordAttackAnimation;
-		this->currentSwordAnimation->reset();
+		this->currentFpsAnimation = &this->swordAttackAnimation;
+		this->currentFpsAnimation->reset();
 
+		// Set texture
+		this->handsSprite.setTexture(this->swordTextureSheet);
+	}
+
+	// Switch to grenade throw animation
+	if (this->startThrowAnimation && this->currentFpsAnimation != &this->grenadeThrowAnimation)
+	{
+		this->startThrowAnimation = false;
+		this->hasSpawnedGrenade = false;
+
+		// Set and reset animation
+		this->currentFpsAnimation = &this->grenadeThrowAnimation;
+		this->currentFpsAnimation->reset();
+
+		// Set texture
+		this->handsSprite.setTexture(this->grenadeThrowTextureSheet);
+	}
+
+	// Spawn grenade if the animation has passed the correct index
+	if (this->currentFpsAnimation == &this->grenadeThrowAnimation && 
+		this->currentFpsAnimation->getCurrentRectIndex() >= 2 && !hasSpawnedGrenade)
+	{
+		hasSpawnedGrenade = true;
+
+		// Spawn grenade
+		this->spawnGrenade();
+	}
+
+	// Switch away from grenade throw animation
+	if (this->currentFpsAnimation == &this->grenadeThrowAnimation && this->currentFpsAnimation->isDone())
+	{
+		this->currentFpsAnimation = &this->swordIdleAnimation;
+
+		// Set texture
+		this->handsSprite.setTexture(this->swordTextureSheet);
 	}
 }
 
-void Player::updateSwordPosition()
+void Player::updateFpsSpritePosition()
 {
 	this->swordPosition = sf::Vector2f(0, 540 - 64 * SWORD_SPRITE_SCALE / 2 + 30);
 	this->swordPosition.x += sin(walkTimer * 7.0f) * 50;
 	this->swordPosition.y += sin(walkTimer * 7.0f * 2.0f) * 30;
 
+	// Regular position if the grenade animation is playing
+	if (this->currentFpsAnimation == &this->grenadeThrowAnimation)
+		this->swordPosition = sf::Vector2f(0, 540 - 64 * SWORD_SPRITE_SCALE / 2);
+
 	// Move to fit screen
 	ResTranslator::transformSprite(
-		this->swordSprite,
+		this->handsSprite,
 		this->swordPosition.x,
 		this->swordPosition.y,
 		192 * SWORD_SPRITE_SCALE,
 		64 * SWORD_SPRITE_SCALE
 	);
+	ResTranslator::transformSprite(
+		this->berserkSprite,
+		0,
+		0,
+		(float) BERSERK_SPRITE_WIDTH / BERSERK_SPRITE_HEIGHT * 1080,
+		1080
+	);
 
-	// Set texture rect to current animation rect
-	this->swordSprite.setTextureRect(this->currentSwordAnimation->getCurrentRect());
+	// Set texture rects to current animation rects
+	this->handsSprite.setTextureRect(this->currentFpsAnimation->getCurrentRect());
+	this->berserkSprite.setTextureRect(this->currentBerserkAnimation->getCurrentRect());
 }
 
-Player::Player(int x, int y)
-	: x(x), y(y), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
-	isAttackingTimer(0.0f), tryToExit(false), hasStartedAttackAnimation(false),
-	currentSwordAnimation(&swordIdleAnimation)
+Player::Player(int x, int y, EntityHandler& entityHandler)
+	: x(x), y(y), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
+	isAttackingTimer(0.0f), tryToExit(false), hasStartedAttackAnimation(false), startThrowAnimation(false),
+	hasSpawnedGrenade(false), currentFpsAnimation(&swordIdleAnimation), 
+	currentBerserkAnimation(&startBerserkAnimation), grenade(nullptr)
 {
 	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
 
 	sf::Mouse::setPosition(this->monitorMiddle);
 
 	// Load texture
+	this->startBerserkTextureSheet.loadFromFile("Resources/Textures/armorCloseAnimation2.png");
+	this->endBerserkTextureSheet.loadFromFile("Resources/Textures/armorOpenAnimation.png");
+	this->grenadeThrowTextureSheet.loadFromFile("Resources/Textures/firstPersonThrowTextures.png");
 	this->swordTextureSheet.loadFromFile("Resources/Textures/firstPersonSwordTexture.png");
-	this->swordSprite.setTexture(this->swordTextureSheet);
+	this->handsSprite.setTexture(this->swordTextureSheet);
 
 	// Load animations
 	this->loadAnimations();
 
 	// Transform sprite
-	this->updateSwordPosition();
+	this->updateFpsSpritePosition();
+}
+
+Player::~Player()
+{
+	delete this->grenade;
+	delete this->grenadeExplosion;
 }
 
 void Player::handleInput(float deltaTime)
@@ -109,7 +237,13 @@ void Player::handleInput(float deltaTime)
 
 	// Grenade
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
+	{
+		// Reset cool down
 		this->grenadeCooldownTimer = 0.0f;
+		
+		// Start animation
+		this->startThrowAnimation = true;
+	}
 
 	// Berserker
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
@@ -157,13 +291,45 @@ void Player::update(float deltaTime)
 	this->grenadeCooldownTimer = SMath::clamp(this->grenadeCooldownTimer, 0.0f, ABILITY_GRENADE_MAX_COOLDOWN_TIME);
 	this->berserkerCooldownTimer = SMath::clamp(this->berserkerCooldownTimer, 0.0f, ABILITY_BERSERKER_MAX_COOLDOWN_TIME);
 
-	this->updateSwordAnimationLogic(deltaTime);
-	this->updateSwordPosition();
+	// Update grenade
+	if (this->grenade)
+	{
+		this->grenade->update(deltaTime);
+
+		// Get grenade explosion
+		if (this->grenade->getGrenadeExplosion())
+			this->grenadeExplosion = this->grenade->getGrenadeExplosion();
+
+		// Grenade should be removed
+		if (this->grenade->getShouldRemove())
+		{
+			delete this->grenade;
+			this->grenade = nullptr;
+		}
+	}
+
+	// Update grenadeExplosion
+	if (this->grenadeExplosion)
+	{
+		this->grenadeExplosion->update(deltaTime);
+
+		// Grenade explosion should be removed
+		if (this->grenadeExplosion->getShouldRemove())
+		{
+			delete this->grenadeExplosion;
+			this->grenadeExplosion = nullptr;
+		}
+	}
+
+	// First person animations
+	this->updateAnimationLogic(deltaTime);
+	this->updateFpsSpritePosition();
 }
 
 void Player::render(sf::RenderWindow& window)
 {
-	window.draw(this->swordSprite);
+	window.draw(this->handsSprite);
+	window.draw(this->berserkSprite);
 }
 
 void Player::setPlayerPosition(sf::Vector2f newPos)
@@ -210,4 +376,14 @@ float Player::getBerserkerCooldownPercent() const
 float Player::getPlayerCollisionBoxSize() const
 {
 	return 0.15f;
+}
+
+Grenade* Player::getGrenade() const
+{
+	return this->grenade;
+}
+
+GrenadeExplosion* Player::getGrenadeExplosion() const
+{
+	return this->grenadeExplosion;
 }

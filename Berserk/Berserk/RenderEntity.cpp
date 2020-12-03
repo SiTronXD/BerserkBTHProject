@@ -12,7 +12,8 @@ void RenderEntity::setWorldScale(sf::Vector2f worldScale)
 }
 
 RenderEntity::RenderEntity()
-	: animations(nullptr), nrOfAnimations(0), currentAnimationIndex(0), worldScale(1, 1)
+	: animations(nullptr), nrOfAnimations(0), currentAnimationIndex(0), worldScale(1, 1),
+	shouldRemove(false)
 {
 	this->animations = new Animation[NUM_ANIMATIONS_CAP] { };
 }
@@ -25,12 +26,6 @@ RenderEntity::~RenderEntity()
 void RenderEntity::update(float dt)
 {
 	this->animations[this->currentAnimationIndex].update(dt);
-
-	// Demonstrate scale and position
-	this->tempTimer += dt;
-	float s = std::sin(tempTimer) * 0.5f + 0.5f;
-	this->worldScale = sf::Vector2f(s, s);
-	this->position.z = std::sin(tempTimer * 2.0f);
 }
 
 void RenderEntity::setPosition(sf::Vector2f position)
@@ -43,24 +38,44 @@ void RenderEntity::setPosition(sf::Vector3f position)
 	this->position = position;
 }
 
+void RenderEntity::flagShouldRemove()
+{
+	this->shouldRemove = true;
+}
+
 sf::IntRect RenderEntity::getTextureIntRect() const
 {
 	return this->animations[this->currentAnimationIndex].getCurrentRect();
 }
 
-sf::Glsl::Vec4 RenderEntity::getTextureRect() const
+sf::Glsl::Vec4 RenderEntity::getTextureRectGlsl() const
 {
 	sf::IntRect intRect = this->animations[this->currentAnimationIndex].getCurrentRect();
 
 	return sf::Glsl::Vec4(intRect.left, intRect.top, intRect.width, intRect.height);
 }
 
-sf::Glsl::Vec3 RenderEntity::getPosition() const
+sf::Glsl::Vec3 RenderEntity::getPositionGlsl() const
 {
 	return sf::Glsl::Vec3(this->position.x, this->position.y, this->position.z);
 }
 
-sf::Glsl::Vec2 RenderEntity::getWorldScale() const
+sf::Glsl::Vec2 RenderEntity::getWorldScaleGlsl() const
 {
 	return sf::Glsl::Vec2(this->worldScale.x, this->worldScale.y);
+}
+
+sf::Vector2f RenderEntity::getPosition2D() const
+{
+	return sf::Vector2f(this->position.x, this->position.y);
+}
+
+sf::Vector3f RenderEntity::getPosition3D() const
+{
+	return this->position;
+}
+
+const bool RenderEntity::getShouldRemove() const
+{
+	return this->shouldRemove;
 }

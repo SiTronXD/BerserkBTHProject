@@ -2,9 +2,13 @@
 #include <iostream>
 
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
-	: GameState(window), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
+	: GameState(window), entityHandler(gameStats), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
 	ui(entityHandler.getCollisionHandler(), entityHandler.getPlayer()), gameStats(gameStats)
-{ 
+{
+	// Reset and set stats
+	this->gameStats.reset();
+	this->gameStats.setMaxCollectibles(this->entityHandler.getNumCollectibles());
+
 	// Set screen rectangle shape
 	screenRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
 	screenRenderRect.setFillColor(sf::Color::Green);
@@ -26,6 +30,7 @@ void PlayState::update(float deltaTime)
 	this->entityHandler.update(deltaTime);
 	this->renderer.update(deltaTime);
 	this->ui.update(deltaTime);
+	this->gameStats.updateTimer(deltaTime);
 
 	// Player can and wants to exit
 	if (this->entityHandler.getCollisionHandler().playerIsCloseToGoal() && 

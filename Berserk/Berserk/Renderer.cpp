@@ -58,9 +58,9 @@ sf::RenderTexture& Renderer::render()
 
 	// Update entity uniforms
 	this->rayCastShader.setUniform("u_entityTexture", this->entitiesTexture);
-	this->rayCastShader.setUniformArray("u_entityPositions", entityPositionsArray, arraySize);
-	this->rayCastShader.setUniformArray("u_entityTexRects", entityTexRectArray, arraySize);
-	this->rayCastShader.setUniformArray("u_entityWorldScales", entityWorldScale, arraySize);
+	this->rayCastShader.setUniformArray("u_entityPositions", entityPositionsArray, MAX_ENTITIES);
+	this->rayCastShader.setUniformArray("u_entityTexRects", entityTexRectArray, MAX_ENTITIES);
+	this->rayCastShader.setUniformArray("u_entityWorldScales", entityWorldScale, MAX_ENTITIES);
 	this->rayCastShader.setUniform("u_numEntities", arraySize);
 
 	// Render

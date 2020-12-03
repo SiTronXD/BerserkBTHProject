@@ -95,6 +95,12 @@
     <ClCompile Include="RenderEntity.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Grenade.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="GrenadeExplosion.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -156,6 +162,12 @@
     </ClInclude>
     <ClInclude Include="RenderEntity.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Grenade.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GrenadeExplosion.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,13 +13,40 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 	{
 		backgroundTexture.loadFromFile("Resources/Textures/YouWonBackgroundTexture.png");
 
+		const sf::Color BUTTON_TEXT_COLOR = sf::Color(61, 170, 36);
+
 		// Set text color for buttons
-		this->restartButton.setTextColor(sf::Color(61, 170, 36));
-		this->mainMenuButton.setTextColor(sf::Color(61, 170, 36));
+		this->restartButton.setTextColor(BUTTON_TEXT_COLOR);
+		this->mainMenuButton.setTextColor(BUTTON_TEXT_COLOR);
 
 		// Move buttons
-		this->restartButton.set(-690, 0);
-		this->mainMenuButton.set(650, 0);
+		this->restartButton.set(-690, 100);
+		this->mainMenuButton.set(650, 100);
+
+		// Text
+		const sf::Color TEXT_COLOR = sf::Color(80, 190, 50);
+		const sf::Color OUTLINE_COLOR = sf::Color(200, 255, 200);
+
+		this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
+		this->foundCollectiblesText.setFont(this->font);
+		this->foundCollectiblesText.setFillColor(TEXT_COLOR);
+		this->foundCollectiblesText.setString("Found collectibles: \n          (" + 
+			std::to_string(this->gameStats.getNumCollected()) + "/" + std::to_string(this->gameStats.getMaxNumCollectibles()) + ")");
+		ResTranslator::transformText(this->foundCollectiblesText, -670, -150, 60);
+
+		this->foundCollectiblesOutlineText = foundCollectiblesText;
+		this->foundCollectiblesOutlineText.setFillColor(OUTLINE_COLOR);
+		ResTranslator::transformText(this->foundCollectiblesOutlineText, -672, -148, 60);
+
+		
+		this->playTimeText.setFont(this->font);
+		this->playTimeText.setFillColor(TEXT_COLOR);
+		this->playTimeText.setString("   Time: \n" + std::to_string(this->gameStats.getPlayTimeInSeconds()) + " seconds");
+		ResTranslator::transformText(this->playTimeText, 650, -150, 60);
+
+		this->playTimeOutlineText = playTimeText;
+		this->playTimeOutlineText.setFillColor(OUTLINE_COLOR);
+		ResTranslator::transformText(this->playTimeOutlineText, 648, -148, 60);
 	}
 	else
 	{
@@ -63,4 +90,13 @@ void GameOverState::render()
 	// Buttons
 	this->restartButton.render(this->window);
 	this->mainMenuButton.render(this->window);
+
+	// Collectibles and play time texts
+	if (gameStats.getPlayerHasWon())
+	{
+		window.draw(this->foundCollectiblesOutlineText);
+		window.draw(this->foundCollectiblesText);
+		window.draw(this->playTimeOutlineText);
+		window.draw(this->playTimeText);
+	}
 }

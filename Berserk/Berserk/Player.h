@@ -8,29 +8,48 @@
 #include "SettingsHandler.h"
 #include "SMath.h"
 #include "Animation.h"
+#include "Grenade.h"
+#include "GrenadeExplosion.h"
+
+class EntityHandler;
 
 class Player
 {
 private:
-	const int SWORD_SPRITE_WIDTH = 192;
-	const int SWORD_SPRITE_HEIGHT = 64;
+	const int BERSERK_SPRITE_WIDTH = 114;
+	const int BERSERK_SPRITE_HEIGHT = 64;
+	const int FIRST_PERSON_SPRITE_WIDTH = 192;
+	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
 	const float MOVEMENT_SPEED = 6.0f;
 	const float SWORD_SPRITE_SCALE = 10.0f;
 	const float MAX_ATTACKING_TIME = 1.0f;
-	const float ABILITY_GRENADE_MAX_COOLDOWN_TIME = 4.0f;
-	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 8.0f;
+	const float ABILITY_GRENADE_MAX_COOLDOWN_TIME = 1.0f;
+	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 1.0f;
 
 	sf::Texture swordTextureSheet;
-	sf::Sprite swordSprite;
+	sf::Texture grenadeThrowTextureSheet;
+	sf::Texture startBerserkTextureSheet;
+	sf::Texture endBerserkTextureSheet;
+	sf::Sprite berserkSprite;
+	sf::Sprite handsSprite;
 
 	sf::Vector2i monitorMiddle;
 	sf::Vector2f swordPosition;
 	sf::Vector2f walkStep;
 
-	Animation* currentSwordAnimation;
+	Animation* currentFpsAnimation;
+	Animation* currentBerserkAnimation;
 	Animation swordIdleAnimation;
 	Animation swordAttackAnimation;
+	Animation grenadeThrowAnimation;
+	Animation startBerserkAnimation;
+	Animation endBerserkAnimation;
+
+	EntityHandler& entityHandler;
+
+	Grenade* grenade;
+	GrenadeExplosion* grenadeExplosion;
 
 	float x;
 	float y;
@@ -44,13 +63,17 @@ private:
 
 	bool tryToExit;
 	bool hasStartedAttackAnimation;
+	bool startThrowAnimation;
+	bool hasSpawnedGrenade;
 
 	void loadAnimations();
-	void updateSwordAnimationLogic(float deltaTime);
-	void updateSwordPosition();
+	void spawnGrenade();
+	void updateAnimationLogic(float deltaTime);
+	void updateFpsSpritePosition();
 
 public:
-	Player(int x, int y);
+	Player(int x, int y, EntityHandler& entityHandler);
+	~Player();
 
 	void handleInput(float deltaTime);
 	void update(float deltaTime);
@@ -67,4 +90,7 @@ public:
 	float getGrenadeCooldownPercent() const;
 	float getBerserkerCooldownPercent() const;
 	float getPlayerCollisionBoxSize() const;
+
+	Grenade* getGrenade() const;
+	GrenadeExplosion* getGrenadeExplosion() const;
 };

@@ -11,6 +11,12 @@ private:
 	Button restartButton;
 	Button mainMenuButton;
 
+	sf::Font font;
+	sf::Text foundCollectiblesOutlineText;
+	sf::Text playTimeOutlineText;
+	sf::Text foundCollectiblesText;
+	sf::Text playTimeText;
+
 	GameStatsHandler& gameStats;
 
 	sf::Texture backgroundTexture;

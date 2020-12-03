@@ -30,4 +30,5 @@ public:
 
 	const sf::IntRect& getCurrentRect() const;
 	bool isDone() const;
+	int getCurrentRectIndex() const;
 };

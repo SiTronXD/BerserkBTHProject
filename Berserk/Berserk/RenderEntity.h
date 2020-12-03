@@ -16,7 +16,7 @@ private:
 	int nrOfAnimations;
 	int currentAnimationIndex;
 
-	float tempTimer = 0.0f;
+	bool shouldRemove;
 
 protected:
 	void addAnimation(Animation animationToAdd);
@@ -26,13 +26,19 @@ public:
 	RenderEntity();
 	virtual ~RenderEntity();
 
-	void update(float dt);
+	virtual void update(float dt);
 
 	void setPosition(sf::Vector2f position);
 	void setPosition(sf::Vector3f position);
+	void flagShouldRemove();
 
 	sf::IntRect getTextureIntRect() const;
-	sf::Glsl::Vec4 getTextureRect() const;
-	sf::Glsl::Vec3 getPosition() const;
-	sf::Glsl::Vec2 getWorldScale() const;
+	sf::Glsl::Vec4 getTextureRectGlsl() const;
+	sf::Glsl::Vec3 getPositionGlsl() const;
+	sf::Glsl::Vec2 getWorldScaleGlsl() const;
+
+	sf::Vector2f getPosition2D() const;
+	sf::Vector3f getPosition3D() const;
+
+	const bool getShouldRemove() const;
 };

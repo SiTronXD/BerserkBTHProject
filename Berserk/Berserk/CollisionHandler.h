@@ -2,8 +2,12 @@
 
 #include <iostream>
 #include "Player.h"
+#include "Collectible.h"
 #include "Goal.h"
+#include "GameStatsHandler.h"
 #include "SMath.h"
+
+class EntityHandler;
 
 class CollisionHandler
 {
@@ -12,6 +16,10 @@ private:
 
 	Player& player;
 	Goal& goal;
+	GameStatsHandler& gameStats;
+	EntityHandler& entityHandler;
+
+	std::string currentUIMessage;
 
 	bool playerIsAtGoal;
 	bool mapWalls[MAX_MAP_SIZE][MAX_MAP_SIZE] {};
@@ -19,10 +27,12 @@ private:
 	bool isPlayerCollidingWall(float playerX, float playerY, int wallX, int wallY);
 
 public:
-	CollisionHandler(Player& player, Goal& goal);
+	CollisionHandler(Player& player, Goal& goal, GameStatsHandler& gameStats, 
+		EntityHandler& entityHandler);
 
 	void update();
 	void setWallAt(sf::Vector2i pos);
 
+	const std::string getUIMessage();
 	const bool playerIsCloseToGoal() const;
 };
