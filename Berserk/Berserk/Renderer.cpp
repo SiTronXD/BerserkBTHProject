@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler) 
-	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f)
+	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f), fogColor(0.0f, 0.0f, 0.0f)
 {
 	// Set screen rectangle shape
 	shaderRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
@@ -35,6 +35,13 @@ void Renderer::update(float deltaTime)
 	this->timer += deltaTime;
 }
 
+void Renderer::setFogColor(sf::Color color)
+{
+	this->fogColor.x = color.r / 255.0f;
+	this->fogColor.y = color.g / 255.0f;
+	this->fogColor.z = color.b / 255.0f;
+}
+
 sf::RenderTexture& Renderer::render()
 {
 	sf::Glsl::Vec2 resolution(SettingsHandler::getWidth(), SettingsHandler::getHeight());
@@ -47,6 +54,7 @@ sf::RenderTexture& Renderer::render()
 	this->rayCastShader.setUniform("u_floorTexture", this->floorTexture);
 	this->rayCastShader.setUniform("u_goalTexture", this->goalTexture);
 	this->rayCastShader.setUniform("u_resolution", resolution);
+	this->rayCastShader.setUniform("u_fogColor", this->fogColor);
 
 	// Fill array with entity positions and texture rects
 	sf::Glsl::Vec3 entityPositionsArray[MAX_ENTITIES] { };

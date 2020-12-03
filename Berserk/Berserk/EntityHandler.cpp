@@ -1,16 +1,27 @@
 #include "EntityHandler.h"
+#include "Renderer.h"
 
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
-	: player(2, 2, *this), collisionHandler(player, goal, gameStats, *this), nrOfCollectibles(0)
+	: player(2, 2, *this), collisionHandler(player, goal, gameStats, *this),
+	renderer(nullptr), nrOfCollectibles(0), nrOfEnemies(0)
 {
-
+	this->addEnemy(sf::Vector2f(7.5f, 2.5f));
 }
 
 EntityHandler::~EntityHandler()
 {
 	// Collectibles
-	for (int i = 0; i < nrOfCollectibles; ++i)
+	for (int i = 0; i < this->nrOfCollectibles; ++i)
 		delete this->collectibles[i];
+
+	// Enemies
+	for (int i = 0; i < this->nrOfEnemies; ++i)
+		delete this->enemies[i];
+}
+
+void EntityHandler::setRenderer(Renderer* renderer)
+{
+	this->renderer = renderer;
 }
 
 void EntityHandler::update(float deltaTime)
@@ -20,15 +31,34 @@ void EntityHandler::update(float deltaTime)
 
 	this->collisionHandler.update();
 
+	// Set renderer fog color
+	if (this->player.isBerserkerActive())
+		this->renderer->setFogColor(sf::Color(255, 0, 0, 255));
+	else
+		this->renderer->setFogColor(sf::Color(0, 0, 0, 255));
+
 	// Update collectibles
-	for (unsigned int i = 0; i < nrOfCollectibles; ++i)
+	for (int i = 0; i < this->nrOfCollectibles; ++i)
 	{
-		if (this->collectibles[i] != nullptr)
+		if (this->collectibles[i])
 		{
 			this->collectibles[i]->update(deltaTime);
 
 			// Should remove?
 			if (this->collectibles[i]->getShouldRemove())
+				collectibleHasBeenFound(i);
+		}
+	}
+
+	// Update enemies
+	for (int i = 0; i < this->nrOfEnemies; ++i)
+	{
+		if (this->enemies[i])
+		{
+			this->enemies[i]->update(deltaTime, this->player.getPosition());
+
+			// Should remove?
+			if (this->enemies[i]->getShouldRemove())
 				collectibleHasBeenFound(i);
 		}
 	}
@@ -41,8 +71,14 @@ void EntityHandler::placeGoal(sf::Vector2f goalPos)
 
 void EntityHandler::addCollectible(sf::Vector2f newCollectiblePos)
 {
-	if(nrOfCollectibles < MAX_NUM_COLLECTIBLES)
-		this->collectibles[nrOfCollectibles++] = new Collectible(newCollectiblePos);
+	if(this->nrOfCollectibles < this->MAX_NUM_COLLECTIBLES)
+		this->collectibles[this->nrOfCollectibles++] = new Collectible(newCollectiblePos);
+}
+
+void EntityHandler::addEnemy(sf::Vector2f newEnemyPos)
+{
+	if (this->nrOfEnemies < this->MAX_NUM_ENEMIES)
+		this->enemies[this->nrOfEnemies++] = new Enemy(newEnemyPos);
 }
 
 void EntityHandler::render(sf::RenderWindow& window)
@@ -53,6 +89,11 @@ void EntityHandler::render(sf::RenderWindow& window)
 int EntityHandler::getNumCollectibles() const
 {
 	return this->nrOfCollectibles;
+}
+
+int EntityHandler::getNumEnemies() const
+{
+	return this->nrOfEnemies;
 }
 
 Player& EntityHandler::getPlayer()
@@ -70,30 +111,54 @@ Collectible* EntityHandler::getCollectible(int index)
 	return this->collectibles[index];
 }
 
+Enemy* EntityHandler::getEnemy(int index)
+{
+	return this->enemies[index];
+}
+
 void EntityHandler::fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[], 
 	sf::Glsl::Vec4 textureRectsArray[], sf::Glsl::Vec2 worldScaleArray[], int& arraySize)
 {
 	int currentArraySize = 0;
 
 	// Collectibles
-	for (unsigned int i = 0; i < nrOfCollectibles; ++i)
+	for (int i = 0; i < this->nrOfCollectibles; ++i)
 	{
-		if (this->collectibles[i] != nullptr)
+		if (this->collectibles[i])
 		{
 			// Position
-			positionArray[i] = this->collectibles[i]->getPositionGlsl();
+			positionArray[currentArraySize] = this->collectibles[i]->getPositionGlsl();
 
 			// Texture rect
-			textureRectsArray[i] = this->collectibles[i]->getTextureRectGlsl();
+			textureRectsArray[currentArraySize] = this->collectibles[i]->getTextureRectGlsl();
 
 			// Scale
-			worldScaleArray[i] = this->collectibles[i]->getWorldScaleGlsl();
+			worldScaleArray[currentArraySize] = this->collectibles[i]->getWorldScaleGlsl();
 
 			// Increment size
 			currentArraySize++;
 		}
 	}
 	
+	// Enemies
+	for (int i = 0; i < this->nrOfEnemies; ++i)
+	{
+		if (this->enemies[i])
+		{
+			// Position
+			positionArray[currentArraySize] = this->enemies[i]->getPositionGlsl();
+
+			// Texture rect
+			textureRectsArray[currentArraySize] = this->enemies[i]->getTextureRectGlsl();
+
+			// Scale
+			worldScaleArray[currentArraySize] = this->enemies[i]->getWorldScaleGlsl();
+
+			// Increment size
+			currentArraySize++;
+		}
+	}
+
 	// Grenade
 	Grenade* grenade = this->player.getGrenade();
 	if (grenade)

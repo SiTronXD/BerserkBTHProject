@@ -15,7 +15,7 @@ UI::UI(CollisionHandler& collisionHandler, Player& player)
 	this->enterGoalText.setFont(this->font);
 	this->enterGoalText.setFillColor(sf::Color::Red);
 	this->enterGoalText.setString("PRESS [F] TO EXIT");
-	ResTranslator::transformText(this->enterGoalText, 0, -100, 40);
+	ResTranslator::transformText(this->enterGoalText, 0, 100, 40);
 
 	// Message text
 	this->messageText.setFont(this->font);

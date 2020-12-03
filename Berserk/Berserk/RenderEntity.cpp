@@ -43,6 +43,11 @@ void RenderEntity::flagShouldRemove()
 	this->shouldRemove = true;
 }
 
+void RenderEntity::setAnimationIndex(int newIndex)
+{
+	this->currentAnimationIndex = newIndex;
+}
+
 sf::IntRect RenderEntity::getTextureIntRect() const
 {
 	return this->animations[this->currentAnimationIndex].getCurrentRect();

@@ -71,6 +71,8 @@ Game::Game()
         ),
         currentState(nullptr)
 {
+    srand((unsigned int) time(0));
+
     this->setWindowIcon();
 
     this->setState(State::PLAY);

@@ -21,6 +21,7 @@ private:
 protected:
 	void addAnimation(Animation animationToAdd);
 	void setWorldScale(sf::Vector2f worldScale);
+	void setAnimationIndex(int newIndex);
 
 public:
 	RenderEntity();

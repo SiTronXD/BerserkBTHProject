@@ -9,6 +9,8 @@ PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	this->gameStats.reset();
 	this->gameStats.setMaxCollectibles(this->entityHandler.getNumCollectibles());
 
+	this->entityHandler.setRenderer(&this->renderer);
+
 	// Set screen rectangle shape
 	screenRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
 	screenRenderRect.setFillColor(sf::Color::Green);

@@ -22,6 +22,8 @@ private:
 
 	sf::Shader rayCastShader;
 
+	sf::Glsl::Vec3 fogColor;
+
 	MapHandler& mapHandler;
 	EntityHandler& entityHandler;
 
@@ -31,6 +33,8 @@ public:
 	Renderer(MapHandler& mapHandler, EntityHandler& entityHandler);
 
 	void update(float deltaTime);
+
+	void setFogColor(sf::Color color);
 
 	sf::RenderTexture& render();
 };

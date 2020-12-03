@@ -22,10 +22,16 @@ private:
 	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
 	const float MOVEMENT_SPEED = 6.0f;
+	const float BERSERKER_MOVEMENT_SPEED = 10.0f;
+	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
+	const float MAX_ATTACK_DIST = 2.0f;
+
 	const float SWORD_SPRITE_SCALE = 10.0f;
 	const float MAX_ATTACKING_TIME = 1.0f;
 	const float ABILITY_GRENADE_MAX_COOLDOWN_TIME = 1.0f;
 	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 1.0f;
+	const float MAX_BERSERKER_TIME = 2.0f;
+	const float BERSERKER_ALPHA_ANIMATION_TIME_SCALE = 3.0f;
 
 	sf::Texture swordTextureSheet;
 	sf::Texture grenadeThrowTextureSheet;
@@ -58,13 +64,18 @@ private:
 	float direction; // Direction is in radians
 	float walkTimer;
 	float isAttackingTimer;
+	float berserkerActiveTimer;
 	float grenadeCooldownTimer;
 	float berserkerCooldownTimer;
+	float berserkerAnimationAlpha;
 
 	bool tryToExit;
 	bool hasStartedAttackAnimation;
 	bool startThrowAnimation;
+	bool startStartBerserkAnimation;
+	bool startEndBerserkAnimation;
 	bool hasSpawnedGrenade;
+	bool berserkerIsActive;
 
 	void loadAnimations();
 	void spawnGrenade();
@@ -79,17 +90,23 @@ public:
 	void update(float deltaTime);
 	void render(sf::RenderWindow& window);
 
-	void setPlayerPosition(sf::Vector2f newPos);
+	void setPosition(sf::Vector2f newPos);
 
 	const bool playerTriesToExit() const;
-	const sf::Vector2f getPlayerPosition() const;
-	const sf::Vector2f getPlayerWalkStep() const;
-	const sf::Vector2f getPlayerLastFramePosition() const;
+	const sf::Vector2f getPosition() const;
+	const sf::Vector2f getWalkStep() const;
+	const sf::Vector2f getLastFramePosition() const;
+	const sf::Vector2f getLookDirectionVec() const;
 	const sf::Glsl::Vec3 getOrientation() const;
+
+	bool isAttacking() const;
+	bool isBerserkerActive() const;
 
 	float getGrenadeCooldownPercent() const;
 	float getBerserkerCooldownPercent() const;
 	float getPlayerCollisionBoxSize() const;
+	float getAttackConeAngle() const;
+	float getMaxAttackDistSqrd() const;
 
 	Grenade* getGrenade() const;
 	GrenadeExplosion* getGrenadeExplosion() const;

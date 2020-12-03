@@ -25,7 +25,7 @@ void Player::loadAnimations()
 	this->swordAttackAnimation.init(
 		NUM_SWORD_ATTACK_TEXTURE_RECTS,
 		swordAttackTextureRects,
-		0.1f,
+		0.08f,
 		false
 	);
 
@@ -59,7 +59,7 @@ void Player::loadAnimations()
 	this->startBerserkAnimation.init(
 		NUM_START_BERSERK_TEXTURE_RECTS,
 		startBerserkTextureRects,
-		0.12f,
+		0.08f,
 		false
 	);
 
@@ -76,7 +76,7 @@ void Player::loadAnimations()
 	this->endBerserkAnimation.init(
 		NUM_END_BERSERK_TEXTURE_RECTS,
 		endBerserkTextureRects,
-		0.12f,
+		0.08f,
 		false
 	);
 
@@ -93,7 +93,7 @@ void Player::spawnGrenade()
 
 	float playerAngle = this->getOrientation().z;
 	sf::Vector2f direction = sf::Vector2f(cos(playerAngle), -sin(playerAngle));
-	sf::Vector2f spawnPos = this->getPlayerPosition() + direction;
+	sf::Vector2f spawnPos = this->getPosition() + direction;
 	this->grenade = new Grenade(spawnPos, direction);
 }
 
@@ -105,7 +105,7 @@ void Player::updateAnimationLogic(float deltaTime)
 	// Update animations
 	this->currentFpsAnimation->update(deltaTime);
 
-	if(this->currentBerserkAnimation)
+	if(this->currentBerserkAnimation && this->berserkerAnimationAlpha >= 0.5f)
 		this->currentBerserkAnimation->update(deltaTime);
 
 	// Switch from attack animation to idle animation
@@ -160,11 +160,47 @@ void Player::updateAnimationLogic(float deltaTime)
 		// Set texture
 		this->handsSprite.setTexture(this->swordTextureSheet);
 	}
+
+	// Start start berserk animation
+	if (this->startStartBerserkAnimation && this->currentBerserkAnimation != &this->startBerserkAnimation)
+	{
+		this->startStartBerserkAnimation = false;
+
+		this->currentBerserkAnimation = &this->startBerserkAnimation;
+		this->currentBerserkAnimation->reset();
+
+		this->berserkSprite.setTexture(startBerserkTextureSheet);
+	}
+
+	// Start end berserk animation
+	if (this->startEndBerserkAnimation && this->currentBerserkAnimation == &this->startBerserkAnimation)
+	{
+		this->startEndBerserkAnimation = false;
+
+		this->currentBerserkAnimation = &this->endBerserkAnimation;
+		this->currentBerserkAnimation->reset();
+
+		this->berserkSprite.setTexture(endBerserkTextureSheet);
+	}
+
+	// Activate berserker powerups
+	if (this->currentBerserkAnimation == &this->startBerserkAnimation &&
+		this->currentBerserkAnimation->getCurrentRectIndex() >= 2)
+	{
+		this->berserkerIsActive = true;
+	}
+
+	// Deactivate berserker powerups
+	if (this->currentBerserkAnimation == &this->endBerserkAnimation &&
+		this->currentBerserkAnimation->getCurrentRectIndex() >= 2)
+	{
+		this->berserkerIsActive = false;
+	}
 }
 
 void Player::updateFpsSpritePosition()
 {
-	this->swordPosition = sf::Vector2f(0, 540 - 64 * SWORD_SPRITE_SCALE / 2 + 30);
+	this->swordPosition = sf::Vector2f(100, 540 - 64 * SWORD_SPRITE_SCALE / 2 + 30);
 	this->swordPosition.x += sin(walkTimer * 7.0f) * 50;
 	this->swordPosition.y += sin(walkTimer * 7.0f * 2.0f) * 30;
 
@@ -190,20 +226,23 @@ void Player::updateFpsSpritePosition()
 
 	// Set texture rects to current animation rects
 	this->handsSprite.setTextureRect(this->currentFpsAnimation->getCurrentRect());
-	this->berserkSprite.setTextureRect(this->currentBerserkAnimation->getCurrentRect());
+
+	if(this->currentBerserkAnimation)
+		this->berserkSprite.setTextureRect(this->currentBerserkAnimation->getCurrentRect());
 }
 
 Player::Player(int x, int y, EntityHandler& entityHandler)
 	: x(x), y(y), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
-	isAttackingTimer(0.0f), tryToExit(false), hasStartedAttackAnimation(false), startThrowAnimation(false),
+	isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), tryToExit(false), 
+	hasStartedAttackAnimation(false), startThrowAnimation(false),
 	hasSpawnedGrenade(false), currentFpsAnimation(&swordIdleAnimation), 
-	currentBerserkAnimation(&startBerserkAnimation), grenade(nullptr)
+	currentBerserkAnimation(nullptr), grenade(nullptr)
 {
 	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
 
 	sf::Mouse::setPosition(this->monitorMiddle);
 
-	// Load texture
+	// Load textures
 	this->startBerserkTextureSheet.loadFromFile("Resources/Textures/armorCloseAnimation2.png");
 	this->endBerserkTextureSheet.loadFromFile("Resources/Textures/armorOpenAnimation.png");
 	this->grenadeThrowTextureSheet.loadFromFile("Resources/Textures/firstPersonThrowTextures.png");
@@ -236,9 +275,10 @@ void Player::handleInput(float deltaTime)
 	}
 
 	// Grenade
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && 
+		this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
 	{
-		// Reset cool down
+		// Reset cooldown
 		this->grenadeCooldownTimer = 0.0f;
 		
 		// Start animation
@@ -246,8 +286,18 @@ void Player::handleInput(float deltaTime)
 	}
 
 	// Berserker
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && 
+		this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
+	{
+		// Reset cooldown
 		this->berserkerCooldownTimer = 0.0f;
+
+		// Start ability timer
+		this->berserkerActiveTimer = MAX_BERSERKER_TIME;
+
+		// Start animation
+		this->startStartBerserkAnimation = true;
+	}
 
 	// Walking
 	float forwardInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
@@ -263,8 +313,13 @@ void Player::handleInput(float deltaTime)
 	else
 		this->walkTimer = 0.0f;
 
-	walkStep.x *= MOVEMENT_SPEED * deltaTime;
-	walkStep.y *= MOVEMENT_SPEED * deltaTime;
+	// Set current movement speed
+	float currentMovementSpeed = MOVEMENT_SPEED;
+	if (this->berserkerIsActive)
+		currentMovementSpeed = BERSERKER_MOVEMENT_SPEED;
+
+	walkStep.x *= currentMovementSpeed * deltaTime;
+	walkStep.y *= currentMovementSpeed * deltaTime;
 
 	// Move position
 	this->lastFrameX = this->x;
@@ -288,8 +343,30 @@ void Player::update(float deltaTime)
 	// Update ability cooldowns
 	this->grenadeCooldownTimer += deltaTime;
 	this->berserkerCooldownTimer += deltaTime;
+	this->berserkerActiveTimer -= deltaTime;
 	this->grenadeCooldownTimer = SMath::clamp(this->grenadeCooldownTimer, 0.0f, ABILITY_GRENADE_MAX_COOLDOWN_TIME);
 	this->berserkerCooldownTimer = SMath::clamp(this->berserkerCooldownTimer, 0.0f, ABILITY_BERSERKER_MAX_COOLDOWN_TIME);
+	this->berserkerActiveTimer = std::max(this->berserkerActiveTimer, 0.0f);
+
+	// Update open berserker timer
+	if (this->berserkerActiveTimer <= 0.0f && !this->startEndBerserkAnimation && 
+		this->currentBerserkAnimation == &this->startBerserkAnimation)
+	{
+		this->startEndBerserkAnimation = true;
+	}
+
+	// Update berserker ended timer
+	if (this->currentBerserkAnimation == &this->startBerserkAnimation && 
+		this->currentBerserkAnimation->isDone())
+	{
+		this->berserkerAnimationAlpha -= deltaTime * BERSERKER_ALPHA_ANIMATION_TIME_SCALE;
+		this->berserkerAnimationAlpha = SMath::clamp(this->berserkerAnimationAlpha, 0.0f, 1.0f);
+	}
+	else if(this->currentBerserkAnimation == &this->endBerserkAnimation && this->berserkerAnimationAlpha < 1.0f)
+	{
+		this->berserkerAnimationAlpha += deltaTime * BERSERKER_ALPHA_ANIMATION_TIME_SCALE;
+		this->berserkerAnimationAlpha = SMath::clamp(this->berserkerAnimationAlpha, 0.0f, 1.0f);
+	}
 
 	// Update grenade
 	if (this->grenade)
@@ -329,10 +406,17 @@ void Player::update(float deltaTime)
 void Player::render(sf::RenderWindow& window)
 {
 	window.draw(this->handsSprite);
-	window.draw(this->berserkSprite);
+
+	if (this->currentBerserkAnimation)
+	{
+		sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * berserkerAnimationAlpha);
+		this->berserkSprite.setColor(newSpriteColor);
+
+		window.draw(this->berserkSprite);
+	}
 }
 
-void Player::setPlayerPosition(sf::Vector2f newPos)
+void Player::setPosition(sf::Vector2f newPos)
 {
 	this->x = newPos.x;
 	this->y = newPos.y;
@@ -343,24 +427,39 @@ const bool Player::playerTriesToExit() const
 	return this->tryToExit;
 }
 
-const sf::Vector2f Player::getPlayerPosition() const
+const sf::Vector2f Player::getPosition() const
 {
 	return sf::Vector2f(x, y);
 }
 
-const sf::Vector2f Player::getPlayerWalkStep() const
+const sf::Vector2f Player::getWalkStep() const
 {
 	return walkStep;
 }
 
-const sf::Vector2f Player::getPlayerLastFramePosition() const
+const sf::Vector2f Player::getLastFramePosition() const
 {
 	return sf::Vector2f(lastFrameX, lastFrameY);
+}
+
+const sf::Vector2f Player::getLookDirectionVec() const
+{
+	return sf::Vector2f(std::cos(this->direction), -std::sin(this->direction));
 }
 
 const sf::Glsl::Vec3 Player::getOrientation() const
 {
 	return sf::Glsl::Vec3(x, y, direction);
+}
+
+bool Player::isAttacking() const
+{
+	return this->currentFpsAnimation == &this->swordAttackAnimation;
+}
+
+bool Player::isBerserkerActive() const
+{
+	return this->berserkerIsActive;
 }
 
 float Player::getGrenadeCooldownPercent() const
@@ -376,6 +475,16 @@ float Player::getBerserkerCooldownPercent() const
 float Player::getPlayerCollisionBoxSize() const
 {
 	return 0.15f;
+}
+
+float Player::getAttackConeAngle() const
+{
+	return this->ATTACK_CONE_ANGLE;
+}
+
+float Player::getMaxAttackDistSqrd() const
+{
+	return this->MAX_ATTACK_DIST * this->MAX_ATTACK_DIST;
 }
 
 Grenade* Player::getGrenade() const

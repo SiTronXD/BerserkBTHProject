@@ -5,7 +5,6 @@
 
 #define TILE_WALL_COLOR vec3(1.0f)
 #define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
-#define FOG_COLOR vec3(0.0f, 0.0f, 0.0f)
 
 // Constants
 const float PI = atan(-1.0f);
@@ -23,6 +22,7 @@ uniform vec4 u_entityTexRects[MAX_RENDER_ENTITIES];
 
 uniform vec3 u_camera;	// vec3(x, y, direction)
 uniform vec3 u_entityPositions[MAX_RENDER_ENTITIES];
+uniform vec3 u_fogColor;
 
 uniform vec2 u_resolution;
 uniform vec2 u_entityWorldScales[MAX_RENDER_ENTITIES];
@@ -127,7 +127,7 @@ void main()
 
 	// Sample floor texture
 	float floorDist = (0.80f / -uv.y);
-	float floorFog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE, 0.0, floorDist * 0.1f), 0.0, 1.0);
+	float floorFog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE, 0.0, floorDist * 0.1f * 0.5f), 0.0, 1.0);
 	vec3 floorCol = texture2D(
 		u_floorTexture,
 		fract((camPos * MAP_SIZE + rayDir * floorDist))
@@ -136,12 +136,12 @@ void main()
 
 	// Wall/floor is visible
 	float showWall = pow(wall * fog, 0.2f);
-	float showFloor = pow((1.0 - wall) * floorFog, 0.4f);
+	float showFloor = (1.0 - wall) * floorFog;
 
 	// Wall + floor
 	vec3 col = (wallCol * showWall) + (floorCol * showFloor);
 	col = mix(
-		FOG_COLOR, 
+		u_fogColor * (uv.y > 0.0f ? max(1.0f - uv.y, wall) : 1.0f), 
 		col, 
 		(showWall + showFloor) * (uv.y > halfWallHeight ? 0.0f : 1.0f)
 	);
