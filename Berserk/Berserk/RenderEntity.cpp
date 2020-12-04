@@ -48,6 +48,26 @@ void RenderEntity::setAnimationIndex(int newIndex)
 	this->currentAnimationIndex = newIndex;
 }
 
+void RenderEntity::resetCurrentAnimation()
+{
+	this->animations[this->currentAnimationIndex].reset();
+}
+
+int RenderEntity::getCurrentAnimationIndex() const
+{
+	return this->currentAnimationIndex;
+}
+
+int RenderEntity::getNrOfAnimations() const
+{
+	return this->nrOfAnimations;
+}
+
+const Animation& RenderEntity::getCurrentAnimation() const
+{
+	return this->animations[this->currentAnimationIndex];
+}
+
 sf::IntRect RenderEntity::getTextureIntRect() const
 {
 	return this->animations[this->currentAnimationIndex].getCurrentRect();
@@ -80,7 +100,7 @@ sf::Vector3f RenderEntity::getPosition3D() const
 	return this->position;
 }
 
-const bool RenderEntity::getShouldRemove() const
+bool RenderEntity::getShouldRemove() const
 {
 	return this->shouldRemove;
 }

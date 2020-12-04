@@ -51,6 +51,9 @@ void main()
 
 	float aspectRatio = u_resolution.x / u_resolution.y;
 	uv.x *= aspectRatio;
+
+	// Rotate uvs
+	//uv *= rotate(u_timer);
 	
 	// Keep track of camera in the world
 	vec2 camPos = u_camera.xy * ONE_OVER_MAP_SIZE;

@@ -21,6 +21,8 @@ private:
 	const int FIRST_PERSON_SPRITE_WIDTH = 192;
 	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
+	const float HP_DECREASE_AMOUNT = 10;
+	const float HP_INCREASE_AMOUNT = 5;
 	const float MOVEMENT_SPEED = 6.0f;
 	const float BERSERKER_MOVEMENT_SPEED = 10.0f;
 	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
@@ -68,6 +70,7 @@ private:
 	float grenadeCooldownTimer;
 	float berserkerCooldownTimer;
 	float berserkerAnimationAlpha;
+	float health;
 
 	bool tryToExit;
 	bool hasStartedAttackAnimation;
@@ -91,6 +94,8 @@ public:
 	void render(sf::RenderWindow& window);
 
 	void setPosition(sf::Vector2f newPos);
+	void gainHealth();
+	void loseHealth();
 
 	const bool playerTriesToExit() const;
 	const sf::Vector2f getPosition() const;
@@ -101,6 +106,9 @@ public:
 
 	bool isAttacking() const;
 	bool isBerserkerActive() const;
+	bool isDead() const;
+
+	int getCurrentHealth() const;
 
 	float getGrenadeCooldownPercent() const;
 	float getBerserkerCooldownPercent() const;

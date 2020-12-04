@@ -1,12 +1,16 @@
 #include "EntityHandler.h"
 #include "Renderer.h"
 
+void EntityHandler::removeEnemy(int index)
+{
+	delete this->enemies[index];
+	this->enemies[index] = this->enemies[--this->nrOfEnemies];
+}
+
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
 	: player(2, 2, *this), collisionHandler(player, goal, gameStats, *this),
 	renderer(nullptr), nrOfCollectibles(0), nrOfEnemies(0)
-{
-	this->addEnemy(sf::Vector2f(7.5f, 2.5f));
-}
+{ }
 
 EntityHandler::~EntityHandler()
 {
@@ -51,15 +55,26 @@ void EntityHandler::update(float deltaTime)
 	}
 
 	// Update enemies
+	this->playerIsTakingDamage = false;
 	for (int i = 0; i < this->nrOfEnemies; ++i)
 	{
 		if (this->enemies[i])
 		{
+			// Update
 			this->enemies[i]->update(deltaTime, this->player.getPosition());
 
 			// Should remove?
 			if (this->enemies[i]->getShouldRemove())
-				collectibleHasBeenFound(i);
+			{
+				removeEnemy(i);
+			}
+			// Check if the enemy is doing damage
+			else if(this->enemies[i]->isDoingDamage())
+			{
+				this->playerIsTakingDamage = true;
+
+				this->player.loseHealth();
+			}
 		}
 	}
 }
@@ -94,6 +109,16 @@ int EntityHandler::getNumCollectibles() const
 int EntityHandler::getNumEnemies() const
 {
 	return this->nrOfEnemies;
+}
+
+bool EntityHandler::isPlayerTakingDamage() const
+{
+	return this->playerIsTakingDamage;
+}
+
+bool EntityHandler::playerHasLost() const
+{
+	return this->player.isDead();
 }
 
 Player& EntityHandler::getPlayer()
@@ -199,5 +224,5 @@ void EntityHandler::fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[],
 void EntityHandler::collectibleHasBeenFound(int index)
 {
 	delete this->collectibles[index];
-	this->collectibles[index] = collectibles[--this->nrOfCollectibles];
+	this->collectibles[index] = this->collectibles[--this->nrOfCollectibles];
 }

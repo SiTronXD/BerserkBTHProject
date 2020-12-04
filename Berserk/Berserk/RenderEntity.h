@@ -22,6 +22,12 @@ protected:
 	void addAnimation(Animation animationToAdd);
 	void setWorldScale(sf::Vector2f worldScale);
 	void setAnimationIndex(int newIndex);
+	void resetCurrentAnimation();
+
+	int getCurrentAnimationIndex() const;
+	int getNrOfAnimations() const;
+
+	const Animation& getCurrentAnimation() const;
 
 public:
 	RenderEntity();
@@ -41,5 +47,5 @@ public:
 	sf::Vector2f getPosition2D() const;
 	sf::Vector3f getPosition3D() const;
 
-	const bool getShouldRemove() const;
+	bool getShouldRemove() const;
 };

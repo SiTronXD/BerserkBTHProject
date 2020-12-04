@@ -10,8 +10,10 @@ private:
 	const float MOVEMENT_SPEED = 3.0f;
 
 	int enemyType;
+	int lastAttackFrameIndex;
 
 	bool dead;
+	bool doDamage;
 
 public:
 	Enemy(sf::Vector2f startPosition);
@@ -19,4 +21,7 @@ public:
 	void update(float deltaTime, sf::Vector2f targetPosition);
 
 	void kill();
+
+	bool isDoingDamage() const;
+	bool isDead() const;
 };

@@ -5,6 +5,7 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 	const sf::Color WALL_COLOR = sf::Color(255, 255, 255, 255);
 	const sf::Color GOAL_COLOR = sf::Color(0, 255, 0, 255);
 	const sf::Color COLLECTIBLE_COLOR = sf::Color(255, 255, 0, 255);
+	const sf::Color SINGLE_ENEMY_COLOR = sf::Color(255, 0, 0, 255);
 
 	CollisionHandler& collisionHandler = entityHandler.getCollisionHandler();
 
@@ -36,6 +37,10 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 			// Collectible
 			if (this->evaluatePixel(pixelColor, COLLECTIBLE_COLOR))
 				entityHandler.addCollectible(sf::Vector2f(x + 0.5f, y + 0.5f));
+
+			// Single enemy
+			if (this->evaluatePixel(pixelColor, SINGLE_ENEMY_COLOR))
+				entityHandler.addEnemy(sf::Vector2f(x + 0.5f, y + 0.5f));
 		}
 	}
 }

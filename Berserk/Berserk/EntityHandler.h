@@ -15,8 +15,6 @@ class EntityHandler
 private:
 	static const int MAX_NUM_COLLECTIBLES = 5;
 	static const int MAX_NUM_ENEMIES = 32;
-	int nrOfCollectibles;
-	int nrOfEnemies;
 
 	Player player;
 	Goal goal;
@@ -24,6 +22,13 @@ private:
 	Collectible* collectibles[MAX_NUM_COLLECTIBLES] { };
 	Enemy* enemies[MAX_NUM_ENEMIES] { };
 	Renderer* renderer;
+
+	int nrOfCollectibles;
+	int nrOfEnemies;
+
+	bool playerIsTakingDamage;
+
+	void removeEnemy(int index);
 
 public:
 	EntityHandler(GameStatsHandler& gameStats);
@@ -43,6 +48,9 @@ public:
 
 	int getNumCollectibles() const;
 	int getNumEnemies() const;
+
+	bool isPlayerTakingDamage() const;
+	bool playerHasLost() const;
 
 	Player& getPlayer();
 	CollisionHandler& getCollisionHandler();

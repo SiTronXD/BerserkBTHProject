@@ -1,7 +1,9 @@
 #include "UI.h"
 
-UI::UI(CollisionHandler& collisionHandler, Player& player)
-	: updateDtTimer(1.0f), collisionHandler(collisionHandler), player(player)
+UI::UI(EntityHandler& entityHandler)
+	: entityHandler(entityHandler), collisionHandler(entityHandler.getCollisionHandler()), player(entityHandler.getPlayer()),
+	updateDtTimer(1.0f), berserkerActiveTimer(0.0f), grenadeActiveTimer(0.0f),
+	damageTakenTimer(0.0f), showMessageTimer(0.0f)
 {
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 
@@ -22,6 +24,11 @@ UI::UI(CollisionHandler& collisionHandler, Player& player)
 	this->messageText.setFillColor(sf::Color::Green);
 	this->messageText.setString("<Message>");
 
+	// Health text
+	this->healthText.setFont(this->font);
+	this->healthText.setFillColor(sf::Color::Red);
+	this->healthText.setString("100");
+
 	// Grenade icon
 	this->grenadeIconTexture.loadFromFile("Resources/Textures/GrenadeIcon.png");
 	this->grenadeIconSprite.setTexture(this->grenadeIconTexture);
@@ -33,6 +40,16 @@ UI::UI(CollisionHandler& collisionHandler, Player& player)
 	this->berserkerIconSprite.setTexture(this->berserkerIconTexture);
 	ResTranslator::transformSprite(this->berserkerIconSprite, BERSERKER_ICON_X, BERSERKER_ICON_Y, 100, 100);
 	this->berserkerIconScale = this->grenadeIconSprite.getScale().x;
+
+	// Health icon
+	this->healthIconTexture.loadFromFile("Resources/Textures/HealthTexture.png");
+	this->healthIconSprite.setTexture(this->healthIconTexture);
+	ResTranslator::transformSprite(this->healthIconSprite, 765, 475, 50, 50);
+
+	// Damage taken
+	this->redBoxTexture.loadFromFile("Resources/Textures/RedBox.png");
+	this->damageTakenSprite.setTexture(this->redBoxTexture);
+	ResTranslator::transformSprite(this->damageTakenSprite, 0, 0, 1920, 1080);
 
 	// Load shader
 	if (!abilityIconShader.loadFromFile("Resources/Shaders/AbilityIcon_Vert.glsl", "Resources/Shaders/AbilityIcon_Frag.glsl"))
@@ -84,10 +101,30 @@ void UI::update(float deltaTime)
 		this->messageText.setString(collisionMsgText);
 		ResTranslator::transformText(this->messageText, 0, -300, 60);
 	}
+
+	// Check if damage has been taken
+	if (this->entityHandler.isPlayerTakingDamage())
+	{
+		this->damageTakenTimer = 0.3f;
+	}
+	else
+	{
+		this->damageTakenTimer -= deltaTime;
+		this->damageTakenTimer = std::max(this->damageTakenTimer, 0.0f);
+	}
+
+	// Update damage taken alpha color
+	sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * this->damageTakenTimer);
+	this->damageTakenSprite.setColor(newSpriteColor);
+
+	// Update health text
+	this->healthText.setString(std::to_string(this->player.getCurrentHealth()));
+	ResTranslator::transformText(this->healthText, 850, 450, 40);
 }
 
 void UI::render(sf::RenderWindow& window)
 {
+	// Frames per second
 	window.draw(this->fpsText);
 
 	// Grenade icon
@@ -102,7 +139,15 @@ void UI::render(sf::RenderWindow& window)
 	if(this->showMessageTimer > 0.0f)
 		window.draw(this->messageText);
 
+	// Health
+	window.draw(this->healthText);
+	window.draw(this->healthIconSprite);
+
 	// Show exit text if necessary
 	if (collisionHandler.playerIsCloseToGoal())
 		window.draw(this->enterGoalText);
+
+	// Damage taken
+	if (this->damageTakenTimer > 0.0f)
+		window.draw(this->damageTakenSprite);
 }

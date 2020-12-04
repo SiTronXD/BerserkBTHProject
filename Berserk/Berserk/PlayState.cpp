@@ -3,7 +3,7 @@
 
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	: GameState(window), entityHandler(gameStats), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
-	ui(entityHandler.getCollisionHandler(), entityHandler.getPlayer()), gameStats(gameStats)
+	ui(entityHandler), gameStats(gameStats)
 {
 	// Reset and set stats
 	this->gameStats.reset();
@@ -41,6 +41,12 @@ void PlayState::update(float deltaTime)
 		// Player won!
 		this->gameStats.flagPlayerWon();
 
+		// Switch state
+		this->setState(State::GAME_OVER);
+	}
+	// Player has lost
+	else if(this->entityHandler.playerHasLost())
+	{
 		// Switch state
 		this->setState(State::GAME_OVER);
 	}

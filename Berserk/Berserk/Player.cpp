@@ -200,7 +200,7 @@ void Player::updateAnimationLogic(float deltaTime)
 
 void Player::updateFpsSpritePosition()
 {
-	this->swordPosition = sf::Vector2f(100, 540 - 64 * SWORD_SPRITE_SCALE / 2 + 30);
+	this->swordPosition = sf::Vector2f(0, 540 - 64 * SWORD_SPRITE_SCALE / 2 + 30);
 	this->swordPosition.x += sin(walkTimer * 7.0f) * 50;
 	this->swordPosition.y += sin(walkTimer * 7.0f * 2.0f) * 30;
 
@@ -227,13 +227,19 @@ void Player::updateFpsSpritePosition()
 	// Set texture rects to current animation rects
 	this->handsSprite.setTextureRect(this->currentFpsAnimation->getCurrentRect());
 
+
+	// Update berserker alpha color
+	sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * berserkerAnimationAlpha);
+	this->berserkSprite.setColor(newSpriteColor);
+
+	// Set texture rects
 	if(this->currentBerserkAnimation)
 		this->berserkSprite.setTextureRect(this->currentBerserkAnimation->getCurrentRect());
 }
 
 Player::Player(int x, int y, EntityHandler& entityHandler)
 	: x(x), y(y), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
-	isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), tryToExit(false), 
+	isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), health(100.0f), tryToExit(false), 
 	hasStartedAttackAnimation(false), startThrowAnimation(false),
 	hasSpawnedGrenade(false), currentFpsAnimation(&swordIdleAnimation), 
 	currentBerserkAnimation(nullptr), grenade(nullptr)
@@ -405,21 +411,30 @@ void Player::update(float deltaTime)
 
 void Player::render(sf::RenderWindow& window)
 {
+	// Hands
 	window.draw(this->handsSprite);
 
+	// Berserker armor
 	if (this->currentBerserkAnimation)
-	{
-		sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * berserkerAnimationAlpha);
-		this->berserkSprite.setColor(newSpriteColor);
-
 		window.draw(this->berserkSprite);
-	}
 }
 
 void Player::setPosition(sf::Vector2f newPos)
 {
 	this->x = newPos.x;
 	this->y = newPos.y;
+}
+
+void Player::gainHealth()
+{
+	this->health += HP_INCREASE_AMOUNT;
+	this->health = std::min(this->health, 100.0f);
+}
+
+void Player::loseHealth()
+{
+	this->health -= HP_DECREASE_AMOUNT;
+	this->health = std::max(this->health, 0.0f);
 }
 
 const bool Player::playerTriesToExit() const
@@ -460,6 +475,16 @@ bool Player::isAttacking() const
 bool Player::isBerserkerActive() const
 {
 	return this->berserkerIsActive;
+}
+
+bool Player::isDead() const
+{
+	return this->health <= 0;
+}
+
+int Player::getCurrentHealth() const
+{
+	return (int) this->health;
 }
 
 float Player::getGrenadeCooldownPercent() const
