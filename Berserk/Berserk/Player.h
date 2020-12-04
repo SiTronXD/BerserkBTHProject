@@ -115,6 +115,7 @@ public:
 	float getPlayerCollisionBoxSize() const;
 	float getAttackConeAngle() const;
 	float getMaxAttackDistSqrd() const;
+	float getBerserkerBlackBarAlpha() const;
 
 	Grenade* getGrenade() const;
 	GrenadeExplosion* getGrenadeExplosion() const;

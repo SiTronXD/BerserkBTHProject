@@ -15,4 +15,6 @@ public:
 
 	static void transformText(sf::Text& text, float textMiddleX, float textMiddleY,
 		float textCharacterSize);
+
+	static int getVirtualWidth();
 };

@@ -38,3 +38,10 @@ void ResTranslator::transformText(sf::Text& text, float textMiddleX, float textM
 		(float)(screenMidY + (textMiddleY * screenSizeScaleY) - text.getGlobalBounds().height / 2.0f)
 	);
 }
+
+int ResTranslator::getVirtualWidth()
+{
+	float aspectRatio = (float)SettingsHandler::getWidth() / SettingsHandler::getHeight();
+
+	return std::ceil(aspectRatio * INTERNAL_HEIGHT);
+}

@@ -8,8 +8,8 @@ void EntityHandler::removeEnemy(int index)
 }
 
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
-	: player(2, 2, *this), collisionHandler(player, goal, gameStats, *this),
-	renderer(nullptr), nrOfCollectibles(0), nrOfEnemies(0)
+	: player(4, 4, *this), collisionHandler(player, goal, gameStats, *this),
+	renderer(nullptr), nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
 { }
 
 EntityHandler::~EntityHandler()
@@ -84,6 +84,11 @@ void EntityHandler::placeGoal(sf::Vector2f goalPos)
 	this->goal.setPosition(goalPos);
 }
 
+void EntityHandler::placePlayer(sf::Vector2f playerPos)
+{
+	this->player.setPosition(playerPos);
+}
+
 void EntityHandler::addCollectible(sf::Vector2f newCollectiblePos)
 {
 	if(this->nrOfCollectibles < this->MAX_NUM_COLLECTIBLES)
@@ -94,6 +99,11 @@ void EntityHandler::addEnemy(sf::Vector2f newEnemyPos)
 {
 	if (this->nrOfEnemies < this->MAX_NUM_ENEMIES)
 		this->enemies[this->nrOfEnemies++] = new Enemy(newEnemyPos);
+}
+
+void EntityHandler::addEnemySpawnPoint(sf::Vector2f spawnPointPos)
+{
+	this->spawner.addSpawnPoint(spawnPointPos);
 }
 
 void EntityHandler::render(sf::RenderWindow& window)

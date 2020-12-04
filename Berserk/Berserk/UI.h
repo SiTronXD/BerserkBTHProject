@@ -28,11 +28,14 @@ private:
 	sf::Texture berserkerIconTexture;
 	sf::Texture healthIconTexture;
 	sf::Texture redBoxTexture;
+	sf::Texture blackBoxTexture;
 
 	sf::Sprite grenadeIconSprite;
 	sf::Sprite berserkerIconSprite;
 	sf::Sprite healthIconSprite;
 	sf::Sprite damageTakenSprite;
+	sf::Sprite blackBarLeftSprite;
+	sf::Sprite blackBarRightSprite;
 
 	sf::Shader abilityIconShader;
 

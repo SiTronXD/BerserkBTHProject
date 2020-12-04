@@ -1,4 +1,5 @@
 #include "SettingsHandler.h"
+#include <cmath>
 
 const float SettingsHandler::MOUSE_SENSITIVITY = 2.0f;
 const float SettingsHandler::KEYBOARD_LOOK_SENSITIVITY = 7.0f;

@@ -173,7 +173,8 @@ void Player::updateAnimationLogic(float deltaTime)
 	}
 
 	// Start end berserk animation
-	if (this->startEndBerserkAnimation && this->currentBerserkAnimation == &this->startBerserkAnimation)
+	if (this->startEndBerserkAnimation && 
+		this->currentBerserkAnimation == &this->startBerserkAnimation)
 	{
 		this->startEndBerserkAnimation = false;
 
@@ -181,6 +182,12 @@ void Player::updateAnimationLogic(float deltaTime)
 		this->currentBerserkAnimation->reset();
 
 		this->berserkSprite.setTexture(endBerserkTextureSheet);
+	}
+	// Remove animation if it is done
+	else if (this->currentBerserkAnimation == &this->endBerserkAnimation &&
+		this->currentBerserkAnimation->isDone())
+	{
+		this->currentBerserkAnimation = nullptr;
 	}
 
 	// Activate berserker powerups
@@ -220,7 +227,7 @@ void Player::updateFpsSpritePosition()
 		this->berserkSprite,
 		0,
 		0,
-		(float) BERSERK_SPRITE_WIDTH / BERSERK_SPRITE_HEIGHT * 1080,
+		1923,
 		1080
 	);
 
@@ -510,6 +517,16 @@ float Player::getAttackConeAngle() const
 float Player::getMaxAttackDistSqrd() const
 {
 	return this->MAX_ATTACK_DIST * this->MAX_ATTACK_DIST;
+}
+
+float Player::getBerserkerBlackBarAlpha() const
+{
+	float alpha = this->berserkerAnimationAlpha;
+
+	if (!this->currentBerserkAnimation)
+		alpha = 0.0f;
+
+	return alpha;
 }
 
 Grenade* Player::getGrenade() const
