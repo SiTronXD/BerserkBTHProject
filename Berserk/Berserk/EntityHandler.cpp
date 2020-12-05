@@ -33,8 +33,6 @@ void EntityHandler::update(float deltaTime)
 	this->player.handleInput(deltaTime);
 	this->player.update(deltaTime);
 
-	this->collisionHandler.update();
-
 	// Set renderer fog color
 	if (this->player.isBerserkerActive())
 		this->renderer->setFogColor(sf::Color(255, 0, 0, 255));
@@ -58,25 +56,25 @@ void EntityHandler::update(float deltaTime)
 	this->playerIsTakingDamage = false;
 	for (int i = 0; i < this->nrOfEnemies; ++i)
 	{
-		if (this->enemies[i])
+		// Update
+		this->enemies[i]->update(deltaTime, this->player.getPosition());
+
+		// Should remove?
+		if (this->enemies[i]->getShouldRemove())
 		{
-			// Update
-			this->enemies[i]->update(deltaTime, this->player.getPosition());
+			removeEnemy(i);
+		}
+		// Check if the enemy is doing damage
+		else if(this->enemies[i]->isDoingDamage() && !this->player.isHealthDepleted())
+		{
+			this->playerIsTakingDamage = true;
 
-			// Should remove?
-			if (this->enemies[i]->getShouldRemove())
-			{
-				removeEnemy(i);
-			}
-			// Check if the enemy is doing damage
-			else if(this->enemies[i]->isDoingDamage() && !this->player.isHealthDepleted())
-			{
-				this->playerIsTakingDamage = true;
-
-				this->player.loseHealth();
-			}
+			this->player.loseHealth();
 		}
 	}
+
+	// Update collisions after everything has moved
+	this->collisionHandler.update();
 }
 
 void EntityHandler::placeGoal(sf::Vector2f goalPos)

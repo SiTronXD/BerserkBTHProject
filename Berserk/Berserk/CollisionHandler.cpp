@@ -1,17 +1,58 @@
 #include "CollisionHandler.h"
 #include "EntityHandler.h"
 
-bool CollisionHandler::isPlayerCollidingWall(float playerX, float playerY, int wallX, int wallY)
+bool CollisionHandler::isObjectCollidingWall(float halfCollisionBoxSize, float objectX, float objectY, int wallX, int wallY)
 {
 	bool colliding = false;
-	float playerSize = this->player.getPlayerCollisionBoxSize();
 
 	// Check only if this tile is a wall
 	if(this->mapWalls[wallX][wallY])
-		colliding = (playerX + playerSize > wallX && playerX - playerSize < wallX + 1 &&
-			playerY + playerSize > wallY && playerY - playerSize < wallY + 1);
+		colliding = (objectX + halfCollisionBoxSize > wallX && objectX - halfCollisionBoxSize < wallX + 1 &&
+			objectY + halfCollisionBoxSize > wallY && objectY - halfCollisionBoxSize < wallY + 1);
 
 	return colliding;
+}
+
+sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
+	sf::Vector2f lastPos, sf::Vector2f walkStep, float halfCollisionBoxSize)
+{
+	sf::Vector2f newPos = currentPos;
+
+	int objectTilePosX = (int)lastPos.x;
+	int objectTilePosY = (int)lastPos.y;
+
+	for (int y = -1; y <= 1; y++)
+	{
+		for (int x = -1; x <= 1; x++)
+		{
+			int tileX = SMath::clamp((int)(objectTilePosX + x), 0, MAX_MAP_SIZE);
+			int tileY = SMath::clamp((int)(objectTilePosY + y), 0, MAX_MAP_SIZE);
+
+			// Check for collision on the X-axis
+			if (isObjectCollidingWall(halfCollisionBoxSize, lastPos.x + walkStep.x,
+				lastPos.y, tileX, tileY))
+			{
+				// Move in X
+				if (lastPos.x - (tileX + 0.5f) > 0.0f)
+					newPos.x = tileX + 1 + halfCollisionBoxSize;
+				else
+					newPos.x = tileX - halfCollisionBoxSize;
+			}
+
+			// Check for collision on the Y-axis
+			if (isObjectCollidingWall(halfCollisionBoxSize, lastPos.x, lastPos.y + walkStep.y,
+				tileX, tileY))
+			{
+				// Move in X
+				if (lastPos.y - (tileY + 0.5f) > 0.0f)
+					newPos.y = tileY + 1 + halfCollisionBoxSize;
+				else
+					newPos.y = tileY - halfCollisionBoxSize;
+			}
+		}
+	}
+
+	return newPos;
 }
 
 CollisionHandler::CollisionHandler(Player& player, Goal& goal, GameStatsHandler& gameStats, 
@@ -27,57 +68,15 @@ void CollisionHandler::update()
 
 	this->playerIsAtGoal = SMath::dot(playerToGoal, playerToGoal) < goal.getRadiusSqrd();
 
-
 	// Player collision with walls
-	sf::Vector2f lastPlayerPos = this->player.getLastFramePosition();
-	sf::Vector2f playerWalkStep = this->player.getWalkStep();
-	int playerTilePosX = (int)lastPlayerPos.x;
-	int playerTilePosY = (int)lastPlayerPos.y;
-
-	for (int y = -1; y <= 1; y++)
-	{
-		for (int x = -1; x <= 1; x++)
-		{
-			sf::Vector2f currentPlayerPos = this->player.getPosition();
-			sf::Vector2f newPlayerPos = currentPlayerPos;
-
-			int tileX = SMath::clamp((int)(playerTilePosX + x), 0, MAX_MAP_SIZE);
-			int tileY = SMath::clamp((int)(playerTilePosY + y), 0, MAX_MAP_SIZE);
-
-
-			// Check for collision on the X-axis
-			if (isPlayerCollidingWall(lastPlayerPos.x + playerWalkStep.x, lastPlayerPos.y, tileX, tileY))
-			{
-				float playerBoxSize = this->player.getPlayerCollisionBoxSize();
-
-				// Move in X
-				if (lastPlayerPos.x - (tileX + 0.5f) > 0.0f)
-					newPlayerPos.x = tileX + 1 + playerBoxSize;
-				else
-					newPlayerPos.x = tileX - playerBoxSize;
-
-				// Update before checking on the Y-axis
-				lastPlayerPos.x = newPlayerPos.x;
-			}
-
-			// Check for collision on the Y-axis
-			if (isPlayerCollidingWall(lastPlayerPos.x, lastPlayerPos.y + playerWalkStep.y, tileX, tileY))
-			{
-				float playerBoxSize = this->player.getPlayerCollisionBoxSize();
-
-				// Move in X
-				if (lastPlayerPos.y - (tileY + 0.5f) > 0.0f)
-					newPlayerPos.y = tileY + 1 + playerBoxSize;
-				else
-					newPlayerPos.y = tileY - playerBoxSize;
-			}
-
-			// Apply new position
-			if(newPlayerPos != currentPlayerPos)
-				this->player.setPosition(newPlayerPos);
-		}
-	}
-
+	this->player.setPosition(
+		this->getNonCollidingPosition(
+			this->player.getPosition(),
+			this->player.getLastFramePosition(),
+			this->player.getWalkStep(),
+			this->player.getPlayerCollisionBoxSize()
+		)
+	);
 
 	// Player collision with collectible
 	for (int i = 0; i < this->entityHandler.getNumCollectibles(); ++i)
@@ -111,6 +110,16 @@ void CollisionHandler::update()
 	for (int i = 0; i < this->entityHandler.getNumEnemies(); ++i)
 	{
 		Enemy* currentEnemy = this->entityHandler.getEnemy(i);
+
+		// Enemy collision with walls
+		currentEnemy->setPosition(
+			this->getNonCollidingPosition(
+				currentEnemy->getPosition2D(),
+				currentEnemy->getLastFramePosition(),
+				currentEnemy->getWalkStep(),
+				currentEnemy->getCollisionBoxSize()
+			)
+		);
 
 		// Check if the enemy is caught within the explosion
 		GrenadeExplosion* grenadeExplosion = this->player.getGrenadeExplosion();

@@ -13,6 +13,7 @@ void GrenadeExplosion::setSize(float percent)
 }
 
 GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
+	: aliveTimer(0.0f)
 {
 	// Position
 	this->setPosition(position);

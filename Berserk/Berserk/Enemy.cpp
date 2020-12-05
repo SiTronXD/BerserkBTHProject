@@ -3,7 +3,8 @@
 #include "SMath.h"
 
 Enemy::Enemy(sf::Vector2f startPosition)
-	: lastAttackFrameIndex(0), dead(false), doDamage(false), canMove(true)
+	: lastFramePos(startPosition), walkStep(0.0f, 0.0f),
+	lastAttackFrameIndex(0), dead(false), doDamage(false), canMove(true)
 {
 	// Set position
 	this->setPosition(startPosition);
@@ -30,6 +31,8 @@ Enemy::Enemy(sf::Vector2f startPosition)
 
 void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 {
+	this->lastFramePos = this->getPosition2D();
+
 	// Get direction
 	sf::Vector2f walkDir = targetPosition - this->getPosition2D();
 	float walkDirSqrd = SMath::dot(walkDir, walkDir);
@@ -52,8 +55,8 @@ void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 					SMath::vectorNormalize(walkDir);
 
 					// Move new position
-					sf::Vector2f newPosition = this->getPosition2D();
-					newPosition += walkDir * MOVEMENT_SPEED * deltaTime;
+					this->walkStep = walkDir * MOVEMENT_SPEED * deltaTime;
+					sf::Vector2f newPosition = this->getPosition2D() + this->walkStep;
 
 					// Apply new position
 					this->setPosition(newPosition);
@@ -130,6 +133,21 @@ void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
 	// Move down to the ground
 	float newZ = -moveT;
 	this->setPosition(sf::Vector3f(this->getPosition2D().x, this->getPosition2D().y, newZ));
+}
+
+sf::Vector2f Enemy::getLastFramePosition() const
+{
+	return this->lastFramePos;
+}
+
+sf::Vector2f Enemy::getWalkStep() const
+{
+	return this->walkStep;
+}
+
+float Enemy::getCollisionBoxSize() const
+{
+	return 0.4f;
 }
 
 bool Enemy::isDoingDamage() const

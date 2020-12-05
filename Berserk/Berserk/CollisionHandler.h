@@ -6,6 +6,7 @@
 #include "Goal.h"
 #include "GameStatsHandler.h"
 #include "SMath.h"
+#include "Enemy.h"
 
 class EntityHandler;
 
@@ -24,10 +25,11 @@ private:
 	bool playerIsAtGoal;
 	bool mapWalls[MAX_MAP_SIZE][MAX_MAP_SIZE] {};
 
-	//bool canEnemySeeTargetPlotLineLow(int x0, int y0, int x1, int y1);
-	//bool canEnemySeeTargetPlotLineHigh(int x0, int y0, int x1, int y1);
-	//bool canEnemySeeTarget(sf::Vector2f enemyPosition, sf::Vector2f targetPosition);
-	bool isPlayerCollidingWall(float playerX, float playerY, int wallX, int wallY);
+	bool isObjectCollidingWall(float collisionBoxSize, float objectX, float objectY, 
+		int wallX, int wallY);
+
+	sf::Vector2f getNonCollidingPosition(sf::Vector2f currentPos,
+		sf::Vector2f lastPos, sf::Vector2f walkStep, float halfCollisionBoxSize);
 
 public:
 	CollisionHandler(Player& player, Goal& goal, GameStatsHandler& gameStats, 

@@ -10,6 +10,8 @@ private:
 	const float MOVEMENT_SPEED = 3.0f;
 
 	sf::Vector2f lastPos;
+	sf::Vector2f lastFramePos;
+	sf::Vector2f walkStep;
 
 	int enemyType;
 	int lastAttackFrameIndex;
@@ -25,6 +27,11 @@ public:
 
 	void kill();
 	void caughtInExplosion(float effectTimer, sf::Vector2f explosionPos);
+
+	sf::Vector2f getLastFramePosition() const;
+	sf::Vector2f getWalkStep() const;
+
+	float getCollisionBoxSize() const;
 
 	bool isDoingDamage() const;
 	bool isDead() const;
