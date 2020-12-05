@@ -350,17 +350,17 @@ void Player::handleInput(float deltaTime)
 	this->walkStep.x *= currentMovementSpeed * deltaTime;
 	this->walkStep.y *= currentMovementSpeed * deltaTime;
 
-	// Move position
-	this->lastFrameX = this->x;
-	this->lastFrameY = this->y;
-	this->x += this->walkStep.x;
-	this->y += this->walkStep.y;
+	if (!this->isHealthDepleted())
+	{
+		// Move position
+		this->lastFrameX = this->x;
+		this->lastFrameY = this->y;
+		this->x += this->walkStep.x;
+		this->y += this->walkStep.y;
 
-	// Keyboard to turn the player
-	this->direction += (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) * 0.001f * SettingsHandler::getKeyboardLookSensitivity();
-	
-	// Mouse look
-	this->direction += (this->monitorMiddle.x - sf::Mouse::getPosition().x) * 0.001f * SettingsHandler::getMouseSensitivity();
+		// Mouse look
+		this->direction += (this->monitorMiddle.x - sf::Mouse::getPosition().x) * 0.001f * SettingsHandler::getMouseSensitivity();
+	}
 
 	// Move mouse to the middle of the monitor
 	sf::Mouse::setPosition(this->monitorMiddle);
@@ -426,7 +426,7 @@ void Player::update(float deltaTime)
 		}
 	}
 
-	// Update die timer
+	// Update die animation timer
 	if (this->dead)
 	{
 		this->dieTimer += deltaTime;
@@ -438,12 +438,19 @@ void Player::update(float deltaTime)
 
 		// Player vertical position animation
 		float tempX = SMath::clamp(this->dieTimer / this->MAX_DIE_ANIMATION_TIME, 0.0f, 1.0f) * 0.5f;
-		float s1 = std::max(cos(tempX * 6.0f), 0.0f);
-		float s2 = std::max(cos(tempX * 10.0f + 3.0f), 0.0f) * 0.6f;
-		this->z = std::max(s1, s2) * 0.4f - 0.4f;
+		float s1 = std::max(std::cos(tempX * 6.0f), 0.0f);
+		float s2 = std::max(std::cos(tempX * 10.0f + 3.0f), 0.0f) * 0.6f;
+		this->z = std::max(s1, s2) * 0.9f - 0.9f;
 
 		// Player roll
 		this->roll = -std::pow(tempX * 2.0f, 2.2f);
+	}
+	// Update vertical position when attacking
+	else if(this->isAttackingTimer > 0.0f)
+	{
+		this->z = std::pow(
+			std::sin(this->isAttackingTimer / this->MAX_ATTACK_TIME * 3.1415f), 0.5f
+		) * 0.1f;
 	}
 
 	// First person animations
@@ -488,7 +495,7 @@ void Player::loseHealth()
 
 const bool Player::playerTriesToExit() const
 {
-	return this->tryToExit;
+	return this->tryToExit && !this->isHealthDepleted();
 }
 
 const sf::Vector2f Player::getPosition() const

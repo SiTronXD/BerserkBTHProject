@@ -28,3 +28,8 @@ void SMath::vectorNormalize(sf::Vector2f& vector)
 	if (length != 0.0f)
 		vector /= length;
 }
+
+sf::Vector2f SMath::lerp(const sf::Vector2f& v1, const sf::Vector2f& v2, const float& t)
+{
+	return v1 * (1.0f - t) + v2 * t;
+}

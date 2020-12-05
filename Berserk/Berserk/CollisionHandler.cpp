@@ -108,13 +108,29 @@ void CollisionHandler::update()
 	}
 
 
-	// Player is attacking
-	if (this->player.isAttacking())
+	for (int i = 0; i < this->entityHandler.getNumEnemies(); ++i)
 	{
-		for (int i = 0; i < this->entityHandler.getNumEnemies(); ++i)
-		{
-			Enemy* currentEnemy = this->entityHandler.getEnemy(i);
+		Enemy* currentEnemy = this->entityHandler.getEnemy(i);
 
+		// Check if the enemy is caught within the explosion
+		GrenadeExplosion* grenadeExplosion = this->player.getGrenadeExplosion();
+		if (grenadeExplosion)
+		{
+			// Check if the enemy is within range
+			sf::Vector2f grenadeToEnemy = currentEnemy->getPosition2D() -
+				grenadeExplosion->getPosition2D();
+			if (SMath::dot(grenadeToEnemy, grenadeToEnemy) <= grenadeExplosion->getKillRangeSqrd())
+			{
+				currentEnemy->caughtInExplosion(
+					grenadeExplosion->getEffectTimer(), 
+					grenadeExplosion->getPosition2D() + player.getLookDirectionVec() * 1.0f // Move target behind explosion
+				);
+			}
+		}
+
+		// Player is attacking
+		if (this->player.isAttacking())
+		{
 			sf::Vector2f playerToEnemy = currentEnemy->getPosition2D() - this->player.getPosition();
 
 			// If the enemy is close enough
@@ -128,7 +144,7 @@ void CollisionHandler::update()
 				);
 
 				// If player is looking towards enemy
-				if (deltaAngle <= this->player.getAttackConeAngle() * 0.5f && 
+				if (deltaAngle <= this->player.getAttackConeAngle() * 0.5f &&
 					!currentEnemy->isDead())
 				{
 					// Kill enemy

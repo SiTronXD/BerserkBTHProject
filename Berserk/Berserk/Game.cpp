@@ -9,38 +9,73 @@ void Game::handlePollEvent(const sf::Event& event)
             this->window.close();
     }
 
-    currentState->handlePollEvent(event);
+    if(this->currentState)
+        this->currentState->handlePollEvent(event);
 }
 
 void Game::update()
 {
-    // Change state if necessary
-    if(currentState->getSwitchToState() != State::NONE)
-        setState(currentState->getSwitchToState());
-
-    // Update
     float deltaTime = deltaTimeClock.restart().asSeconds();
-    currentState->update(deltaTime);
+
+    // Change state if necessary
+    if (this->currentState)
+    {
+        if (currentState->getSwitchToState() != State::NONE)
+            setState(currentState->getSwitchToState());
+
+        // Update state
+        currentState->update(deltaTime);
+    }
+
+    // Update transition color
+    if ((this->transitionAlpha > 0.0f && this->transitionDirection < 0) ||
+        (this->transitionAlpha <= 1.0f && this->transitionDirection > 0))
+    {
+        this->transitionAlpha += this->transitionDirection * TRANSITION_SPEED_SCALE * deltaTime;
+        this->transitionAlpha = SMath::clamp(this->transitionAlpha, 0.0f, 1.0f);
+
+        // Switch state
+        if (this->transitionAlpha >= 1.0f && this->transitionDirection > 0)
+        {
+            this->applyNewState();
+
+            this->transitionDirection = -1;
+        }
+
+        // Apply color
+        sf::Color newTransitionColor(255, 255, 255, 255 * this->transitionAlpha);
+        this->transitionSprite.setColor(newTransitionColor);
+    }
 }
 
 void Game::render()
 {
     this->window.clear();
 
-    currentState->render();
+    if(this->currentState)
+        currentState->render();
+    
+    this->window.draw(this->transitionSprite);
 
     this->window.display();
 }
 
 void Game::setState(State newState)
 {
+    this->stateToSwitchTo = newState;
+
+    this->transitionDirection = 1;
+}
+
+void Game::applyNewState()
+{
     delete currentState;
 
-    switch (newState)
+    switch (this->stateToSwitchTo)
     {
     case State::MAIN_MENU:
         currentState = new MainMenuState(window);
-            break;
+        break;
     case State::PLAY:
         currentState = new PlayState(window, gameStats);
         break;
@@ -63,18 +98,27 @@ void Game::setWindowIcon()
     this->window.setIcon(32, 32, iconImage.getPixelsPtr());
 }
 
+void Game::setupTransition()
+{
+    this->blackBoxTexture.loadFromFile("Resources/Textures/BlackBox.png");
+    this->transitionSprite.setTexture(this->blackBoxTexture);
+    ResTranslator::transformSprite(this->transitionSprite, 0, 0, ResTranslator::getVirtualWidth(), 1080);
+}
+
 Game::Game()
-    :   window(
-            sf::VideoMode(SettingsHandler::getWidth(), SettingsHandler::getHeight()), 
-            "Berserk", 
-            sf::Style::Titlebar | sf::Style::Close
-        ),
-        currentState(nullptr)
+    : window(
+        sf::VideoMode(SettingsHandler::getWidth(), SettingsHandler::getHeight()),
+        "Berserk",
+        sf::Style::Titlebar | sf::Style::Close
+    ),
+    currentState(nullptr),
+    transitionAlpha(1.0f),
+    transitionDirection(-1.0f)
 {
     srand((unsigned int) time(0));
 
     this->setWindowIcon();
-
+    this->setupTransition();
     this->setState(State::PLAY);
 }
 

@@ -52,7 +52,17 @@ void GrenadeExplosion::update(float deltaTime)
 		this->setSize(percent);
 
 		// Remove
-		if (percent <= 0.0f)
+		if (this->aliveTimer >= MAX_ALIVE_TIME)
 			this->flagShouldRemove();
 	}
+}
+
+float GrenadeExplosion::getKillRangeSqrd() const
+{
+	return this->KILL_RANGE * this->KILL_RANGE;
+}
+
+float GrenadeExplosion::getEffectTimer() const
+{
+	return this->aliveTimer / this->MAX_ALIVE_TIME;
 }

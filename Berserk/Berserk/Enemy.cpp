@@ -3,7 +3,7 @@
 #include "SMath.h"
 
 Enemy::Enemy(sf::Vector2f startPosition)
-	: dead(false)
+	: lastAttackFrameIndex(0), dead(false), doDamage(false), canMove(true)
 {
 	// Set position
 	this->setPosition(startPosition);
@@ -47,14 +47,17 @@ void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 			// Check if the player is close enough for the enemy to see
 			if (walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
 			{
-				SMath::vectorNormalize(walkDir);
+				if (this->canMove)
+				{
+					SMath::vectorNormalize(walkDir);
 
-				// Move new position
-				sf::Vector2f newPosition = this->getPosition2D();
-				newPosition += walkDir * MOVEMENT_SPEED * deltaTime;
+					// Move new position
+					sf::Vector2f newPosition = this->getPosition2D();
+					newPosition += walkDir * MOVEMENT_SPEED * deltaTime;
 
-				// Apply new position
-				this->setPosition(newPosition);
+					// Apply new position
+					this->setPosition(newPosition);
+				}
 
 				// Set walking animation
 				this->setAnimationIndex(0);
@@ -102,6 +105,31 @@ void Enemy::kill()
 
 	// Switch to the latest added animation
 	this->setAnimationIndex(this->getNrOfAnimations() - 1);
+}
+
+void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
+{
+	// Save last position
+	if (this->canMove)
+		this->lastPos = this->getPosition2D();
+
+	this->canMove = false;
+
+	// Kill the enemy when it is inside the explosion
+	if (effectTimer >= 0.5f)
+		this->kill();
+
+	// Move
+	float moveT = std::min(std::pow(std::sin(effectTimer * 3.1415), 1.0), 1.0) * 2.0f;
+	this->setPosition(SMath::lerp(this->lastPos, explosionPos, moveT));
+
+	// Set size
+	float newScale = 1.0f - moveT;
+	this->setWorldScale(sf::Vector2f(newScale, newScale));
+
+	// Move down to the ground
+	float newZ = -moveT;
+	this->setPosition(sf::Vector3f(this->getPosition2D().x, this->getPosition2D().y, newZ));
 }
 
 bool Enemy::isDoingDamage() const

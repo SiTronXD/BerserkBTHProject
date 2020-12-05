@@ -95,7 +95,7 @@ void main()
 	float oneOverDist = 1.0f / dist;
 	float fog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE - dist, 0.0, dist), 0.0, 1.0);
 	float halfWallHeight = 0.05 * oneOverDist;
-	float wallCameraHeightY = uv.y + u_cameraPosition.z * oneOverDist * 0.1f; // Where did this 0.1 come from? D:
+	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.5f) * oneOverDist * 0.1f; // Where did this 0.1 come from? D:
 	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
 
 	// Find wall uvs
@@ -105,7 +105,7 @@ void main()
 
 	// Choose correct U-value based on if the normal is close to the positive diagonal or not
 	float wallU = mix(min(hitPos.x, hitPos.y), max(hitPos.x, hitPos.y), isNormalCloseToPositiveDiagonal);
-	float wallV = (uv.y / halfWallHeight) * 0.5f + 0.5f + u_cameraPosition.z;
+	float wallV = (uv.y / halfWallHeight) * 0.5f + 0.5f + u_cameraPosition.z * 0.5f;
 	vec2 wallUV = vec2(wallU, 1.0f - wallV);
 
 	// Sample wall texture
@@ -136,7 +136,7 @@ void main()
 	float floorFog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE, 0.0, floorDist * 0.1f * 0.5f), 0.0, 1.0);
 	vec3 floorCol = texture2D(
 		u_floorTexture,
-		fract((camPos * MAP_SIZE + rayDir * floorDist * ((u_cameraPosition.z + 0.5f) * 2.0f)))
+		fract((camPos * MAP_SIZE + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
 	).rgb;
 
 
@@ -157,19 +157,25 @@ void main()
 	for(int i = 0; i < u_numEntities; i++)
 	{
 		// Convert position to normalized screen coordinates
-		vec2 camToTarget = vec2(u_entityPositions[i].x - u_cameraPosition.x, u_cameraPosition.y - u_entityPositions[i].y);
+		vec2 camToTarget = vec2(
+			u_entityPositions[i].x - u_cameraPosition.x, 
+			u_entityPositions[i].y - u_cameraPosition.y
+		);
 		float spriteDist = length(camToTarget);
 
 		vec2 camToTargetDir = camToTarget / spriteDist;
-		vec2 dir = vec2(cos(u_cameraRotation.x), sin(u_cameraRotation.x));
+		vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
 
-		float negateAngle = cross(vec3(camToTargetDir, 0.0f), vec3(dir, 0.0f)).z > 0.0f ? -1.0f : 1.0f;
-		float deltaAngle = acos(dot(dir, camToTargetDir)) * negateAngle;
+		float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
+		
+		// A minimum cosine value of 1 is given, since the value could be undefined if the dot
+		// product between the two unit vectors are above 1, because of precision errors
+		float deltaAngle = acos(min(dot(dir, camToTargetDir), 1.0f)) * negateAngle;
 
 		float oneOverSpriteDist = 1.0f / spriteDist;
 
 		float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
-		float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z*2.0f) * oneOverSpriteDist;
+		float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
 
 		// Sprite size
 		vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
@@ -184,6 +190,7 @@ void main()
 				1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
 			);
 
+			// Texture region
 			spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
 			spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
 
@@ -197,9 +204,10 @@ void main()
 
 				// Apply color
 				col = spriteCol.rgb;
-				//col = mix(col, spriteCol.rgb, sin(u_timer)*0.5f+0.5f);
 			}
 		}	
+
+		//col = vec3(deltaAngle * 1000.0f);
 	}
 
 	gl_FragColor = vec4(col, 1.0);
