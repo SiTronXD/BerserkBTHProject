@@ -21,12 +21,16 @@ private:
 	const int FIRST_PERSON_SPRITE_WIDTH = 192;
 	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
-	const float HP_DECREASE_AMOUNT = 10;
+	const float HP_DECREASE_AMOUNT = 100;
 	const float HP_INCREASE_AMOUNT = 5;
-	const float MOVEMENT_SPEED = 6.0f;
-	const float BERSERKER_MOVEMENT_SPEED = 10.0f;
+	const float MOVEMENT_SPEED_DEFAULT = 6.0f;
+	const float MOVEMENT_SPEED_BERSERKER = 9.0f;
+	const float MOVEMENT_SPEED_ATTACKING_SCALE = 1.7f;
 	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
 	const float MAX_ATTACK_DIST = 2.0f;
+	const float MAX_ATTACK_TIME = 0.5f;
+	const float MAX_DIE_ANIMATION_TIME = 0.9f;
+	const float MAX_POST_DIE_ANIMATION_TIME = 1.0f;
 
 	const float SWORD_SPRITE_SCALE = 10.0f;
 	const float MAX_ATTACKING_TIME = 1.0f;
@@ -61,9 +65,11 @@ private:
 
 	float x;
 	float y;
+	float z;
 	float lastFrameX;
 	float lastFrameY;
-	float direction; // Direction is in radians
+	float direction;	// Direction is in radians
+	float roll;			// Also in radians
 	float walkTimer;
 	float isAttackingTimer;
 	float berserkerActiveTimer;
@@ -71,6 +77,7 @@ private:
 	float berserkerCooldownTimer;
 	float berserkerAnimationAlpha;
 	float health;
+	float dieTimer;
 
 	bool tryToExit;
 	bool hasStartedAttackAnimation;
@@ -79,6 +86,7 @@ private:
 	bool startEndBerserkAnimation;
 	bool hasSpawnedGrenade;
 	bool berserkerIsActive;
+	bool dead;
 
 	void loadAnimations();
 	void spawnGrenade();
@@ -102,10 +110,12 @@ public:
 	const sf::Vector2f getWalkStep() const;
 	const sf::Vector2f getLastFramePosition() const;
 	const sf::Vector2f getLookDirectionVec() const;
-	const sf::Glsl::Vec3 getOrientation() const;
+	const sf::Glsl::Vec3 getPositionForRenderer() const;
+	const sf::Glsl::Vec2 getRotationForRenderer() const;
 
 	bool isAttacking() const;
 	bool isBerserkerActive() const;
+	bool isHealthDepleted() const;
 	bool isDead() const;
 
 	int getCurrentHealth() const;

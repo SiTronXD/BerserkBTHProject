@@ -91,10 +91,10 @@ void Player::spawnGrenade()
 	this->grenade = nullptr;
 	this->grenadeExplosion = nullptr;
 
-	float playerAngle = this->getOrientation().z;
-	sf::Vector2f direction = sf::Vector2f(cos(playerAngle), -sin(playerAngle));
-	sf::Vector2f spawnPos = this->getPosition() + direction;
-	this->grenade = new Grenade(spawnPos, direction);
+	// Place out and spawn
+	sf::Vector2f dirVec = sf::Vector2f(cos(this->direction), -sin(this->direction));
+	sf::Vector2f spawnPos = this->getPosition() + dirVec;
+	this->grenade = new Grenade(spawnPos, dirVec);
 }
 
 void Player::updateAnimationLogic(float deltaTime)
@@ -245,9 +245,9 @@ void Player::updateFpsSpritePosition()
 }
 
 Player::Player(int x, int y, EntityHandler& entityHandler)
-	: x(x), y(y), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), direction(0.0f), walkTimer(0.0f), 
-	isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), health(100.0f), tryToExit(false), 
-	hasStartedAttackAnimation(false), startThrowAnimation(false),
+	: x(x), y(y), z(0.0f), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), 
+	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), dieTimer(0.0f),
+	health(100.0f), tryToExit(false), hasStartedAttackAnimation(false), startThrowAnimation(false),
 	hasSpawnedGrenade(false), currentFpsAnimation(&swordIdleAnimation), 
 	currentBerserkAnimation(nullptr), grenade(nullptr)
 {
@@ -283,8 +283,14 @@ void Player::handleInput(float deltaTime)
 	// Attacking
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->isAttackingTimer <= 0.0f)
 	{
-		this->isAttackingTimer = 1.0f;
+		// Start timer
+		this->isAttackingTimer = this->MAX_ATTACK_TIME;
+
+		// Start animation
 		this->hasStartedAttackAnimation = false;
+
+		// Set direction
+		this->walkStep = sf::Vector2f(cos(direction), -sin(direction));
 	}
 
 	// Grenade
@@ -318,28 +324,37 @@ void Player::handleInput(float deltaTime)
 
 	sf::Vector2f forwardDir(std::cos(-this->direction), std::sin(-this->direction));
 	sf::Vector2f rightDir(-forwardDir.y, forwardDir.x);
-	walkStep = forwardDir * forwardInput + rightDir * rightInput;
-	SMath::vectorNormalize(walkStep);
 
-	if (SMath::dot(walkStep, walkStep) > 0.0f)
+	// Update the direction if the player is not attacking
+	if (this->isAttackingTimer <= 0.0f)
+		this->walkStep = forwardDir * forwardInput + rightDir * rightInput;
+
+	SMath::vectorNormalize(this->walkStep);
+
+	// Is the player walking?
+	if (SMath::dot(this->walkStep, this->walkStep) > 0.0f)
 		this->walkTimer += deltaTime;
 	else
 		this->walkTimer = 0.0f;
 
 	// Set current movement speed
-	float currentMovementSpeed = MOVEMENT_SPEED;
+	float currentMovementSpeed = MOVEMENT_SPEED_DEFAULT;
 	if (this->berserkerIsActive)
-		currentMovementSpeed = BERSERKER_MOVEMENT_SPEED;
+		currentMovementSpeed = MOVEMENT_SPEED_BERSERKER;
 
-	walkStep.x *= currentMovementSpeed * deltaTime;
-	walkStep.y *= currentMovementSpeed * deltaTime;
+	// Move faster if the player is attacking
+	if (this->isAttackingTimer > 0.0f)
+		currentMovementSpeed *= MOVEMENT_SPEED_ATTACKING_SCALE;
+
+	// Apply speed
+	this->walkStep.x *= currentMovementSpeed * deltaTime;
+	this->walkStep.y *= currentMovementSpeed * deltaTime;
 
 	// Move position
 	this->lastFrameX = this->x;
 	this->lastFrameY = this->y;
-	this->x += walkStep.x;
-	this->y += walkStep.y;
-
+	this->x += this->walkStep.x;
+	this->y += this->walkStep.y;
 
 	// Keyboard to turn the player
 	this->direction += (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) * 0.001f * SettingsHandler::getKeyboardLookSensitivity();
@@ -411,6 +426,26 @@ void Player::update(float deltaTime)
 		}
 	}
 
+	// Update die timer
+	if (this->dead)
+	{
+		this->dieTimer += deltaTime;
+		this->dieTimer = SMath::clamp(
+			this->dieTimer, 
+			0.0f, 
+			this->MAX_DIE_ANIMATION_TIME + this->MAX_POST_DIE_ANIMATION_TIME
+		);
+
+		// Player vertical position animation
+		float tempX = SMath::clamp(this->dieTimer / this->MAX_DIE_ANIMATION_TIME, 0.0f, 1.0f) * 0.5f;
+		float s1 = std::max(cos(tempX * 6.0f), 0.0f);
+		float s2 = std::max(cos(tempX * 10.0f + 3.0f), 0.0f) * 0.6f;
+		this->z = std::max(s1, s2) * 0.4f - 0.4f;
+
+		// Player roll
+		this->roll = -std::pow(tempX * 2.0f, 2.2f);
+	}
+
 	// First person animations
 	this->updateAnimationLogic(deltaTime);
 	this->updateFpsSpritePosition();
@@ -418,12 +453,15 @@ void Player::update(float deltaTime)
 
 void Player::render(sf::RenderWindow& window)
 {
-	// Hands
-	window.draw(this->handsSprite);
+	if (!this->dead)
+	{
+		// Hands
+		window.draw(this->handsSprite);
 
-	// Berserker armor
-	if (this->currentBerserkAnimation)
-		window.draw(this->berserkSprite);
+		// Berserker armor
+		if (this->currentBerserkAnimation)
+			window.draw(this->berserkSprite);
+	}
 }
 
 void Player::setPosition(sf::Vector2f newPos)
@@ -442,6 +480,10 @@ void Player::loseHealth()
 {
 	this->health -= HP_DECREASE_AMOUNT;
 	this->health = std::max(this->health, 0.0f);
+
+	// Flag dead
+	if (this->health <= 0.0f)
+		this->dead = true;
 }
 
 const bool Player::playerTriesToExit() const
@@ -469,9 +511,14 @@ const sf::Vector2f Player::getLookDirectionVec() const
 	return sf::Vector2f(std::cos(this->direction), -std::sin(this->direction));
 }
 
-const sf::Glsl::Vec3 Player::getOrientation() const
+const sf::Glsl::Vec3 Player::getPositionForRenderer() const
 {
-	return sf::Glsl::Vec3(x, y, direction);
+	return sf::Glsl::Vec3(x, y, z);
+}
+
+const sf::Glsl::Vec2 Player::getRotationForRenderer() const
+{
+	return sf::Glsl::Vec2(direction, roll);
 }
 
 bool Player::isAttacking() const
@@ -484,9 +531,15 @@ bool Player::isBerserkerActive() const
 	return this->berserkerIsActive;
 }
 
-bool Player::isDead() const
+bool Player::isHealthDepleted() const
 {
 	return this->health <= 0;
+}
+
+bool Player::isDead() const
+{
+	return this->isHealthDepleted() && 
+		this->dieTimer >= this->MAX_DIE_ANIMATION_TIME + this->MAX_POST_DIE_ANIMATION_TIME;
 }
 
 int Player::getCurrentHealth() const
