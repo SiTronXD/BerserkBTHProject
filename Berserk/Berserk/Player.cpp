@@ -431,8 +431,8 @@ void Player::update(float deltaTime)
 	{
 		this->dieTimer += deltaTime;
 		this->dieTimer = SMath::clamp(
-			this->dieTimer, 
-			0.0f, 
+			this->dieTimer,
+			0.0f,
 			this->MAX_DIE_ANIMATION_TIME + this->MAX_POST_DIE_ANIMATION_TIME
 		);
 
@@ -446,12 +446,14 @@ void Player::update(float deltaTime)
 		this->roll = -std::pow(tempX * 2.0f, 2.2f);
 	}
 	// Update vertical position when attacking
-	else if(this->isAttackingTimer > 0.0f)
+	else if (this->isAttackingTimer > 0.0f)
 	{
 		this->z = std::pow(
 			std::sin(this->isAttackingTimer / this->MAX_ATTACK_TIME * 3.1415f), 0.5f
 		) * 0.15f;
 	}
+	else
+		this->z = 0.0f;
 
 	// First person animations
 	this->updateAnimationLogic(deltaTime);

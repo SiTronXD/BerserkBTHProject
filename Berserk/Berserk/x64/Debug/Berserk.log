@@ -1,9 +1,2 @@
-﻿  Player.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(239,58): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,5): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,65): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,80): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(322,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(323,19): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+﻿  MapHandler.cpp
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

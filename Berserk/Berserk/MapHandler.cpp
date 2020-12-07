@@ -66,7 +66,8 @@ bool MapHandler::evaluatePixel(sf::Color currentPixel, sf::Color targetPixel)
 MapHandler::MapHandler(EntityHandler& entityHandler)
 {
 	// Load map texture
-	this->map.loadFromFile("Resources/Maps/TestLevel.png");
+	//this->map.loadFromFile("Resources/Maps/TestLevel.png");
+	this->map.loadFromFile("Resources/Maps/TestLevel2.png");
 
 	// Load entities and send them to the entityHandler
 	this->loadEntitiesFromMap(entityHandler);

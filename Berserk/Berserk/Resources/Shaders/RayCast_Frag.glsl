@@ -1,6 +1,7 @@
 #version 130
 
 #define MARCH_STEP_SIZE 0.001
+//#define MARCH_STEP_SIZE 0.000125
 #define MARCH_MAX_NUM_STEPS 1000
 
 #define TILE_WALL_COLOR vec3(1.0f)
@@ -69,10 +70,11 @@ void main()
 	// March
 	bool foundWall = false;
 	bool wallIsGoal = false;
+	float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
 	for(int i = 0; i < MARCH_MAX_NUM_STEPS && !foundWall; i++)
 	{
-		dist += MARCH_STEP_SIZE;
-		rayPos += rayDir * MARCH_STEP_SIZE;
+		dist += stepSize;
+		rayPos += rayDir * stepSize;
 
 		// Sample
 		vec3 foundCol = texture2D(u_mapTexture, rayPos).rgb;
@@ -93,9 +95,9 @@ void main()
 
 	// Fog and wall height
 	float oneOverDist = 1.0f / dist;
-	float fog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE - dist, 0.0, dist), 0.0, 1.0);
-	float halfWallHeight = 0.05 * oneOverDist;
-	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.5f) * oneOverDist * 0.1f; // Where did this 0.1 come from? D:
+	float fog = clamp(1.0f - (dist / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);
+	float halfWallHeight = (0.05 * 16.0f * ONE_OVER_MAP_SIZE.x) * oneOverDist;
+	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.8f) * oneOverDist * ONE_OVER_MAP_SIZE.x;
 	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
 
 	// Find wall uvs
@@ -133,10 +135,10 @@ void main()
 
 	// Sample floor texture
 	float floorDist = (0.80f / -uv.y);
-	float floorFog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE, 0.0, floorDist * 0.1f * 0.5f), 0.0, 1.0);
+	float floorFog = clamp(1.0f - ((floorDist * 0.8f * ONE_OVER_MAP_SIZE.x) / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);	// (floorDist * 0.1f * 0.5f * 16.0 / MAP_SIZE.x)
 	vec3 floorCol = texture2D(
 		u_floorTexture,
-		fract((camPos * MAP_SIZE + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
+		fract((camPos * MAP_SIZE * 0.92  + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
 	).rgb;
 
 
@@ -153,7 +155,7 @@ void main()
 	);
 
 	// Render entities
-	float currentPixelDepth = length((rayDir * dist) * MAP_SIZE);
+	float currentPixelDepth = length(rayDir * dist * MAP_SIZE);
 	for(int i = 0; i < u_numEntities; i++)
 	{
 		// Convert position to normalized screen coordinates
@@ -162,6 +164,7 @@ void main()
 			u_entityPositions[i].y - u_cameraPosition.y
 		);
 		float spriteDist = length(camToTarget);
+		//float spriteFog = clamp(1.0f - (spriteDist / (MARCH_MAX_NUM_STEPS * stepSize * MAP_SIZE.x)), 0.0, 1.0);
 
 		vec2 camToTargetDir = camToTarget / spriteDist;
 		vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
@@ -203,11 +206,9 @@ void main()
 				currentPixelDepth = spriteDist;
 
 				// Apply color
-				col = spriteCol.rgb;
+				col = spriteCol.rgb;// * spriteFog;
 			}
 		}	
-
-		//col = vec3(deltaAngle * 1000.0f);
 	}
 
 	gl_FragColor = vec4(col, 1.0);
