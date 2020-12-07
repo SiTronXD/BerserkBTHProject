@@ -1,7 +1,7 @@
 #include "UI.h"
 
 UI::UI(EntityHandler& entityHandler)
-	: entityHandler(entityHandler), collisionHandler(entityHandler.getCollisionHandler()), player(entityHandler.getPlayer()),
+	: entityHandler(entityHandler), player(entityHandler.getPlayer()),
 	updateDtTimer(1.0f), berserkerActiveTimer(0.0f), grenadeActiveTimer(0.0f),
 	damageTakenTimer(0.0f), showMessageTimer(0.0f)
 {
@@ -104,11 +104,11 @@ void UI::update(float deltaTime)
 	this->showMessageTimer = std::max(this->showMessageTimer, 0.0f);
 
 	// Set message
-	std::string collisionMsgText = this->collisionHandler.getUIMessage();
-	if (collisionMsgText != "")
+	std::string msgText = this->entityHandler.getUIMessage();
+	if (msgText != "")
 	{
 		this->showMessageTimer = MAX_SHOW_MESSAGE_TIME;
-		this->messageText.setString(collisionMsgText);
+		this->messageText.setString(msgText);
 		ResTranslator::transformText(this->messageText, 0, -300, 60);
 	}
 
@@ -164,7 +164,7 @@ void UI::render(sf::RenderWindow& window)
 	window.draw(this->healthIconSprite);
 
 	// Show exit text if necessary
-	if (collisionHandler.playerIsCloseToGoal())
+	if (entityHandler.playerIsCloseToGoal())
 		window.draw(this->enterGoalText);
 
 	// Damage taken

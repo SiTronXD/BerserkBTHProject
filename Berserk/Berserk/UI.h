@@ -4,7 +4,6 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "ResTranslator.h"
-#include "CollisionHandler.h"
 #include "Player.h"
 #include "EntityHandler.h"
 
@@ -40,7 +39,6 @@ private:
 	sf::Shader abilityIconShader;
 
 	EntityHandler& entityHandler;
-	CollisionHandler& collisionHandler;
 	Player& player;
 
 	float grenadeIconScale;

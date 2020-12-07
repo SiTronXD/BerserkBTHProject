@@ -9,8 +9,6 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 	const sf::Color ENEMY_SPAWN_POINT_COLOR = sf::Color(255, 0, 255, 255);
 	const sf::Color PLAYER_SPAWN_POINT_COLOR = sf::Color(0, 0, 255, 255);
 
-	CollisionHandler& collisionHandler = entityHandler.getCollisionHandler();
-
 	// Load image and size
 	sf::Image image(this->map.copyToImage());
 	unsigned int mapWidth = image.getSize().x;
@@ -25,7 +23,7 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 			
 			// Wall
 			if(this->evaluatePixel(pixelColor, WALL_COLOR))
-				collisionHandler.setWallAt(sf::Vector2i(x, y));
+				entityHandler.placeWall(sf::Vector2i(x, y));
 
 			// Goal
 			if (this->evaluatePixel(pixelColor, GOAL_COLOR))
@@ -33,7 +31,7 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 				entityHandler.placeGoal(sf::Vector2f(x + 0.5f, y + 0.5f));
 
 				// Set wall
-				collisionHandler.setWallAt(sf::Vector2i(x, y));
+				entityHandler.placeWall(sf::Vector2i(x, y));
 			}
 
 			// Collectible

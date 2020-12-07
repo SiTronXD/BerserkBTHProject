@@ -450,7 +450,7 @@ void Player::update(float deltaTime)
 	{
 		this->z = std::pow(
 			std::sin(this->isAttackingTimer / this->MAX_ATTACK_TIME * 3.1415f), 0.5f
-		) * 0.1f;
+		) * 0.15f;
 	}
 
 	// First person animations

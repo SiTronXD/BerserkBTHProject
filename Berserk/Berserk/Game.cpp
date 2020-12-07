@@ -43,7 +43,7 @@ void Game::update()
         }
 
         // Apply color
-        sf::Color newTransitionColor(255, 255, 255, 255 * this->transitionAlpha);
+        sf::Color newTransitionColor(255, 255, 255, (sf::Uint8) (255 * this->transitionAlpha));
         this->transitionSprite.setColor(newTransitionColor);
     }
 }
@@ -102,7 +102,13 @@ void Game::setupTransition()
 {
     this->blackBoxTexture.loadFromFile("Resources/Textures/BlackBox.png");
     this->transitionSprite.setTexture(this->blackBoxTexture);
-    ResTranslator::transformSprite(this->transitionSprite, 0, 0, ResTranslator::getVirtualWidth(), 1080);
+    ResTranslator::transformSprite(
+        this->transitionSprite, 
+        0, 
+        0, 
+        (float) ResTranslator::getVirtualWidth(), 
+        1080
+    );
 }
 
 Game::Game()
@@ -113,7 +119,7 @@ Game::Game()
     ),
     currentState(nullptr),
     transitionAlpha(1.0f),
-    transitionDirection(-1.0f)
+    transitionDirection(-1)
 {
     srand((unsigned int) time(0));
 

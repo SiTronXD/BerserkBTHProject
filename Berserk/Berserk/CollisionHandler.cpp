@@ -55,10 +55,10 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 	return newPos;
 }
 
-CollisionHandler::CollisionHandler(Player& player, Goal& goal, GameStatsHandler& gameStats, 
+CollisionHandler::CollisionHandler(GameStatsHandler& gameStats, 
 	EntityHandler& entityHandler)
-	: player(player), goal(goal), gameStats(gameStats), entityHandler(entityHandler), 
-	playerIsAtGoal(false)
+	: player(entityHandler.getPlayer()), goal(entityHandler.getGoal()), 
+	gameStats(gameStats), entityHandler(entityHandler), playerIsAtGoal(false)
 { }
 
 void CollisionHandler::update()
@@ -167,9 +167,9 @@ void CollisionHandler::update()
 	}
 }
 
-void CollisionHandler::setWallAt(sf::Vector2i pos)
+void CollisionHandler::placeWall(sf::Vector2i pos)
 {
-	if (pos.x >= 0 && pos.x < MAX_MAP_SIZE && pos.y >= 0 && pos.y < MAX_MAP_SIZE)
+	if (pos.x >= 0 && pos.x < this->MAX_MAP_SIZE && pos.y >= 0 && pos.y < this->MAX_MAP_SIZE)
 		this->mapWalls[pos.x][pos.y] = true;
 }
 
@@ -182,7 +182,7 @@ const std::string CollisionHandler::getUIMessage()
 	return lastFrameMessage;
 }
 
-const bool CollisionHandler::playerIsCloseToGoal() const
+bool CollisionHandler::playerIsCloseToGoal() const
 {
 	return this->playerIsAtGoal;
 }

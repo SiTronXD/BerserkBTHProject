@@ -9,13 +9,13 @@
 #include "CollisionHandler.h"
 #include "GameStatsHandler.h"
 
-class Renderer;
-
 class EntityHandler
 {
 private:
 	static const int MAX_NUM_COLLECTIBLES = 5;
 	static const int MAX_NUM_ENEMIES = 32;
+
+	sf::Color currentFogColor;
 
 	Player player;
 	Goal goal;
@@ -23,7 +23,6 @@ private:
 	Spawner spawner;
 	Collectible* collectibles[MAX_NUM_COLLECTIBLES] { };
 	Enemy* enemies[MAX_NUM_ENEMIES] { };
-	Renderer* renderer;
 
 	int nrOfCollectibles;
 	int nrOfEnemies;
@@ -36,10 +35,9 @@ public:
 	EntityHandler(GameStatsHandler& gameStats);
 	~EntityHandler();
 
-	void setRenderer(Renderer* renderer);
-
 	void placeGoal(sf::Vector2f goalPos);
 	void placePlayer(sf::Vector2f playerPos);
+	void placeWall(sf::Vector2i wallPos);
 	void addCollectible(sf::Vector2f newCollectiblePos);
 	void addEnemy(sf::Vector2f newEnemyPos);
 	void addEnemySpawnPoint(sf::Vector2f spawnPointPos);
@@ -55,8 +53,14 @@ public:
 
 	bool isPlayerTakingDamage() const;
 	bool playerHasLost() const;
+	bool playerIsCloseToGoal() const;
+
+	sf::Color getCurrentFogColor() const;
+
+	const std::string getUIMessage();
 
 	Player& getPlayer();
+	Goal& getGoal();
 	CollisionHandler& getCollisionHandler();
 	Collectible* getCollectible(int index);
 	Enemy* getEnemy(int index);

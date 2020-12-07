@@ -33,6 +33,9 @@ Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler)
 void Renderer::update(float deltaTime)
 {
 	this->timer += deltaTime;
+
+	// Update current fog color
+	this->setFogColor(this->entityHandler.getCurrentFogColor());
 }
 
 void Renderer::setFogColor(sf::Color color)

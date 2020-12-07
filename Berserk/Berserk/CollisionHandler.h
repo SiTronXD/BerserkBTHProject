@@ -32,12 +32,12 @@ private:
 		sf::Vector2f lastPos, sf::Vector2f walkStep, float halfCollisionBoxSize);
 
 public:
-	CollisionHandler(Player& player, Goal& goal, GameStatsHandler& gameStats, 
+	CollisionHandler(GameStatsHandler& gameStats, 
 		EntityHandler& entityHandler);
 
 	void update();
-	void setWallAt(sf::Vector2i pos);
+	void placeWall(sf::Vector2i pos);
 
 	const std::string getUIMessage();
-	const bool playerIsCloseToGoal() const;
+	bool playerIsCloseToGoal() const;
 };

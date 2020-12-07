@@ -1,5 +1,4 @@
 #include "EntityHandler.h"
-#include "Renderer.h"
 
 void EntityHandler::removeEnemy(int index)
 {
@@ -8,8 +7,8 @@ void EntityHandler::removeEnemy(int index)
 }
 
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
-	: player(4, 4, *this), collisionHandler(player, goal, gameStats, *this),
-	renderer(nullptr), nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
+	: player(4, 4, *this), collisionHandler(gameStats, *this),
+	nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
 { }
 
 EntityHandler::~EntityHandler()
@@ -23,11 +22,6 @@ EntityHandler::~EntityHandler()
 		delete this->enemies[i];
 }
 
-void EntityHandler::setRenderer(Renderer* renderer)
-{
-	this->renderer = renderer;
-}
-
 void EntityHandler::update(float deltaTime)
 {
 	this->player.handleInput(deltaTime);
@@ -35,9 +29,9 @@ void EntityHandler::update(float deltaTime)
 
 	// Set renderer fog color
 	if (this->player.isBerserkerActive())
-		this->renderer->setFogColor(sf::Color(255, 0, 0, 255));
+		this->currentFogColor = sf::Color(255, 0, 0, 255);
 	else
-		this->renderer->setFogColor(sf::Color(0, 0, 0, 255));
+		this->currentFogColor = sf::Color(0, 0, 0, 255);
 
 	// Update collectibles
 	for (int i = 0; i < this->nrOfCollectibles; ++i)
@@ -87,6 +81,11 @@ void EntityHandler::placePlayer(sf::Vector2f playerPos)
 	this->player.setPosition(playerPos);
 }
 
+void EntityHandler::placeWall(sf::Vector2i wallPos)
+{
+	this->collisionHandler.placeWall(wallPos);
+}
+
 void EntityHandler::addCollectible(sf::Vector2f newCollectiblePos)
 {
 	if(this->nrOfCollectibles < this->MAX_NUM_COLLECTIBLES)
@@ -129,9 +128,29 @@ bool EntityHandler::playerHasLost() const
 	return this->player.isDead();
 }
 
+bool EntityHandler::playerIsCloseToGoal() const
+{
+	return this->collisionHandler.playerIsCloseToGoal();
+}
+
+sf::Color EntityHandler::getCurrentFogColor() const
+{
+	return this->currentFogColor;
+}
+
+const std::string EntityHandler::getUIMessage()
+{
+	return this->collisionHandler.getUIMessage();
+}
+
 Player& EntityHandler::getPlayer()
 {
 	return this->player;
+}
+
+Goal& EntityHandler::getGoal()
+{
+	return this->goal;
 }
 
 CollisionHandler& EntityHandler::getCollisionHandler()
