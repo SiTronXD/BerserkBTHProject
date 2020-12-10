@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <string>
+
 class SettingsHandler
 {
 private:
@@ -7,15 +10,22 @@ private:
 	// 1920, 1080	16:9
 	// 1680, 720	21:9
 	// 2520, 1080	21:9	(2560, 1080)
-	static const unsigned int WINDOW_WIDTH = 1680;
-	static const unsigned int WINDOW_HEIGHT = 720;
-	static const float MOUSE_SENSITIVITY;
-	static const float KEYBOARD_LOOK_SENSITIVITY;
+	static unsigned int windowWidth;
+	static unsigned int windowHeight;
+	static float mouseSensitivity;
+	static float soundEffectsVolume;
+	static float musicVolume;
+	static bool fullscreen;
 
 public:
+	static void loadSettings();
+
 	static unsigned int getWidth();
 	static unsigned int getHeight();
 
 	static float getMouseSensitivity();
-	static float getKeyboardLookSensitivity();
+	static float getSoundEffectsVolumeScale();
+	static float getMusicVolumeScale();
+
+	static bool getIsFullscreen();
 };

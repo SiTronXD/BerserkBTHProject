@@ -1,2 +1,74 @@
-﻿  MapHandler.cpp
+﻿  Button.cpp
+  CollisionHandler.cpp
+  EntityHandler.cpp
+  Game.cpp
+  GameOverState.cpp
+  GameState.cpp
+  Main.cpp
+  MainMenuState.cpp
+  MapHandler.cpp
+  PlayState.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(13,95): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(13,65): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(60,126): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\PlayState.cpp(60,96): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Player.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(239,58): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,5): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,65): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(248,80): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(322,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(323,19): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Renderer.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(7,95): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(7,65): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(50,83): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Renderer.cpp(50,53): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  ResTranslator.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\ResTranslator.cpp(46,18): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  SettingsHandler.cpp
+  UI.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(52,94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(56,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(57,28): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(61,86): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(61,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(62,86): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(62,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(127,58): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\UI.cpp(136,57): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+  Generating Code...
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

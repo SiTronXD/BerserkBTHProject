@@ -88,6 +88,21 @@ void Game::applyNewState()
     }
 }
 
+void Game::applySettings()
+{
+    SettingsHandler::loadSettings();
+
+    sf::Uint32 windowStyle = SettingsHandler::getIsFullscreen() ?
+        sf::Style::Fullscreen : (sf::Style::Titlebar | sf::Style::Close);
+
+    // Create window with the new settings
+    this->window.create(
+        sf::VideoMode(SettingsHandler::getWidth(), SettingsHandler::getHeight()),
+        "Berserk",
+        windowStyle
+    );
+}
+
 void Game::setWindowIcon()
 {
     // Load image
@@ -112,17 +127,13 @@ void Game::setupTransition()
 }
 
 Game::Game()
-    : window(
-        sf::VideoMode(SettingsHandler::getWidth(), SettingsHandler::getHeight()),
-        "Berserk",
-        sf::Style::Titlebar | sf::Style::Close
-    ),
-    currentState(nullptr),
+    : currentState(nullptr),
     transitionAlpha(1.0f),
     transitionDirection(-1)
 {
     srand((unsigned int) time(0));
 
+    this->applySettings();
     this->setWindowIcon();
     this->setupTransition();
     this->setState(State::PLAY);

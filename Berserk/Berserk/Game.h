@@ -33,6 +33,7 @@ private:
 
 	void setState(State newState);
 	void applyNewState();
+	void applySettings();
 	void setWindowIcon();
 	void setupTransition();
 
