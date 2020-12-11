@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "ResTranslator.h"
 
@@ -11,6 +12,9 @@ private:
 	sf::Font font;
 	sf::Text text;
 	sf::Text outlineText;
+
+	sf::Sound soundPlayer;
+	sf::SoundBuffer buttonActivatedSound;
 
 	sf::Color defaultColor;
 
@@ -25,11 +29,12 @@ private:
 	bool lastFrameIsPressing;
 	bool isHovering;
 	bool activate;
+	bool playSoundWhenActivated;
 
 	void updateLook();
 
 public:
-	Button(float middleX, float middleY, std::string text);
+	Button(float middleX, float middleY, std::string text, bool playSoundWhenActivated = true);
 
 	void update(sf::Vector2i mousePos, bool mouseBeingHeldDown);
 	void render(sf::RenderWindow& window);

@@ -3,7 +3,7 @@
 MainMenuState::MainMenuState(sf::RenderWindow& window)
 	: GameState(window),
 	playButton(-650, -100, "PLAY"),
-	exitButton(-650,  150, "EXIT")
+	exitButton(-650,  150, "EXIT", false)
 {
 	//this->backgroundTexture.loadFromFile("Resources/Textures/MainMenuBackgroundTextureAlignment.png");
 	this->backgroundTexture.loadFromFile("Resources/Textures/MainMenuBackgroundTexture.png");

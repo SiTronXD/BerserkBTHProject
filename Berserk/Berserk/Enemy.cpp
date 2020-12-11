@@ -1,6 +1,7 @@
 #include <ctime>
 #include "Enemy.h"
 #include "SMath.h"
+#include "SettingsHandler.h"
 
 Enemy::Enemy(sf::Vector2f startPosition)
 	: lastFramePos(startPosition), walkStep(0.0f, 0.0f),
@@ -27,6 +28,10 @@ Enemy::Enemy(sf::Vector2f startPosition)
 		sf::IntRect(64 + 32, 64 + 32 * this->enemyType, 32, 32),
 	};
 	this->addAnimation(Animation(2, attackIntRects, 0.25f, true));
+
+	// Sounds
+	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
+	this->deadSound.loadFromFile("Resources/Sounds/enemyDead.wav");
 }
 
 void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
@@ -89,25 +94,35 @@ void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 	}
 }
 
-void Enemy::kill()
+void Enemy::kill(bool playDeadSound)
 {
-	this->dead = true;
-
-	// Add death animation
-	sf::IntRect deadRect(32, 64 + 32*enemyType, 32, 32);
-
-	// Flip dead rect if the previous rect was flipped
-	if (this->getTextureIntRect().left > 16)
+	if (!this->dead)
 	{
-		deadRect.left = 64;
-		deadRect.width = -32;
+		this->dead = true;
+
+		// Add death animation
+		sf::IntRect deadRect(32, 64 + 32 * enemyType, 32, 32);
+
+		// Flip dead rect if the previous rect was flipped
+		if (this->getTextureIntRect().left > 16)
+		{
+			deadRect.left = 64;
+			deadRect.width = -32;
+		}
+
+		sf::IntRect deadRects[1]{ deadRect };
+		this->addAnimation(Animation(1, deadRects, 1.0f, false));
+
+		// Switch to the latest added animation
+		this->setAnimationIndex(this->getNrOfAnimations() - 1);
+
+		// Sound
+		if (playDeadSound)
+		{
+			this->soundPlayer.setBuffer(this->deadSound);
+			this->soundPlayer.play();
+		}
 	}
-
-	sf::IntRect deadRects[1]{ deadRect };
-	this->addAnimation(Animation(1, deadRects, 1.0f, false));
-
-	// Switch to the latest added animation
-	this->setAnimationIndex(this->getNrOfAnimations() - 1);
 }
 
 void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
@@ -120,7 +135,7 @@ void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
 
 	// Kill the enemy when it is inside the explosion
 	if (effectTimer >= 0.5f)
-		this->kill();
+		this->kill(false);
 
 	// Move
 	float moveT = std::min(std::pow(std::sin(effectTimer * 3.1415), 1.0), 1.0) * 2.0f;
@@ -152,7 +167,7 @@ float Enemy::getCollisionBoxSize() const
 
 bool Enemy::isDoingDamage() const
 {
-	return this->doDamage;
+	return this->doDamage && this->canMove;
 }
 
 bool Enemy::isDead() const

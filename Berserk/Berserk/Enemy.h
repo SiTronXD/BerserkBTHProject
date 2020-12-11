@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include "RenderEntity.h"
 
 class Enemy : public RenderEntity
@@ -13,6 +14,9 @@ private:
 	sf::Vector2f lastFramePos;
 	sf::Vector2f walkStep;
 
+	sf::Sound soundPlayer;
+	sf::SoundBuffer deadSound;
+
 	int enemyType;
 	int lastAttackFrameIndex;
 
@@ -25,7 +29,7 @@ public:
 
 	void update(float deltaTime, sf::Vector2f targetPosition);
 
-	void kill();
+	void kill(bool playDeadSound = true);
 	void caughtInExplosion(float effectTimer, sf::Vector2f explosionPos);
 
 	sf::Vector2f getLastFramePosition() const;

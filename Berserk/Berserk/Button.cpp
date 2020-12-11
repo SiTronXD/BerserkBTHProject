@@ -17,16 +17,22 @@ void Button::updateLook()
 	}
 }
 
-Button::Button(float middleX, float middleY, std::string text)
+Button::Button(float middleX, float middleY, std::string text, bool playSoundWhenActivated)
 	: middleX(middleX), middleY(middleY), isPressing(false), 
 	lastFrameIsPressing(false), isHovering(false), activate(false),
-	offsetSize(4), characterSize(DEFAULT_CHARACTER_SIZE), defaultColor(sf::Color::Red), buttonText(text)
+	offsetSize(4), characterSize(DEFAULT_CHARACTER_SIZE), 
+	defaultColor(sf::Color::Red), buttonText(text), playSoundWhenActivated(playSoundWhenActivated)
 {
+	// Text
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 	this->text.setFont(this->font);
 	this->text.setFillColor(sf::Color::Red);
 	this->outlineText.setFont(this->font);
 	this->outlineText.setFillColor(sf::Color::White);
+
+	// Sound
+	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
+	this->buttonActivatedSound.loadFromFile("Resources/Sounds/buttonActivated.wav");
 
 	this->set(middleX, middleY, text);
 }
@@ -40,9 +46,16 @@ void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
 		this->isPressing = mouseBeingHeldDown;
 
 		// Just released mouse button
-		if (!this->isPressing && this->lastFrameIsPressing)
+		if (!this->isPressing && this->lastFrameIsPressing && !this->activate)
 		{
 			this->activate = true;
+
+			// Sound
+			if (this->playSoundWhenActivated)
+			{
+				this->soundPlayer.setBuffer(this->buttonActivatedSound);
+				this->soundPlayer.play();
+			}
 		}
 	}
 	else

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <iostream>
@@ -46,17 +47,18 @@ private:
 	sf::Sprite berserkSprite;
 	sf::Sprite handsSprite;
 
+	sf::Sound soundPlayer;
+	sf::SoundBuffer swingSwordSound;
+	sf::SoundBuffer startSwingingSwordSound;
+	sf::SoundBuffer throwGrenadeSound;
+
 	sf::Vector2i monitorMiddle;
 	sf::Vector2f swordPosition;
 	sf::Vector2f walkStep;
 
 	Animation* currentFpsAnimation;
 	Animation* currentBerserkAnimation;
-	Animation swordIdleAnimation;
-	Animation swordAttackAnimation;
-	Animation grenadeThrowAnimation;
-	Animation startBerserkAnimation;
-	Animation endBerserkAnimation;
+	Animation anims[5];
 
 	EntityHandler& entityHandler;
 
@@ -89,9 +91,11 @@ private:
 	bool dead;
 
 	void loadAnimations();
+	void loadSounds();
 	void spawnGrenade();
 	void updateAnimationLogic(float deltaTime);
 	void updateFpsSpritePosition();
+	void playSound(sf::SoundBuffer& sfx);
 
 public:
 	Player(int x, int y, EntityHandler& entityHandler);

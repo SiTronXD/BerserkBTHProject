@@ -9,6 +9,7 @@ private:
 
 	int numTextureRects;
 	int currentTextureRectIndex;
+	int lastFrameTextureRectIndex;
 
 	float frameTime;
 	float timer;
@@ -31,4 +32,5 @@ public:
 	const sf::IntRect& getCurrentRect() const;
 	bool isDone() const;
 	int getCurrentRectIndex() const;
+	int getLastFrameRectIndex() const;
 };

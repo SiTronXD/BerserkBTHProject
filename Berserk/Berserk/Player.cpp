@@ -1,11 +1,20 @@
 #include "Player.h"
 #include "EntityHandler.h"
 
+enum PLAYER_ANIM
+{
+	SWORD_IDLE = 0,
+	SWORD_ATTACK = 1,
+	GRENADE_THROW = 2,
+	START_BERSERK = 3,
+	END_BERSERK = 4
+};
+
 void Player::loadAnimations()
 {
 	// Load idle animation
 	sf::IntRect swordIdleTextureRects[1]{ sf::IntRect(0, 0, FIRST_PERSON_SPRITE_WIDTH, FIRST_PERSON_SPRITE_HEIGHT) };
-	this->swordIdleAnimation.init(
+	this->anims[PLAYER_ANIM::SWORD_IDLE].init(
 		1,
 		swordIdleTextureRects,
 		1.0f,
@@ -22,7 +31,7 @@ void Player::loadAnimations()
 		swordAttackTextureRects[i].width = FIRST_PERSON_SPRITE_WIDTH;
 		swordAttackTextureRects[i].height = FIRST_PERSON_SPRITE_HEIGHT;
 	}
-	this->swordAttackAnimation.init(
+	this->anims[PLAYER_ANIM::SWORD_ATTACK].init(
 		NUM_SWORD_ATTACK_TEXTURE_RECTS,
 		swordAttackTextureRects,
 		0.08f,
@@ -39,7 +48,7 @@ void Player::loadAnimations()
 		grenadeThrowTextureRects[i].width = FIRST_PERSON_SPRITE_WIDTH;
 		grenadeThrowTextureRects[i].height = FIRST_PERSON_SPRITE_HEIGHT;
 	}
-	this->grenadeThrowAnimation.init(
+	this->anims[PLAYER_ANIM::GRENADE_THROW].init(
 		NUM_GRENADE_THROW_TEXTURE_RECTS,
 		grenadeThrowTextureRects,
 		0.11f,
@@ -56,7 +65,7 @@ void Player::loadAnimations()
 		startBerserkTextureRects[i].width = BERSERK_SPRITE_WIDTH;
 		startBerserkTextureRects[i].height = BERSERK_SPRITE_HEIGHT;
 	}
-	this->startBerserkAnimation.init(
+	this->anims[PLAYER_ANIM::START_BERSERK].init(
 		NUM_START_BERSERK_TEXTURE_RECTS,
 		startBerserkTextureRects,
 		0.08f,
@@ -73,7 +82,7 @@ void Player::loadAnimations()
 		endBerserkTextureRects[i].width = BERSERK_SPRITE_WIDTH;
 		endBerserkTextureRects[i].height = BERSERK_SPRITE_HEIGHT;
 	}
-	this->endBerserkAnimation.init(
+	this->anims[PLAYER_ANIM::END_BERSERK].init(
 		NUM_END_BERSERK_TEXTURE_RECTS,
 		endBerserkTextureRects,
 		0.08f,
@@ -81,6 +90,14 @@ void Player::loadAnimations()
 	);
 
 	this->berserkSprite.setTexture(startBerserkTextureSheet);
+}
+
+void Player::loadSounds()
+{
+	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
+	this->swingSwordSound.loadFromFile("Resources/Sounds/swingSword.wav");
+	this->startSwingingSwordSound.loadFromFile("Resources/Sounds/startSwingingSword.wav");
+	this->throwGrenadeSound.loadFromFile("Resources/Sounds/grenadeThrown.wav");
 }
 
 void Player::spawnGrenade()
@@ -109,19 +126,19 @@ void Player::updateAnimationLogic(float deltaTime)
 		this->currentBerserkAnimation->update(deltaTime);
 
 	// Switch from attack animation to idle animation
-	if (this->currentFpsAnimation == &this->swordAttackAnimation &&
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK] &&
 		this->currentFpsAnimation->isDone())
 	{
-		this->currentFpsAnimation = &this->swordIdleAnimation;
+		this->currentFpsAnimation = &this->anims[PLAYER_ANIM::SWORD_IDLE];
 	}
 
 	// Switch to attack animation
 	if (this->isAttackingTimer > 0.0f && !hasStartedAttackAnimation && 
-		this->currentFpsAnimation != &this->swordAttackAnimation)
+		this->currentFpsAnimation != &this->anims[PLAYER_ANIM::SWORD_ATTACK])
 	{
 		this->hasStartedAttackAnimation = true;
 
-		this->currentFpsAnimation = &this->swordAttackAnimation;
+		this->currentFpsAnimation = &this->anims[PLAYER_ANIM::SWORD_ATTACK];
 		this->currentFpsAnimation->reset();
 
 		// Set texture
@@ -129,13 +146,13 @@ void Player::updateAnimationLogic(float deltaTime)
 	}
 
 	// Switch to grenade throw animation
-	if (this->startThrowAnimation && this->currentFpsAnimation != &this->grenadeThrowAnimation)
+	if (this->startThrowAnimation && this->currentFpsAnimation != &this->anims[PLAYER_ANIM::GRENADE_THROW])
 	{
 		this->startThrowAnimation = false;
 		this->hasSpawnedGrenade = false;
 
 		// Set and reset animation
-		this->currentFpsAnimation = &this->grenadeThrowAnimation;
+		this->currentFpsAnimation = &this->anims[PLAYER_ANIM::GRENADE_THROW];
 		this->currentFpsAnimation->reset();
 
 		// Set texture
@@ -143,7 +160,7 @@ void Player::updateAnimationLogic(float deltaTime)
 	}
 
 	// Spawn grenade if the animation has passed the correct index
-	if (this->currentFpsAnimation == &this->grenadeThrowAnimation && 
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::GRENADE_THROW] &&
 		this->currentFpsAnimation->getCurrentRectIndex() >= 2 && !hasSpawnedGrenade)
 	{
 		hasSpawnedGrenade = true;
@@ -153,20 +170,22 @@ void Player::updateAnimationLogic(float deltaTime)
 	}
 
 	// Switch away from grenade throw animation
-	if (this->currentFpsAnimation == &this->grenadeThrowAnimation && this->currentFpsAnimation->isDone())
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::GRENADE_THROW] &&
+		this->currentFpsAnimation->isDone())
 	{
-		this->currentFpsAnimation = &this->swordIdleAnimation;
+		this->currentFpsAnimation = &this->anims[PLAYER_ANIM::SWORD_IDLE];
 
 		// Set texture
 		this->handsSprite.setTexture(this->swordTextureSheet);
 	}
 
 	// Start start berserk animation
-	if (this->startStartBerserkAnimation && this->currentBerserkAnimation != &this->startBerserkAnimation)
+	if (this->startStartBerserkAnimation && 
+		this->currentBerserkAnimation != &this->anims[PLAYER_ANIM::START_BERSERK])
 	{
 		this->startStartBerserkAnimation = false;
 
-		this->currentBerserkAnimation = &this->startBerserkAnimation;
+		this->currentBerserkAnimation = &this->anims[PLAYER_ANIM::START_BERSERK];
 		this->currentBerserkAnimation->reset();
 
 		this->berserkSprite.setTexture(startBerserkTextureSheet);
@@ -174,34 +193,50 @@ void Player::updateAnimationLogic(float deltaTime)
 
 	// Start end berserk animation
 	if (this->startEndBerserkAnimation && 
-		this->currentBerserkAnimation == &this->startBerserkAnimation)
+		this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::START_BERSERK])
 	{
 		this->startEndBerserkAnimation = false;
 
-		this->currentBerserkAnimation = &this->endBerserkAnimation;
+		this->currentBerserkAnimation = &this->anims[PLAYER_ANIM::END_BERSERK];
 		this->currentBerserkAnimation->reset();
 
 		this->berserkSprite.setTexture(endBerserkTextureSheet);
 	}
 	// Remove animation if it is done
-	else if (this->currentBerserkAnimation == &this->endBerserkAnimation &&
+	else if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::END_BERSERK] &&
 		this->currentBerserkAnimation->isDone())
 	{
 		this->currentBerserkAnimation = nullptr;
 	}
 
 	// Activate berserker powerups
-	if (this->currentBerserkAnimation == &this->startBerserkAnimation &&
+	if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::START_BERSERK] &&
 		this->currentBerserkAnimation->getCurrentRectIndex() >= 2)
 	{
 		this->berserkerIsActive = true;
 	}
 
 	// Deactivate berserker powerups
-	if (this->currentBerserkAnimation == &this->endBerserkAnimation &&
+	if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::END_BERSERK] &&
 		this->currentBerserkAnimation->getCurrentRectIndex() >= 2)
 	{
 		this->berserkerIsActive = false;
+	}
+
+	// Play swing sound
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK] &&
+		this->currentFpsAnimation->getCurrentRectIndex() >= 1 && 
+		this->currentFpsAnimation->getLastFrameRectIndex() < 1)
+	{
+		this->playSound(this->swingSwordSound);
+	}
+
+	// Play throw grenade sound
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::GRENADE_THROW] &&
+		this->currentFpsAnimation->getCurrentRectIndex() >= 2 &&
+		this->currentFpsAnimation->getLastFrameRectIndex() < 2)
+	{
+		this->playSound(this->throwGrenadeSound);
 	}
 }
 
@@ -212,7 +247,7 @@ void Player::updateFpsSpritePosition()
 	this->swordPosition.y += sin(walkTimer * 7.0f * 2.0f) * 30;
 
 	// Regular position if the grenade animation is playing
-	if (this->currentFpsAnimation == &this->grenadeThrowAnimation)
+	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::GRENADE_THROW])
 		this->swordPosition = sf::Vector2f(0, 540 - 64 * SWORD_SPRITE_SCALE / 2);
 
 	// Move to fit screen
@@ -244,11 +279,17 @@ void Player::updateFpsSpritePosition()
 		this->berserkSprite.setTextureRect(this->currentBerserkAnimation->getCurrentRect());
 }
 
+void Player::playSound(sf::SoundBuffer& sfx)
+{
+	this->soundPlayer.setBuffer(sfx);
+	this->soundPlayer.play();
+}
+
 Player::Player(int x, int y, EntityHandler& entityHandler)
 	: x(x), y(y), z(0.0f), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), 
 	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), dieTimer(0.0f),
 	health(100.0f), tryToExit(false), hasStartedAttackAnimation(false), startThrowAnimation(false),
-	hasSpawnedGrenade(false), currentFpsAnimation(&swordIdleAnimation), 
+	hasSpawnedGrenade(false), currentFpsAnimation(&this->anims[PLAYER_ANIM::SWORD_IDLE]),
 	currentBerserkAnimation(nullptr), grenade(nullptr)
 {
 	this->monitorMiddle = sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 2);
@@ -262,8 +303,8 @@ Player::Player(int x, int y, EntityHandler& entityHandler)
 	this->swordTextureSheet.loadFromFile("Resources/Textures/firstPersonSwordTexture.png");
 	this->handsSprite.setTexture(this->swordTextureSheet);
 
-	// Load animations
 	this->loadAnimations();
+	this->loadSounds();
 
 	// Transform sprite
 	this->updateFpsSpritePosition();
@@ -291,6 +332,8 @@ void Player::handleInput(float deltaTime)
 
 		// Set direction
 		this->walkStep = sf::Vector2f(cos(direction), -sin(direction));
+
+		this->playSound(this->startSwingingSwordSound);
 	}
 
 	// Grenade
@@ -378,19 +421,19 @@ void Player::update(float deltaTime)
 
 	// Update open berserker timer
 	if (this->berserkerActiveTimer <= 0.0f && !this->startEndBerserkAnimation && 
-		this->currentBerserkAnimation == &this->startBerserkAnimation)
+		this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::START_BERSERK])
 	{
 		this->startEndBerserkAnimation = true;
 	}
 
 	// Update berserker ended timer
-	if (this->currentBerserkAnimation == &this->startBerserkAnimation && 
+	if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::START_BERSERK] &&
 		this->currentBerserkAnimation->isDone())
 	{
 		this->berserkerAnimationAlpha -= deltaTime * BERSERKER_ALPHA_ANIMATION_TIME_SCALE;
 		this->berserkerAnimationAlpha = SMath::clamp(this->berserkerAnimationAlpha, 0.0f, 1.0f);
 	}
-	else if(this->currentBerserkAnimation == &this->endBerserkAnimation && this->berserkerAnimationAlpha < 1.0f)
+	else if(this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::END_BERSERK] && this->berserkerAnimationAlpha < 1.0f)
 	{
 		this->berserkerAnimationAlpha += deltaTime * BERSERKER_ALPHA_ANIMATION_TIME_SCALE;
 		this->berserkerAnimationAlpha = SMath::clamp(this->berserkerAnimationAlpha, 0.0f, 1.0f);
@@ -532,7 +575,7 @@ const sf::Glsl::Vec2 Player::getRotationForRenderer() const
 
 bool Player::isAttacking() const
 {
-	return this->currentFpsAnimation == &this->swordAttackAnimation;
+	return this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK];
 }
 
 bool Player::isBerserkerActive() const

@@ -24,8 +24,8 @@ public:
 	static unsigned int getHeight();
 
 	static float getMouseSensitivity();
-	static float getSoundEffectsVolumeScale();
-	static float getMusicVolumeScale();
+	static float getSoundEffectsVolume();
+	static float getMusicVolume();
 
 	static bool getIsFullscreen();
 };

@@ -1,5 +1,6 @@
 #include "SettingsHandler.h"
 #include <fstream>
+#include <SFML/Window.hpp>
 
 unsigned int SettingsHandler::windowWidth;
 unsigned int SettingsHandler::windowHeight;
@@ -36,20 +37,28 @@ void SettingsHandler::loadSettings()
 				std::getline(in, currentLine);
 
 				fullscreen = (currentLine == "yes");
+
+				if (fullscreen)
+				{
+					windowWidth = sf::VideoMode::getDesktopMode().width;
+					windowHeight = sf::VideoMode::getDesktopMode().height;
+				}
 			}
 			// Window width
 			else if (currentLine == "<Window Width>")
 			{
 				std::getline(in, currentLine);
 
-				windowWidth = std::stoi(currentLine);
+				if(!fullscreen)
+					windowWidth = std::stoi(currentLine);
 			}
 			// Window height
 			else if (currentLine == "<Window Height>")
 			{
 				std::getline(in, currentLine);
 
-				windowHeight = std::stoi(currentLine);
+				if (!fullscreen)
+					windowHeight = std::stoi(currentLine);
 			}
 			// Sound effects volume
 			else if (currentLine == "<Sound Effects Volume>")
@@ -94,12 +103,12 @@ bool SettingsHandler::getIsFullscreen()
 	return fullscreen;
 }
 
-float SettingsHandler::getSoundEffectsVolumeScale()
+float SettingsHandler::getSoundEffectsVolume()
 {
-	return soundEffectsVolume * 0.01f;
+	return soundEffectsVolume;
 }
 
-float SettingsHandler::getMusicVolumeScale()
+float SettingsHandler::getMusicVolume()
 {
-	return musicVolume * 0.01f;
+	return musicVolume;
 }

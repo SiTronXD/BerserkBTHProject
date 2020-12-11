@@ -7,12 +7,12 @@ void Animation::cleanUpMemory()
 
 Animation::Animation()
 	: numTextureRects(0), textureRects(nullptr), frameTime(0), 
-	currentTextureRectIndex(0), timer(0), repeat(true)
+	currentTextureRectIndex(0), lastFrameTextureRectIndex(0), timer(0), repeat(true)
 { }
 
 Animation::Animation(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat)
 	: numTextureRects(0), textureRects(nullptr), frameTime(0),
-	currentTextureRectIndex(0), timer(0), repeat(true)
+	currentTextureRectIndex(0), lastFrameTextureRectIndex(0), timer(0), repeat(true)
 {
 	this->init(numTextureRects, textureRects, frameTime, repeat);
 }
@@ -57,6 +57,8 @@ void Animation::update(float deltaTime)
 {
 	this->timer += deltaTime;
 	
+	this->lastFrameTextureRectIndex = this->currentTextureRectIndex;
+
 	// Switch frame
 	if (this->timer >= this->frameTime)
 	{
@@ -96,4 +98,9 @@ bool Animation::isDone() const
 int Animation::getCurrentRectIndex() const
 {
 	return this->currentTextureRectIndex;
+}
+
+int Animation::getLastFrameRectIndex() const
+{
+	return this->lastFrameTextureRectIndex;
 }
