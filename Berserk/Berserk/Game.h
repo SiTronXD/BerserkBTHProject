@@ -1,8 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
-
 #include "MainMenuState.h"
 #include "PlayState.h"
 #include "GameOverState.h"

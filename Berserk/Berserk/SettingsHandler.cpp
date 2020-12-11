@@ -1,4 +1,5 @@
 #include "SettingsHandler.h"
+#include <iostream>
 #include <fstream>
 #include <SFML/Window.hpp>
 

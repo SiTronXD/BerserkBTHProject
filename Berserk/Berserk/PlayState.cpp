@@ -1,6 +1,4 @@
 #include "PlayState.h"
-#include <iostream>
-
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	: GameState(window), entityHandler(gameStats), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
 	ui(entityHandler), gameStats(gameStats)

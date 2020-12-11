@@ -1,18 +1,27 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include "RenderEntity.h"
-#include <iostream>
+#include "SettingsHandler.h"
 
 class GrenadeExplosion : public RenderEntity
 {
 private:
 	const float MAX_GROW_TIME = 0.5f;
 	const float MAX_SHRINK_TIME = 0.5f;
-	const float MAX_ALIVE_TIME = 4.0f;
+	const float MAX_ALIVE_TIME = 3.0f;
 	const float KILL_RANGE = 8.0f;
 
-	float aliveTimer;
+	sf::Sound soundPlayer;
+	sf::Sound enemyDiesSoundPlayer;
+	sf::SoundBuffer explosionSound;
+	sf::SoundBuffer enemyDiedSound;
 
+	float aliveTimer;
+	float enemyDiedSoundTimer;
+	float nextEnemyDiedSoundMaxTime;
+
+	void setRandomEnemyDiedSoundTime();
 	void setSize(float percent);
 
 public:

@@ -156,6 +156,7 @@ void main()
 
 	// Render entities
 	float currentPixelDepth = length(rayDir * dist * MAP_SIZE);
+	vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
 	for(int i = 0; i < u_numEntities; i++)
 	{
 		// Convert position to normalized screen coordinates
@@ -164,51 +165,59 @@ void main()
 			u_entityPositions[i].y - u_cameraPosition.y
 		);
 		float spriteDist = length(camToTarget);
-		//float spriteFog = clamp(1.0f - (spriteDist / (MARCH_MAX_NUM_STEPS * stepSize * MAP_SIZE.x)), 0.0, 1.0);
 
-		vec2 camToTargetDir = camToTarget / spriteDist;
-		vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
-
-		float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
-		
-		// A minimum cosine value of 1 is given, since the value could be undefined if the dot
-		// product between the two unit vectors are above 1, because of precision errors
-		float deltaAngle = acos(min(dot(dir, camToTargetDir), 1.0f)) * negateAngle;
-
-		float oneOverSpriteDist = 1.0f / spriteDist;
-
-		float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
-		float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
-
-		// Sprite size
-		vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
-
-		// Is pixel close enough to the sprite?
-		if(abs(uv.x - screenPosX) <= spriteSize.x && 
-			abs(uv.y - screenPosY) <= spriteSize.y && spriteDist < currentPixelDepth)
+		// Check if the sprite is within range of the camera
+		if(spriteDist < currentPixelDepth)
 		{
-			// Sprite texture coordinates
-			vec2 spriteUV = vec2(
-				(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
-				1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
-			);
+			vec2 camToTargetDir = camToTarget / spriteDist;
 
-			// Texture region
-			spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
-			spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+			float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
+		
+			// The cosine value is clamped, since the value could be undefined if the dot
+			// product between the two unit vectors are outside the range [-1, 1], because of precision errors
+			float deltaAngle = acos(clamp(dot(dir, camToTargetDir), -1.0f, 1.0f)) * negateAngle;
 
-			vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
+			float oneOverSpriteDist = 1.0f / max(spriteDist, 0.001f);
 
-			// If pixel is not transparent
-			if(spriteCol.a > 0.0f)
+			float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
+			float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
+
+			// Sprite size
+			vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
+
+			// Is pixel close enough to the sprite?
+			if(abs(uv.x - screenPosX) <= spriteSize.x && 
+				abs(uv.y - screenPosY) <= spriteSize.y)
 			{
-				// Update depth
-				currentPixelDepth = spriteDist;
+				// Sprite texture coordinates
+				vec2 spriteUV = vec2(
+					(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
+					1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
+				);
 
-				// Apply color
-				col = spriteCol.rgb;// * spriteFog;
+				// Texture region
+				spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+
+				// This seems to fix a rendering glitch where sometimes a line of a sprite would show up
+				// somewhere in the upper half of the screen
+				//spriteUV.xy *= vec2(32, 32) * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				//spriteUV.xy += vec2(32, 64) * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				
+
+				vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
+
+				// If pixel is not transparent
+				if(spriteCol.a > 0.0f)
+				{
+					// Update depth
+					currentPixelDepth = spriteDist;
+
+					// Apply color
+					col = spriteCol.rgb;// * spriteFog;
+				}
 			}
-		}	
+		}
 	}
 
 	gl_FragColor = vec4(col, 1.0);

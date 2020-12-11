@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "Player.h"
 #include "Collectible.h"
 #include "Goal.h"

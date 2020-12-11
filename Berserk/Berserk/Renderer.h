@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "MapHandler.h"
 #include "SettingsHandler.h"

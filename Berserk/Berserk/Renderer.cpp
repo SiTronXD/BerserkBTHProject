@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <iostream>
 
 Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler) 
 	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f), fogColor(0.0f, 0.0f, 0.0f)

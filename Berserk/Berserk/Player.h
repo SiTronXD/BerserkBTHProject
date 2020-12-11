@@ -3,8 +3,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
-#include <iostream>
-
 #include "ResTranslator.h"
 #include "SettingsHandler.h"
 #include "SMath.h"

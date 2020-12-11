@@ -82,7 +82,12 @@ sf::Glsl::Vec4 RenderEntity::getTextureRectGlsl() const
 {
 	sf::IntRect intRect = this->animations[this->currentAnimationIndex].getCurrentRect();
 
-	return sf::Glsl::Vec4(intRect.left, intRect.top, intRect.width, intRect.height);
+	return sf::Glsl::Vec4(
+		intRect.left, 
+		intRect.top, 
+		intRect.width, 
+		intRect.height
+	);
 }
 
 sf::Glsl::Vec3 RenderEntity::getPositionGlsl() const
