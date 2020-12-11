@@ -26,7 +26,7 @@ void MainMenuState::update(float deltaTime)
 {
 	this->playButton.update(sf::Mouse::getPosition(this->window), sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	this->exitButton.update(sf::Mouse::getPosition(this->window), sf::Mouse::isButtonPressed(sf::Mouse::Left));
-
+	
 	// Start game
 	if (this->playButton.hasBeenPressed())
 	{

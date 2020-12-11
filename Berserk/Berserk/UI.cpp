@@ -49,17 +49,17 @@ UI::UI(EntityHandler& entityHandler)
 	// Damage taken
 	this->redBoxTexture.loadFromFile("Resources/Textures/RedBox.png");
 	this->damageTakenSprite.setTexture(this->redBoxTexture);
-	ResTranslator::transformSprite(this->damageTakenSprite, 0, 0, ResTranslator::getVirtualWidth(), 1080);
+	ResTranslator::transformSprite(this->damageTakenSprite, 0, 0, (float) ResTranslator::getVirtualWidth(), 1080);
 
 	// Black bars
 	int virtualUIWidth = ResTranslator::getVirtualWidth();
-	int blackBarWidth = std::ceil((virtualUIWidth - 1920) * 0.5f);
-	int blackBarHorizontalPos = blackBarWidth * 0.5f + 1920 * 0.5f;
+	int blackBarWidth = (int) std::ceil((virtualUIWidth - 1920) * 0.5f);
+	int blackBarHorizontalPos = (int) (blackBarWidth * 0.5f + 1920 * 0.5f);
 	this->blackBoxTexture.loadFromFile("Resources/Textures/BlackBox.png");
 	this->blackBarLeftSprite.setTexture(this->blackBoxTexture);
 	this->blackBarRightSprite.setTexture(this->blackBoxTexture);
-	ResTranslator::transformSprite(this->blackBarLeftSprite, -blackBarHorizontalPos, 0, blackBarWidth, 1080);
-	ResTranslator::transformSprite(this->blackBarRightSprite, blackBarHorizontalPos, 0, blackBarWidth, 1080);
+	ResTranslator::transformSprite(this->blackBarLeftSprite, (float) -blackBarHorizontalPos, 0, (float) blackBarWidth, 1080);
+	ResTranslator::transformSprite(this->blackBarRightSprite, (float) blackBarHorizontalPos, 0, (float) blackBarWidth, 1080);
 
 	// Load shader
 	if (!abilityIconShader.loadFromFile("Resources/Shaders/AbilityIcon_Vert.glsl", "Resources/Shaders/AbilityIcon_Frag.glsl"))
@@ -124,7 +124,7 @@ void UI::update(float deltaTime)
 	}
 
 	// Update damage taken alpha color
-	sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * this->damageTakenTimer);
+	sf::Color newSpriteColor = sf::Color(255, 255, 255, (sf::Uint8) (255 * this->damageTakenTimer));
 	this->damageTakenSprite.setColor(newSpriteColor);
 
 	// Update health text
@@ -133,7 +133,7 @@ void UI::update(float deltaTime)
 
 	// Update black bar color
 	float berserkerAlpha = this->entityHandler.getPlayer().getBerserkerBlackBarAlpha();
-	sf::Color blackBarColor = sf::Color(255, 255, 255, 255 * berserkerAlpha);
+	sf::Color blackBarColor = sf::Color(255, 255, 255, (sf::Uint8) (255 * berserkerAlpha));
 	this->blackBarLeftSprite.setColor(blackBarColor);
 	this->blackBarRightSprite.setColor(blackBarColor);
 }

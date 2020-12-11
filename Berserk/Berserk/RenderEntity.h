@@ -18,8 +18,13 @@ private:
 
 	bool shouldRemove;
 
+	void cleanUpMemory();
+
+	RenderEntity(const RenderEntity& other) = delete;
+	RenderEntity operator=(const RenderEntity& other) = delete;
+
 protected:
-	void addAnimation(Animation animationToAdd);
+	void addAnimation(Animation& animationToAdd);
 	void setWorldScale(sf::Vector2f worldScale);
 	void setAnimationIndex(int newIndex);
 	void resetCurrentAnimation();

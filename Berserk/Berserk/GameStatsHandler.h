@@ -10,6 +10,9 @@ private:
 	int numCollectedCollectibles;
 	int numMaxCollectibles;
 
+	GameStatsHandler(const GameStatsHandler& other) = delete;
+	GameStatsHandler operator=(const GameStatsHandler& other) = delete;
+
 public:
 	GameStatsHandler();
 

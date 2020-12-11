@@ -49,6 +49,9 @@ private:
 	float showMessageTimer;
 	float damageTakenTimer;
 
+	UI(const UI& other) = delete;
+	UI operator=(const UI& other) = delete;
+
 public:
 	UI(EntityHandler& entityHandler);
 

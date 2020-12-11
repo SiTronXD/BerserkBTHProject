@@ -6,6 +6,10 @@ class Spawner
 {
 private:
 
+
+	Spawner(const Spawner& other) = delete;
+	Spawner operator=(const Spawner& other) = delete;
+
 public:
 	Spawner();
 

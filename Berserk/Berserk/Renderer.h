@@ -29,6 +29,9 @@ private:
 
 	float timer;
 
+	Renderer(const Renderer& other) = delete;
+	Renderer operator=(const Renderer& other) = delete;
+
 public:
 	Renderer(MapHandler& mapHandler, EntityHandler& entityHandler);
 

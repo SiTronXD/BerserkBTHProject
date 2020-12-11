@@ -7,7 +7,8 @@ Collectible::Collectible(sf::Vector2f position)
 
 	// Set animation
 	sf::IntRect textureRects[]{ sf::IntRect(0, 0, 64, 64) };
-	this->addAnimation(Animation(1, textureRects, 1.0f, false));
+	Animation idleAnim(1, textureRects, 1.0f, false);
+	this->addAnimation(idleAnim);
 }
 
 float Collectible::getRadiusSqrd() const

@@ -27,7 +27,8 @@ GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
 		sf::IntRect(96, 0, 64, 64),
 		sf::IntRect(160, 0, -64, 64)
 	};
-	this->addAnimation(Animation(2, textureRects, 0.1f, true));
+	Animation activeAnim(2, textureRects, 0.1f, true);
+	this->addAnimation(activeAnim);
 }
 
 void GrenadeExplosion::update(float deltaTime)

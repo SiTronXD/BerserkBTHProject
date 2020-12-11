@@ -31,6 +31,9 @@ private:
 
 	void removeEnemy(int index);
 
+	EntityHandler(const EntityHandler& other) = delete;
+	EntityHandler operator=(const EntityHandler& other) = delete;
+
 public:
 	EntityHandler(GameStatsHandler& gameStats);
 	~EntityHandler();

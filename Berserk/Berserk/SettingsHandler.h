@@ -17,6 +17,9 @@ private:
 	static float musicVolume;
 	static bool fullscreen;
 
+	SettingsHandler(const SettingsHandler& other) = delete;
+	SettingsHandler operator=(const SettingsHandler& other) = delete;
+
 public:
 	static void loadSettings();
 

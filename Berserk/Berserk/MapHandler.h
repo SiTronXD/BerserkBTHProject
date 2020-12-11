@@ -15,6 +15,9 @@ private:
 
 	bool evaluatePixel(sf::Color currentPixel, sf::Color targetPixel);
 
+	MapHandler(const MapHandler& other) = delete;
+	MapHandler operator=(const MapHandler& other) = delete;
+
 public:
 	MapHandler(EntityHandler& entityHandler);
 

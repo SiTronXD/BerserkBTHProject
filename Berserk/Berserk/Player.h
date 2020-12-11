@@ -22,7 +22,7 @@ private:
 	const int FIRST_PERSON_SPRITE_WIDTH = 192;
 	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
-	const float HP_DECREASE_AMOUNT = 100;
+	const float HP_DECREASE_AMOUNT = 20;
 	const float HP_INCREASE_AMOUNT = 5;
 	const float MOVEMENT_SPEED_DEFAULT = 6.0f;
 	const float MOVEMENT_SPEED_BERSERKER = 9.0f;
@@ -96,6 +96,9 @@ private:
 	void updateAnimationLogic(float deltaTime);
 	void updateFpsSpritePosition();
 	void playSound(sf::SoundBuffer& sfx);
+
+	Player(const Player& other) = delete;
+	Player operator=(const Player& other) = delete;
 
 public:
 	Player(int x, int y, EntityHandler& entityHandler);

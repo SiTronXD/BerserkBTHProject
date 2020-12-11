@@ -1,9 +1,14 @@
 #include "RenderEntity.h"
 
-void RenderEntity::addAnimation(Animation animationToAdd)
+void RenderEntity::cleanUpMemory()
+{
+	delete[] this->animations;
+}
+
+void RenderEntity::addAnimation(Animation& animationToAdd)
 {
 	if(this->nrOfAnimations < this->NUM_ANIMATIONS_CAP - 1)
-		this->animations[this->nrOfAnimations++] = animationToAdd;
+		this->animations[this->nrOfAnimations++] = std::move(animationToAdd);
 }
 
 void RenderEntity::setWorldScale(sf::Vector2f worldScale)
@@ -20,7 +25,7 @@ RenderEntity::RenderEntity()
 
 RenderEntity::~RenderEntity()
 {
-	delete[] this->animations;
+	this->cleanUpMemory();
 }
 
 void RenderEntity::update(float dt)

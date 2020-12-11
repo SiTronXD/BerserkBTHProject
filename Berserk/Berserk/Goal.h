@@ -9,6 +9,9 @@ private:
 
 	sf::Vector2f position;
 
+	Goal(const Goal& other) = delete;
+	Goal operator=(const Goal& other) = delete;
+
 public:
 	Goal();
 

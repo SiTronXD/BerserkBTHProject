@@ -5,6 +5,25 @@ void Animation::cleanUpMemory()
 	delete[] this->textureRects;
 }
 
+void Animation::initMove(Animation& other)
+{
+	this->numTextureRects = other.numTextureRects;
+	this->frameTime = other.frameTime;
+	this->repeat = other.repeat;
+	this->textureRects = other.textureRects;
+	this->currentTextureRectIndex = 0;
+	this->lastFrameTextureRectIndex = 0;
+	this->timer = 0;
+
+	other.numTextureRects = 0;
+	other.frameTime = 0;
+	other.repeat = true;
+	other.textureRects = nullptr;
+	other.currentTextureRectIndex = 0;
+	other.lastFrameTextureRectIndex = 0;
+	other.timer = 0;
+}
+
 Animation::Animation()
 	: numTextureRects(0), textureRects(nullptr), frameTime(0), 
 	currentTextureRectIndex(0), lastFrameTextureRectIndex(0), timer(0), repeat(true)
@@ -22,6 +41,11 @@ Animation::Animation(const Animation& other)
 	this->init(other.numTextureRects, other.textureRects, other.frameTime, other.repeat);
 }
 
+Animation::Animation(Animation&& other) noexcept
+{
+	this->initMove(other);
+}
+
 Animation::~Animation()
 {
 	this->cleanUpMemory();
@@ -29,9 +53,24 @@ Animation::~Animation()
 
 Animation& Animation::operator=(const Animation& other)
 {
-	this->cleanUpMemory();
+	if (this != &other)
+	{
+		this->cleanUpMemory();
 
-	this->init(other.numTextureRects, other.textureRects, other.frameTime, other.repeat);
+		this->init(other.numTextureRects, other.textureRects, other.frameTime, other.repeat);
+	}
+
+	return *this;
+}
+
+Animation& Animation::operator=(Animation&& other) noexcept
+{
+	if (this != &other)
+	{
+		this->cleanUpMemory();
+
+		this->initMove(other);
+	}
 
 	return *this;
 }
@@ -50,6 +89,7 @@ void Animation::init(int numTextureRects, sf::IntRect tr[], float frameTime, boo
 	}
 
 	this->currentTextureRectIndex = 0;
+	this->lastFrameTextureRectIndex = 0;
 	this->timer = 0;
 }
 

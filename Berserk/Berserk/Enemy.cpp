@@ -19,7 +19,8 @@ Enemy::Enemy(sf::Vector2f startPosition)
 		sf::IntRect(0, 64 + 32 * this->enemyType, 32, 32),
 		sf::IntRect(32, 64 + 32 * this->enemyType, -32, 32)
 	};
-	this->addAnimation(Animation(2, walkIntRects, 0.25f, true));
+	Animation walkAnim(2, walkIntRects, 0.25f, true);
+	this->addAnimation(walkAnim);
 
 	// Add attack animation
 	sf::IntRect attackIntRects[2]
@@ -27,7 +28,8 @@ Enemy::Enemy(sf::Vector2f startPosition)
 		sf::IntRect(64, 64 + 32 * this->enemyType, 32, 32),
 		sf::IntRect(64 + 32, 64 + 32 * this->enemyType, 32, 32),
 	};
-	this->addAnimation(Animation(2, attackIntRects, 0.25f, true));
+	Animation attackAnim(2, attackIntRects, 0.25f, true);
+	this->addAnimation(attackAnim);
 
 	// Sounds
 	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
@@ -111,7 +113,8 @@ void Enemy::kill(bool playDeadSound)
 		}
 
 		sf::IntRect deadRects[1]{ deadRect };
-		this->addAnimation(Animation(1, deadRects, 1.0f, false));
+		Animation deadAnim(1, deadRects, 1.0f, false);
+		this->addAnimation(deadAnim);
 
 		// Switch to the latest added animation
 		this->setAnimationIndex(this->getNrOfAnimations() - 1);

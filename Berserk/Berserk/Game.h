@@ -37,6 +37,9 @@ private:
 	void setWindowIcon();
 	void setupTransition();
 
+	Game(const Game& other) = delete;
+	Game operator=(const Game& other) = delete;
+
 public:
 	Game();
 	~Game();

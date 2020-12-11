@@ -31,6 +31,9 @@ private:
 	sf::Vector2f getNonCollidingPosition(sf::Vector2f currentPos,
 		sf::Vector2f lastPos, sf::Vector2f walkStep, float halfCollisionBoxSize);
 
+	CollisionHandler(const CollisionHandler& other) = delete;
+	CollisionHandler operator=(const CollisionHandler& other) = delete;
+
 public:
 	CollisionHandler(GameStatsHandler& gameStats, 
 		EntityHandler& entityHandler);

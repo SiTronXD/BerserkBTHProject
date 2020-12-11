@@ -15,7 +15,8 @@ Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
 		sf::IntRect(64, 32, 32, 32),
 		sf::IntRect(96, 32, -32, 32)
 	};
-	this->addAnimation(Animation(2, textureRects, 0.1f, true));
+	Animation activeAnim(2, textureRects, 0.1f, true);
+	this->addAnimation(activeAnim);
 
 	// Speed
 	this->currentSpeed = START_SPEED;

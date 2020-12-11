@@ -5,6 +5,8 @@
 class SMath
 {
 private:
+	SMath(const SMath& other) = delete;
+	SMath operator=(const SMath& other) = delete;
 
 public:
 	template <typename T>

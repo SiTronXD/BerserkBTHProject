@@ -17,13 +17,16 @@ private:
 	bool repeat;
 
 	void cleanUpMemory();
+	void initMove(Animation& other);
 
 public:
 	Animation();
 	Animation(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat);
 	Animation(const Animation &other);
+	Animation(Animation&& other) noexcept;
 	~Animation();
 	Animation& operator=(const Animation& other);
+	Animation& operator=(Animation&& other) noexcept;
 
 	void init(int numTextureRects, sf::IntRect textureRects[], float frameTime, bool repeat);
 	void update(float deltaTime);

@@ -18,6 +18,9 @@ class GameState
 private:
 	State switchToState;
 
+	GameState(const GameState& other) = delete;
+	GameState operator=(const GameState& other) = delete;
+
 protected:
 	sf::RenderWindow& window;
 
