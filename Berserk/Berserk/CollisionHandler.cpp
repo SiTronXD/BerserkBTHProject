@@ -91,10 +91,11 @@ void CollisionHandler::update()
 				player.getPosition();
 
 			// Check if the is player close enough
-			if (SMath::dot(playerToCollectible, playerToCollectible) < currentCollectible->getRadiusSqrd())
+			if (SMath::dot(playerToCollectible, playerToCollectible) < currentCollectible->getRadiusSqrd() &&
+				!currentCollectible->hasBeenFound())
 			{
-				// Remove collectible
-				currentCollectible->flagShouldRemove();
+				// Flag collectible
+				currentCollectible->found();
 
 				// Flag Game Stats
 				this->gameStats.foundCollectible();
@@ -106,7 +107,7 @@ void CollisionHandler::update()
 		}
 	}
 
-
+	bool killedEnemyThisFrame = false;
 	for (int i = 0; i < this->entityHandler.getNumEnemies(); ++i)
 	{
 		Enemy* currentEnemy = this->entityHandler.getEnemy(i);
@@ -131,11 +132,13 @@ void CollisionHandler::update()
 			if (SMath::dot(grenadeToEnemy, grenadeToEnemy) <= grenadeExplosion->getKillRangeSqrd())
 			{
 				currentEnemy->caughtInExplosion(
-					grenadeExplosion->getEffectTimer(), 
+					grenadeExplosion->getEffectTimer(),
 					grenadeExplosion->getPosition2D() + player.getLookDirectionVec() * 1.0f // Move target behind explosion
 				);
 			}
 		}
+		else
+			currentEnemy->resetCaughtTime();
 
 		// Player is attacking
 		if (this->player.isAttacking())
@@ -156,11 +159,13 @@ void CollisionHandler::update()
 				if (deltaAngle <= this->player.getAttackConeAngle() * 0.5f &&
 					!currentEnemy->isDead())
 				{
-					// Kill enemy
-					currentEnemy->kill();
+					// Kill enemy and play sound for 1 single enemy this frame
+					currentEnemy->kill(!killedEnemyThisFrame);
 
 					// Player gains health
 					this->player.gainHealth();
+
+					killedEnemyThisFrame = true;
 				}
 			}
 		}

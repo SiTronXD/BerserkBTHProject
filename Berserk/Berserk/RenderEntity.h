@@ -1,7 +1,9 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Animation.h"
+#include "SettingsHandler.h"
 
 class RenderEntity
 {
@@ -12,6 +14,8 @@ private:
 	sf::Vector2f worldScale;
 
 	Animation* animations;
+
+	sf::Sound soundPlayer;
 
 	int nrOfAnimations;
 	int currentAnimationIndex;
@@ -28,6 +32,7 @@ protected:
 	void setWorldScale(sf::Vector2f worldScale);
 	void setAnimationIndex(int newIndex);
 	void resetCurrentAnimation();
+	void playSound(sf::SoundBuffer& sound, float volumeScale = 1.0f, float pitch = 1.0f);
 
 	int getCurrentAnimationIndex() const;
 	int getNrOfAnimations() const;
@@ -51,6 +56,7 @@ public:
 
 	sf::Vector2f getPosition2D() const;
 	sf::Vector3f getPosition3D() const;
+	sf::Vector2f getWorldScale() const;
 
 	bool getShouldRemove() const;
 };

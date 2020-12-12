@@ -15,7 +15,7 @@ private:
 	const float BERSERKER_ICON_X = -880;
 	const float BERSERKER_ICON_Y = 470;
 
-	const float MAX_SHOW_MESSAGE_TIME = 4.0f;
+	const float MAX_SHOW_MESSAGE_TIME = 3.0f;
 
 	sf::Font font;
 	sf::Text fpsText;

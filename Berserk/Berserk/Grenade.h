@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
 #include "RenderEntity.h"
 #include "GrenadeExplosion.h"
 
@@ -14,7 +13,6 @@ private:
 
 	GrenadeExplosion* grenadeExplosion;
 
-	sf::Sound soundPlayer;
 	sf::SoundBuffer grenadeThrownSound;
 
 	float currentSpeed;

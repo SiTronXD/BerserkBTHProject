@@ -51,7 +51,8 @@ void EntityHandler::update(float deltaTime)
 	for (int i = 0; i < this->nrOfEnemies; ++i)
 	{
 		// Update
-		this->enemies[i]->update(deltaTime, this->player.getPosition());
+		if(!this->enemies[i]->isDead())
+			this->enemies[i]->update(deltaTime, this->player.getPosition());
 
 		// Should remove?
 		if (this->enemies[i]->getShouldRemove())

@@ -98,6 +98,8 @@ void Player::loadSounds()
 	this->swingSwordSound.loadFromFile("Resources/Sounds/swingSword.wav");
 	this->startSwingingSwordSound.loadFromFile("Resources/Sounds/startSwingingSword.wav");
 	this->throwGrenadeSound.loadFromFile("Resources/Sounds/grenadeThrown.wav");
+	this->berserkStartSound.loadFromFile("Resources/Sounds/berserkStart.wav");
+	this->berserkEndSound.loadFromFile("Resources/Sounds/berserkEnd.wav");
 }
 
 void Player::spawnGrenade()
@@ -223,6 +225,10 @@ void Player::updateAnimationLogic(float deltaTime)
 		this->berserkerIsActive = false;
 	}
 
+
+	// --- Sounds ---
+
+
 	// Play swing sound
 	if (this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK] &&
 		this->currentFpsAnimation->getCurrentRectIndex() >= 1 && 
@@ -237,6 +243,22 @@ void Player::updateAnimationLogic(float deltaTime)
 		this->currentFpsAnimation->getLastFrameRectIndex() < 2)
 	{
 		this->playSound(this->throwGrenadeSound);
+	}
+
+	// Play berserk start sound
+	if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::START_BERSERK] &&
+		this->currentBerserkAnimation->getCurrentRectIndex() >= 1 &&
+		this->currentBerserkAnimation->getLastFrameRectIndex() < 1)
+	{
+		this->playSound(this->berserkStartSound);
+	}
+
+	// Play berserk end sound
+	if (this->currentBerserkAnimation == &this->anims[PLAYER_ANIM::END_BERSERK] &&
+		this->currentBerserkAnimation->getCurrentRectIndex() >= 1 &&
+		this->currentBerserkAnimation->getLastFrameRectIndex() < 1)
+	{
+		this->playSound(this->berserkEndSound);
 	}
 }
 
@@ -318,83 +340,84 @@ Player::~Player()
 
 void Player::handleInput(float deltaTime)
 {
-	// Try to exit
-	this->tryToExit = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F);
-
-	// Attacking
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->isAttackingTimer <= 0.0f)
-	{
-		// Start timer
-		this->isAttackingTimer = this->MAX_ATTACK_TIME;
-
-		// Start animation
-		this->hasStartedAttackAnimation = false;
-
-		// Set direction
-		this->walkStep = sf::Vector2f(cos(direction), -sin(direction));
-
-		this->playSound(this->startSwingingSwordSound);
-	}
-
-	// Grenade
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && 
-		this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
-	{
-		// Reset cooldown
-		this->grenadeCooldownTimer = 0.0f;
-		
-		// Start animation
-		this->startThrowAnimation = true;
-	}
-
-	// Berserker
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && 
-		this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
-	{
-		// Reset cooldown
-		this->berserkerCooldownTimer = 0.0f;
-
-		// Start ability timer
-		this->berserkerActiveTimer = MAX_BERSERKER_TIME;
-
-		// Start animation
-		this->startStartBerserkAnimation = true;
-	}
-
-	// Walking
-	float forwardInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
-	float rightInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
-
-	sf::Vector2f forwardDir(std::cos(-this->direction), std::sin(-this->direction));
-	sf::Vector2f rightDir(-forwardDir.y, forwardDir.x);
-
-	// Update the direction if the player is not attacking
-	if (this->isAttackingTimer <= 0.0f)
-		this->walkStep = forwardDir * forwardInput + rightDir * rightInput;
-
-	SMath::vectorNormalize(this->walkStep);
-
-	// Is the player walking?
-	if (SMath::dot(this->walkStep, this->walkStep) > 0.0f)
-		this->walkTimer += deltaTime;
-	else
-		this->walkTimer = 0.0f;
-
-	// Set current movement speed
-	float currentMovementSpeed = MOVEMENT_SPEED_DEFAULT;
-	if (this->berserkerIsActive)
-		currentMovementSpeed = MOVEMENT_SPEED_BERSERKER;
-
-	// Move faster if the player is attacking
-	if (this->isAttackingTimer > 0.0f)
-		currentMovementSpeed *= MOVEMENT_SPEED_ATTACKING_SCALE;
-
-	// Apply speed
-	this->walkStep.x *= currentMovementSpeed * deltaTime;
-	this->walkStep.y *= currentMovementSpeed * deltaTime;
-
 	if (!this->isHealthDepleted())
 	{
+		// Try to exit
+		this->tryToExit = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F);
+
+		// Attacking
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->isAttackingTimer <= 0.0f)
+		{
+			// Start timer
+			this->isAttackingTimer = this->MAX_ATTACK_TIME;
+
+			// Start animation
+			this->hasStartedAttackAnimation = false;
+
+			// Set direction
+			this->walkStep = sf::Vector2f(cos(direction), -sin(direction));
+
+			this->playSound(this->startSwingingSwordSound);
+		}
+
+		// Grenade
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && 
+			this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
+		{
+			// Reset cooldown
+			this->grenadeCooldownTimer = 0.0f;
+		
+			// Start animation
+			this->startThrowAnimation = true;
+		}
+
+		// Berserker
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && 
+			this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
+		{
+			// Reset cooldown
+			this->berserkerCooldownTimer = 0.0f;
+
+			// Start ability timer
+			this->berserkerActiveTimer = MAX_BERSERKER_TIME;
+
+			// Start animation
+			this->startStartBerserkAnimation = true;
+		}
+
+		// Walking
+		float forwardInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
+		float rightInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+
+		sf::Vector2f forwardDir(std::cos(-this->direction), std::sin(-this->direction));
+		sf::Vector2f rightDir(-forwardDir.y, forwardDir.x);
+
+		// Update the direction if the player is not attacking
+		if (this->isAttackingTimer <= 0.0f)
+			this->walkStep = forwardDir * forwardInput + rightDir * rightInput;
+
+		SMath::vectorNormalize(this->walkStep);
+
+		// Is the player walking?
+		if (SMath::dot(this->walkStep, this->walkStep) > 0.0f)
+			this->walkTimer += deltaTime;
+		else
+			this->walkTimer = 0.0f;
+
+		// Set current movement speed
+		float currentMovementSpeed = MOVEMENT_SPEED_DEFAULT;
+		if (this->berserkerIsActive)
+			currentMovementSpeed = MOVEMENT_SPEED_BERSERKER;
+
+		// Move faster if the player is attacking
+		if (this->isAttackingTimer > 0.0f)
+			currentMovementSpeed *= MOVEMENT_SPEED_ATTACKING_SCALE;
+
+		// Apply speed
+		this->walkStep.x *= currentMovementSpeed * deltaTime;
+		this->walkStep.y *= currentMovementSpeed * deltaTime;
+
+
 		// Move position
 		this->lastFrameX = this->x;
 		this->lastFrameY = this->y;

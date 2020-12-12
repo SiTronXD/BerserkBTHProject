@@ -22,11 +22,9 @@ Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
 	this->currentSpeed = START_SPEED;
 
 	// Sound
-	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
 	this->grenadeThrownSound.loadFromFile("Resources/Sounds/grenadeActivated.wav");
 
-	this->soundPlayer.setBuffer(this->grenadeThrownSound);
-	this->soundPlayer.play();
+	this->playSound(this->grenadeThrownSound);
 }
 
 void Grenade::update(float deltaTime)

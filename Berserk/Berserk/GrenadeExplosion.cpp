@@ -38,13 +38,12 @@ GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
 	this->setRandomEnemyDiedSoundTime();
 
 	// Sound
-	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
 	this->enemyDiesSoundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
 	this->explosionSound.loadFromFile("Resources/Sounds/grenadeExplosion.wav");
 	this->enemyDiedSound.loadFromFile("Resources/Sounds/enemyDead.wav");
 	this->enemyDiesSoundPlayer.setBuffer(this->enemyDiedSound);
-	this->soundPlayer.setBuffer(this->explosionSound);
-	this->soundPlayer.play();
+
+	this->playSound(this->explosionSound);
 }
 
 void GrenadeExplosion::update(float deltaTime)
@@ -54,7 +53,7 @@ void GrenadeExplosion::update(float deltaTime)
 	this->aliveTimer += deltaTime;
 	this->enemyDiedSoundTimer += deltaTime;
 
-	// Play enemy dies sound
+	// Play enemy dies sound asynchronized with the explosion sound
 	if (this->enemyDiedSoundTimer >= this->nextEnemyDiedSoundMaxTime &&
 		MAX_ALIVE_TIME - this->aliveTimer > this->nextEnemyDiedSoundMaxTime)
 	{

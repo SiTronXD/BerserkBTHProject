@@ -58,6 +58,14 @@ void RenderEntity::resetCurrentAnimation()
 	this->animations[this->currentAnimationIndex].reset();
 }
 
+void RenderEntity::playSound(sf::SoundBuffer& sound, float volumeScale, float pitch)
+{
+	this->soundPlayer.setPitch(pitch);
+	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume() * volumeScale);
+	this->soundPlayer.setBuffer(sound);
+	this->soundPlayer.play();
+}
+
 int RenderEntity::getCurrentAnimationIndex() const
 {
 	return this->currentAnimationIndex;
@@ -108,6 +116,11 @@ sf::Vector2f RenderEntity::getPosition2D() const
 sf::Vector3f RenderEntity::getPosition3D() const
 {
 	return this->position;
+}
+
+sf::Vector2f RenderEntity::getWorldScale() const
+{
+	return this->worldScale;
 }
 
 bool RenderEntity::getShouldRemove() const

@@ -49,6 +49,8 @@ private:
 	sf::SoundBuffer swingSwordSound;
 	sf::SoundBuffer startSwingingSwordSound;
 	sf::SoundBuffer throwGrenadeSound;
+	sf::SoundBuffer berserkStartSound;
+	sf::SoundBuffer berserkEndSound;
 
 	sf::Vector2i monitorMiddle;
 	sf::Vector2f swordPosition;

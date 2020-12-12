@@ -7,6 +7,8 @@
 #define TILE_WALL_COLOR vec3(1.0f)
 #define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
 
+#define EPSILON 0.000001
+
 // Constants
 const float PI = atan(-1.0f);
 const float FOV = PI * 0.75f;
@@ -149,7 +151,7 @@ void main()
 	// Wall + floor
 	vec3 col = (wallCol * showWall) + (floorCol * showFloor);
 	col = mix(
-		u_fogColor * (uv.y > 0.0f ? max(1.0f - uv.y, wall) : 1.0f), 
+		u_fogColor * (uv.y > 0.0f ? max(1.0f - (uv.y-0.05f), wall) : 1.0f), 
 		col, 
 		(showWall + showFloor) * (wallCameraHeightY > halfWallHeight ? 0.0f : 1.0f)
 	);
@@ -196,14 +198,30 @@ void main()
 				);
 
 				// Texture region
-				spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
-				spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				vec2 spriteRegionSize = u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				vec2 spriteRegionTranslation = u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				spriteUV.xy *= spriteRegionSize;
+				spriteUV.xy += spriteRegionTranslation;
 
-				// This seems to fix a rendering glitch where sometimes a line of a sprite would show up
-				// somewhere in the upper half of the screen
-				//spriteUV.xy *= vec2(32, 32) * ONE_OVER_ENTITY_TEXTURE_SIZE;
-				//spriteUV.xy += vec2(32, 64) * ONE_OVER_ENTITY_TEXTURE_SIZE;
-				
+				// Clamp coordinates within region to avoid precision glitches
+				spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation - spriteRegionSize * min(vec2(0), sign(spriteRegionSize)) + vec2(EPSILON), 
+					spriteRegionTranslation + spriteRegionSize * max(vec2(0), sign(spriteRegionSize)) - vec2(EPSILON)
+				);
+
+				// Clamping looks like this for positive region size
+				/*spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation + vec2(EPSILON), 
+					spriteRegionTranslation + spriteRegionSize - vec2(EPSILON)
+				);*/
+				// Clamping looks like this for negative region size
+				/*spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation + spriteRegionSize + vec2(EPSILON), 
+					spriteRegionTranslation - vec2(EPSILON)
+				);*/
 
 				vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
 

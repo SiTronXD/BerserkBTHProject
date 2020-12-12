@@ -1,2 +1,7 @@
-﻿  GrenadeExplosion.cpp
+﻿  Enemy.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(176,15): warning C4244: 'initializing': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

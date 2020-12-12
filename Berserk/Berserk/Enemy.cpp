@@ -3,9 +3,15 @@
 #include "SMath.h"
 #include "SettingsHandler.h"
 
+void Enemy::setNextSoundMaxTime()
+{
+	this->nextNoiseSoundMaxTime = (rand() % 1000 + 500) * 0.001f;
+}
+
 Enemy::Enemy(sf::Vector2f startPosition)
-	: lastFramePos(startPosition), walkStep(0.0f, 0.0f),
-	lastAttackFrameIndex(0), dead(false), doDamage(false), canMove(true)
+	: lastFramePos(startPosition), walkStep(0.0f, 0.0f), noiseSoundTimer(0.0f), 
+	nextNoiseSoundMaxTime(0.0f), lastAttackFrameIndex(0), caughtTime(0.0f),
+	dead(false), doDamage(false), canMove(true)
 {
 	// Set position
 	this->setPosition(startPosition);
@@ -32,8 +38,11 @@ Enemy::Enemy(sf::Vector2f startPosition)
 	this->addAnimation(attackAnim);
 
 	// Sounds
-	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
 	this->deadSound.loadFromFile("Resources/Sounds/enemyDead.wav");
+	this->noiseSound.loadFromFile("Resources/Sounds/enemyNoise.wav");
+
+	this->setNextSoundMaxTime();
+	this->resetCaughtTime();
 }
 
 void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
@@ -43,6 +52,21 @@ void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 	// Get direction
 	sf::Vector2f walkDir = targetPosition - this->getPosition2D();
 	float walkDirSqrd = SMath::dot(walkDir, walkDir);
+
+	this->noiseSoundTimer += deltaTime;
+
+	// Play noise sound
+	if (this->noiseSoundTimer >= this->nextNoiseSoundMaxTime && !this->dead)
+	{
+		this->noiseSoundTimer = 0.0f;
+		this->setNextSoundMaxTime();
+
+		// Lower volume depending on distance to target
+		float noiseVolume = SMath::clamp(1.0f - walkDirSqrd / (8 * 8), 0.0f, 1.0f);
+		float randomPitch = ((rand() % 100) - 50) * 0.01f + 1.0f;
+
+		this->playSound(this->noiseSound, noiseVolume, randomPitch);
+	}
 
 	// Update animations if the player is within range
 	if(walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
@@ -122,35 +146,49 @@ void Enemy::kill(bool playDeadSound)
 		// Sound
 		if (playDeadSound)
 		{
-			this->soundPlayer.setBuffer(this->deadSound);
-			this->soundPlayer.play();
+			this->playSound(this->deadSound);
 		}
 	}
 }
 
 void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
 {
-	// Save last position
-	if (this->canMove)
-		this->lastPos = this->getPosition2D();
+	// Record new caught time, even if the enemy has alread died
+	if (this->caughtTime < 0.0f)
+		this->caughtTime = effectTimer;
 
-	this->canMove = false;
+	if (this->caughtTime < 0.6f)
+	{
+		// Save last position
+		if (this->canMove)
+		{
+			this->lastPos = this->getPosition2D();
+		}
 
-	// Kill the enemy when it is inside the explosion
-	if (effectTimer >= 0.5f)
-		this->kill(false);
+		float relativeEffectTimer = (effectTimer - this->caughtTime) / (1.0f - this->caughtTime);
+		this->canMove = false;
 
-	// Move
-	float moveT = std::min(std::pow(std::sin(effectTimer * 3.1415), 1.0), 1.0) * 2.0f;
-	this->setPosition(SMath::lerp(this->lastPos, explosionPos, moveT));
+		// Kill the enemy when it is inside the explosion
+		if (relativeEffectTimer >= 0.5f)
+			this->kill(false);
 
-	// Set size
-	float newScale = 1.0f - moveT;
-	this->setWorldScale(sf::Vector2f(newScale, newScale));
+		// Move
+		float moveT = std::min(std::pow(std::sin(relativeEffectTimer * 3.1415), 1.0), 1.0) * 2.0f;
+		this->setPosition(SMath::lerp(this->lastPos, explosionPos, moveT));
 
-	// Move down to the ground
-	float newZ = -moveT;
-	this->setPosition(sf::Vector3f(this->getPosition2D().x, this->getPosition2D().y, newZ));
+		// Set size
+		float newScale = 1.0f - moveT;
+		this->setWorldScale(sf::Vector2f(newScale, newScale));
+
+		// Move down to the ground
+		float newZ = -moveT;
+		this->setPosition(sf::Vector3f(this->getPosition2D().x, this->getPosition2D().y, newZ));
+	}
+}
+
+void Enemy::resetCaughtTime()
+{
+	this->caughtTime = -1.0f;
 }
 
 sf::Vector2f Enemy::getLastFramePosition() const
