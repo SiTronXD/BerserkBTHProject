@@ -99,6 +99,7 @@ void Player::loadSounds()
 	this->startSwingingSwordSound.loadFromFile("Resources/Sounds/startSwingingSword.wav");
 	this->throwGrenadeSound.loadFromFile("Resources/Sounds/grenadeThrown.wav");
 	this->berserkStartSound.loadFromFile("Resources/Sounds/berserkStart.wav");
+	//this->berserkStartSound.loadFromFile("Resources/Sounds/berserkStart2.wav");
 	this->berserkEndSound.loadFromFile("Resources/Sounds/berserkEnd.wav");
 }
 

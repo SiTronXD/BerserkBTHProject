@@ -1,7 +1,9 @@
-﻿  Enemy.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(177,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
-          with
-          [
-              _Ty=double
-          ]
+﻿  Player.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(297,58): warning C4244: 'argument': conversion from 'float' to 'sf::Uint8', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(312,5): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(312,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(312,65): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(312,80): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(390,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Player.cpp(391,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe
