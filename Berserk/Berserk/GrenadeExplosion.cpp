@@ -7,6 +7,8 @@ void GrenadeExplosion::setRandomEnemyDiedSoundTime()
 
 void GrenadeExplosion::setSize(float percent)
 {
+	this->setWorldScale(sf::Vector2f(percent, percent));
+
 	this->setPosition(
 		sf::Vector3f(
 			this->getPosition2D().x,
@@ -14,7 +16,6 @@ void GrenadeExplosion::setSize(float percent)
 			-(1.0f - percent)
 		)
 	);
-	this->setWorldScale(sf::Vector2f(percent, percent));
 }
 
 GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
@@ -24,7 +25,7 @@ GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
 	this->setPosition(position);
 
 	// World scale
-	this->setWorldScale(sf::Vector2f(1, 1));
+	this->setWorldScale(sf::Vector2f(0, 0));
 
 	// Add animation
 	sf::IntRect textureRects[2]
@@ -34,8 +35,6 @@ GrenadeExplosion::GrenadeExplosion(sf::Vector2f position)
 	};
 	Animation activeAnim(2, textureRects, 0.1f, true);
 	this->addAnimation(activeAnim);
-
-	this->setRandomEnemyDiedSoundTime();
 
 	// Sound
 	this->enemyDiesSoundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());

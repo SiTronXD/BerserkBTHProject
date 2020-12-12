@@ -10,6 +10,8 @@ private:
 	const float ALIVE_TIME = 1.0f;
 
 	sf::Vector2f direction;
+	sf::Vector2f lastFramePos;
+	sf::Vector2f walkStep;
 
 	GrenadeExplosion* grenadeExplosion;
 
@@ -24,4 +26,9 @@ public:
 	void update(float deltaTime) override;
 
 	GrenadeExplosion* getGrenadeExplosion() const;
+
+	sf::Vector2f getLastFramePosition() const;
+	sf::Vector2f getWalkStep() const;
+
+	float getCollisionBoxSize() const;
 };

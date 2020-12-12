@@ -1,5 +1,5 @@
 ﻿  Enemy.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(176,15): warning C4244: 'initializing': conversion from '_Ty' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(177,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
           with
           [
               _Ty=double

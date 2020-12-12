@@ -2,7 +2,8 @@
 #include "SettingsHandler.h"
 
 Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
-	: direction(direction), aliveTimer(ALIVE_TIME), grenadeExplosion(nullptr)
+	: direction(direction), aliveTimer(ALIVE_TIME), grenadeExplosion(nullptr),
+	lastFramePos(startPos), walkStep(0.0f, 0.0f)
 {
 	this->setPosition(startPos);
 
@@ -22,7 +23,8 @@ Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
 	this->currentSpeed = START_SPEED;
 
 	// Sound
-	this->grenadeThrownSound.loadFromFile("Resources/Sounds/grenadeActivated.wav");
+	//this->grenadeThrownSound.loadFromFile("Resources/Sounds/grenadeActivated.wav");
+	this->grenadeThrownSound.loadFromFile("Resources/Sounds/grenadeActivated2.wav");
 
 	this->playSound(this->grenadeThrownSound);
 }
@@ -30,6 +32,8 @@ Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
 void Grenade::update(float deltaTime)
 {
 	RenderEntity::update(deltaTime);
+
+	this->lastFramePos = this->getPosition2D();
 
 	// Decrease speed
 	this->currentSpeed -= deltaTime * (START_SPEED * ALIVE_TIME);
@@ -58,13 +62,34 @@ void Grenade::update(float deltaTime)
 		this->direction.y, 
 		-(1.0f - (this->currentSpeed / START_SPEED))	// Fall down
 	);
-	sf::Vector3f newPos = this->getPosition3D() + newDir * currentSpeed * deltaTime;
+	sf::Vector3f walkStep3D = newDir * currentSpeed * deltaTime;
+	sf::Vector3f newPos = this->getPosition3D() + walkStep3D;
 	newPos.z = std::max(newPos.z, -0.95f);	
 
+	// Apply new position
 	this->setPosition(newPos);
+
+	// Update walk step
+	this->walkStep.x = walkStep3D.x;
+	this->walkStep.y = walkStep3D.y;
 }
 
 GrenadeExplosion* Grenade::getGrenadeExplosion() const
 {
 	return this->grenadeExplosion;
+}
+
+sf::Vector2f Grenade::getLastFramePosition() const
+{
+	return this->lastFramePos;
+}
+
+sf::Vector2f Grenade::getWalkStep() const
+{
+	return this->walkStep;
+}
+
+float Grenade::getCollisionBoxSize() const
+{
+	return 0.1f;
 }

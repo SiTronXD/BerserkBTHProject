@@ -63,6 +63,19 @@ CollisionHandler::CollisionHandler(GameStatsHandler& gameStats,
 
 void CollisionHandler::update()
 {
+	Grenade* grenade = this->player.getGrenade();
+	if (grenade)
+	{
+		grenade->setPosition(
+			this->getNonCollidingPosition(
+				grenade->getPosition2D(),
+				grenade->getLastFramePosition(),
+				grenade->getWalkStep(),
+				grenade->getCollisionBoxSize()
+			)
+		);
+	}
+
 	// Check if the player is close enough to the goal
 	sf::Vector2f playerToGoal = goal.getPosition() - player.getPosition();
 
@@ -113,14 +126,17 @@ void CollisionHandler::update()
 		Enemy* currentEnemy = this->entityHandler.getEnemy(i);
 
 		// Enemy collision with walls
-		currentEnemy->setPosition(
-			this->getNonCollidingPosition(
-				currentEnemy->getPosition2D(),
-				currentEnemy->getLastFramePosition(),
-				currentEnemy->getWalkStep(),
-				currentEnemy->getCollisionBoxSize()
-			)
-		);
+		if (!currentEnemy->isDead())
+		{
+			currentEnemy->setPosition(
+				this->getNonCollidingPosition(
+					currentEnemy->getPosition2D(),
+					currentEnemy->getLastFramePosition(),
+					currentEnemy->getWalkStep(),
+					currentEnemy->getCollisionBoxSize()
+				)
+			);
+		}
 
 		// Check if the enemy is caught within the explosion
 		GrenadeExplosion* grenadeExplosion = this->player.getGrenadeExplosion();

@@ -155,16 +155,15 @@ void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
 {
 	// Record new caught time, even if the enemy has alread died
 	if (this->caughtTime < 0.0f)
+	{
 		this->caughtTime = effectTimer;
+
+		// Save last position
+		this->lastPos = this->getPosition2D();
+	}
 
 	if (this->caughtTime < 0.6f)
 	{
-		// Save last position
-		if (this->canMove)
-		{
-			this->lastPos = this->getPosition2D();
-		}
-
 		float relativeEffectTimer = (effectTimer - this->caughtTime) / (1.0f - this->caughtTime);
 		this->canMove = false;
 
@@ -173,7 +172,7 @@ void Enemy::caughtInExplosion(float effectTimer, sf::Vector2f explosionPos)
 			this->kill(false);
 
 		// Move
-		float moveT = std::min(std::pow(std::sin(relativeEffectTimer * 3.1415), 1.0), 1.0) * 2.0f;
+		float moveT = std::min(std::sin(relativeEffectTimer * 3.1415) * 2.0f, 1.0);
 		this->setPosition(SMath::lerp(this->lastPos, explosionPos, moveT));
 
 		// Set size

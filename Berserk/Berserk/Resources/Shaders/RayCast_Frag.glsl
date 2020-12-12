@@ -11,7 +11,7 @@
 
 // Constants
 const float PI = atan(-1.0f);
-const float FOV = PI * 0.75f;
+const float FOV = PI * 0.60f;
 const int MAX_RENDER_ENTITIES = 64;
 
 // Uniforms
@@ -98,7 +98,7 @@ void main()
 	// Fog and wall height
 	float oneOverDist = 1.0f / dist;
 	float fog = clamp(1.0f - (dist / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);
-	float halfWallHeight = (0.05 * 16.0f * ONE_OVER_MAP_SIZE.x) * oneOverDist;
+	float halfWallHeight = ONE_OVER_MAP_SIZE.x * oneOverDist;
 	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.8f) * oneOverDist * ONE_OVER_MAP_SIZE.x;
 	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
 
