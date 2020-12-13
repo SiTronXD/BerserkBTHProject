@@ -99,8 +99,8 @@ void Player::loadSounds()
 	this->startSwingingSwordSound.loadFromFile("Resources/Sounds/startSwingingSword.wav");
 	this->throwGrenadeSound.loadFromFile("Resources/Sounds/grenadeThrown.wav");
 	this->berserkStartSound.loadFromFile("Resources/Sounds/berserkStart.wav");
-	//this->berserkStartSound.loadFromFile("Resources/Sounds/berserkStart2.wav");
 	this->berserkEndSound.loadFromFile("Resources/Sounds/berserkEnd.wav");
+	this->damageTakenSound.loadFromFile("Resources/Sounds/playerDamaged.wav");
 }
 
 void Player::spawnGrenade()
@@ -121,6 +121,8 @@ void Player::updateAnimationLogic(float deltaTime)
 {
 	this->isAttackingTimer -= deltaTime;
 	this->isAttackingTimer = std::max(this->isAttackingTimer, 0.0f);
+	this->attackCooldownTimer -= deltaTime;
+	this->attackCooldownTimer = std::max(this->attackCooldownTimer, 0.0f);
 
 	// Update animations
 	this->currentFpsAnimation->update(deltaTime);
@@ -310,8 +312,9 @@ void Player::playSound(sf::SoundBuffer& sfx)
 
 Player::Player(int x, int y, EntityHandler& entityHandler)
 	: x(x), y(y), z(0.0f), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), 
-	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), berserkerAnimationAlpha(1.0f), dieTimer(0.0f),
-	health(100.0f), tryToExit(false), hasStartedAttackAnimation(false), startThrowAnimation(false),
+	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), attackCooldownTimer(0.0f),
+	berserkerAnimationAlpha(1.0f), dieTimer(0.0f), health(100.0f), tryToExit(false), 
+	hasStartedAttackAnimation(false), startThrowAnimation(false),
 	hasSpawnedGrenade(false), currentFpsAnimation(&this->anims[PLAYER_ANIM::SWORD_IDLE]),
 	currentBerserkAnimation(nullptr), grenade(nullptr)
 {
@@ -347,10 +350,14 @@ void Player::handleInput(float deltaTime)
 		this->tryToExit = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F);
 
 		// Attacking
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->isAttackingTimer <= 0.0f)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->isAttackingTimer <= 0.0f
+			&& this->attackCooldownTimer <= 0.0f)
 		{
 			// Start timer
 			this->isAttackingTimer = this->MAX_ATTACK_TIME;
+			this->attackCooldownTimer = this->berserkerIsActive ? 
+				this->MAX_ATTACK_COOLDOWN_TIME_BERSERKER : 
+				this->MAX_ATTACK_COOLDOWN_TIME_DEFAULT;
 
 			// Start animation
 			this->hasStartedAttackAnimation = false;
@@ -559,7 +566,14 @@ void Player::loseHealth()
 
 	// Flag dead
 	if (this->health <= 0.0f)
+	{
 		this->dead = true;
+
+		this->soundPlayer.setPitch(0.6f);
+	}
+
+
+	this->playSound(this->damageTakenSound);
 }
 
 const bool Player::playerTriesToExit() const
@@ -599,7 +613,8 @@ const sf::Glsl::Vec2 Player::getRotationForRenderer() const
 
 bool Player::isAttacking() const
 {
-	return this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK];
+	return this->currentFpsAnimation == &this->anims[PLAYER_ANIM::SWORD_ATTACK] &&
+		this->currentFpsAnimation->getCurrentRectIndex() <= 5;
 }
 
 bool Player::isBerserkerActive() const

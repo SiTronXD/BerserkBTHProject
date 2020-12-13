@@ -10,6 +10,8 @@ private:
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
 
+	sf::Music menuMusic;
+
 	Button playButton;
 	Button exitButton;
 
@@ -18,7 +20,6 @@ public:
 	~MainMenuState();
 
 	// Inherited via GameState
-	virtual void handlePollEvent(const sf::Event& event) override;
 	virtual void update(float deltaTime) override;
 	virtual void render() override;
 };

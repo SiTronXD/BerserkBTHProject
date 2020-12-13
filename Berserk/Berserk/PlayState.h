@@ -13,6 +13,8 @@ private:
 	sf::RectangleShape screenRenderRect;
 	sf::Shader postProcessingShader;
 
+	sf::Music gamePlayMusic;
+
 	EntityHandler entityHandler;
 	MapHandler mapHandler;
 	Renderer renderer;
@@ -23,7 +25,6 @@ public:
 	PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats);
 
 	// Inherited via GameState
-	virtual void handlePollEvent(const sf::Event& event) override;
 	virtual void update(float deltaTime) override;
 	virtual void render() override;
 };

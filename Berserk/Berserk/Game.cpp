@@ -8,9 +8,6 @@ void Game::handlePollEvent(const sf::Event& event)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
             this->window.close();
     }
-
-    if(this->currentState)
-        this->currentState->handlePollEvent(event);
 }
 
 void Game::update()
@@ -31,7 +28,14 @@ void Game::update()
     if ((this->transitionAlpha > 0.0f && this->transitionDirection < 0) ||
         (this->transitionAlpha <= 1.0f && this->transitionDirection > 0))
     {
-        this->transitionAlpha += this->transitionDirection * TRANSITION_SPEED_SCALE * deltaTime;
+        // Transition alpha
+        float gameStateSpeed = this->currentState ? 
+            this->currentState->getSpecificStateTransitionSpeedScale(this->transitionDirection) : 
+            1.0f;
+
+        this->transitionAlpha += this->transitionDirection * 
+            gameStateSpeed * 
+            TRANSITION_SPEED_SCALE * deltaTime;
         this->transitionAlpha = SMath::clamp(this->transitionAlpha, 0.0f, 1.0f);
 
         // Switch state

@@ -60,7 +60,8 @@ void EntityHandler::update(float deltaTime)
 			removeEnemy(i);
 		}
 		// Check if the enemy is doing damage
-		else if(this->enemies[i]->isDoingDamage() && !this->player.isHealthDepleted())
+		else if(this->enemies[i]->isDoingDamage() && !this->player.isHealthDepleted() &&
+			!this->player.isBerserkerActive())
 		{
 			this->playerIsTakingDamage = true;
 

@@ -20,11 +20,13 @@ private:
 	const int FIRST_PERSON_SPRITE_WIDTH = 192;
 	const int FIRST_PERSON_SPRITE_HEIGHT = 64;
 
-	const float HP_DECREASE_AMOUNT = 20;
-	const float HP_INCREASE_AMOUNT = 5;
+	const float HP_DECREASE_AMOUNT = 25;
+	const float HP_INCREASE_AMOUNT = 1;
 	const float MOVEMENT_SPEED_DEFAULT = 6.0f;
 	const float MOVEMENT_SPEED_BERSERKER = 9.0f;
 	const float MOVEMENT_SPEED_ATTACKING_SCALE = 1.7f;
+	const float MAX_ATTACK_COOLDOWN_TIME_DEFAULT = 1.0f;
+	const float MAX_ATTACK_COOLDOWN_TIME_BERSERKER = 0.0f;
 	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
 	const float MAX_ATTACK_DIST = 2.0f;
 	const float MAX_ATTACK_TIME = 0.5f;
@@ -35,7 +37,7 @@ private:
 	const float MAX_ATTACKING_TIME = 1.0f;
 	const float ABILITY_GRENADE_MAX_COOLDOWN_TIME = 1.0f;
 	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 1.0f;
-	const float MAX_BERSERKER_TIME = 2.0f;
+	const float MAX_BERSERKER_TIME = 4.0f;
 	const float BERSERKER_ALPHA_ANIMATION_TIME_SCALE = 3.0f;
 
 	sf::Texture swordTextureSheet;
@@ -51,6 +53,7 @@ private:
 	sf::SoundBuffer throwGrenadeSound;
 	sf::SoundBuffer berserkStartSound;
 	sf::SoundBuffer berserkEndSound;
+	sf::SoundBuffer damageTakenSound;
 
 	sf::Vector2i monitorMiddle;
 	sf::Vector2f swordPosition;
@@ -74,6 +77,7 @@ private:
 	float roll;			// Also in radians
 	float walkTimer;
 	float isAttackingTimer;
+	float attackCooldownTimer;
 	float berserkerActiveTimer;
 	float grenadeCooldownTimer;
 	float berserkerCooldownTimer;

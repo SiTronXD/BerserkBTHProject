@@ -27,6 +27,7 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 		const sf::Color TEXT_COLOR = sf::Color(80, 190, 50);
 		const sf::Color OUTLINE_COLOR = sf::Color(200, 255, 200);
 
+		// Stats text
 		this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 		this->foundCollectiblesText.setFont(this->font);
 		this->foundCollectiblesText.setFillColor(TEXT_COLOR);
@@ -38,7 +39,6 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 		this->foundCollectiblesOutlineText.setFillColor(OUTLINE_COLOR);
 		ResTranslator::transformText(this->foundCollectiblesOutlineText, -672, -148, 60);
 
-		
 		this->playTimeText.setFont(this->font);
 		this->playTimeText.setFillColor(TEXT_COLOR);
 		this->playTimeText.setString("   Time: \n" + std::to_string(this->gameStats.getPlayTimeInSeconds()) + " seconds");
@@ -57,12 +57,27 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 		this->mainMenuButton.set(-550, 250);
 	}
 
+	// Background sprite
 	this->backgroundSprite.setTexture(this->backgroundTexture);
 	ResTranslator::transformSprite(this->backgroundSprite, 0, 0, 2520, 1080);
-}
 
-void GameOverState::handlePollEvent(const sf::Event& event)
-{
+	// Music
+	bool loadedMusic = true;
+
+	if(!this->gameStats.getPlayerHasWon())
+		loadedMusic = this->gameOverMusic.openFromFile("Resources/Sounds/Music/waitingSoLong.ogg");
+	else
+		loadedMusic = this->gameOverMusic.openFromFile("Resources/Sounds/Music/behelit.ogg");
+
+	if (loadedMusic && SettingsHandler::getMusicVolume() > 0)
+	{
+		this->gameOverMusic.setVolume(SettingsHandler::getMusicVolume());
+		this->gameOverMusic.setLoop(false);
+		this->gameOverMusic.play();
+	}
+
+	// Set start transition speed
+	this->setStateTransitionSpeedScale(-1.0f, 0.25f);
 }
 
 void GameOverState::update(float deltaTime)
@@ -73,11 +88,17 @@ void GameOverState::update(float deltaTime)
 	// Restart game
 	if (this->restartButton.hasBeenPressed())
 	{
+		// Stop music
+		this->gameOverMusic.stop();
+
 		GameState::setState(State::PLAY);
 	}
 	// Go to main menu
 	else if (this->mainMenuButton.hasBeenPressed())
 	{
+		// Stop music
+		this->gameOverMusic.stop();
+
 		GameState::setState(State::MAIN_MENU);
 	}
 }

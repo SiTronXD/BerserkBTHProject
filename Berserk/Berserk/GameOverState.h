@@ -17,6 +17,8 @@ private:
 	sf::Text foundCollectiblesText;
 	sf::Text playTimeText;
 
+	sf::Music gameOverMusic;
+	
 	GameStatsHandler& gameStats;
 
 	sf::Texture backgroundTexture;
@@ -26,7 +28,6 @@ public:
 	GameOverState(sf::RenderWindow& window, GameStatsHandler& gameStats);
 
 	// Inherited via GameState
-	virtual void handlePollEvent(const sf::Event& event) override;
 	virtual void update(float deltaTime) override;
 	virtual void render() override;
 };

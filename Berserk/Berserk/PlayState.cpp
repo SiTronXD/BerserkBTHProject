@@ -17,10 +17,15 @@ PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 
 	// Hide mouse
 	this->window.setMouseCursorVisible(false);
-}
 
-void PlayState::handlePollEvent(const sf::Event& event)
-{
+	// Music
+	if (this->gamePlayMusic.openFromFile("Resources/Sounds/Music/blackSwordsman.ogg") &&
+		SettingsHandler::getMusicVolume() > 0)
+	{
+		this->gamePlayMusic.setVolume(SettingsHandler::getMusicVolume());
+		this->gamePlayMusic.setLoop(true);
+		this->gamePlayMusic.play();
+	}
 }
 
 void PlayState::update(float deltaTime)
@@ -29,6 +34,10 @@ void PlayState::update(float deltaTime)
 	this->renderer.update(deltaTime);
 	this->ui.update(deltaTime);
 	this->gameStats.updateTimer(deltaTime);
+
+	// Stop music if the player dies
+	if (this->entityHandler.getPlayer().isHealthDepleted())
+		this->gamePlayMusic.stop();
 
 	// Player can and wants to exit
 	if (this->entityHandler.getCollisionHandler().playerIsCloseToGoal() && 
@@ -43,6 +52,9 @@ void PlayState::update(float deltaTime)
 	// Player has lost
 	else if(this->entityHandler.playerHasLost())
 	{
+		// Set to slow end transition speed for a dramatic effect :p
+		this->setStateTransitionSpeedScale(1.0f, 0.4f);
+
 		// Switch state
 		this->setState(State::GAME_OVER);
 	}

@@ -10,14 +10,18 @@ MainMenuState::MainMenuState(sf::RenderWindow& window)
 	this->backgroundSprite.setTexture(this->backgroundTexture);
 
 	ResTranslator::transformSprite(this->backgroundSprite, 0, 0, 2520, 1080);
+
+	// Music
+	if (this->menuMusic.openFromFile("Resources/Sounds/Music/bloodAndGuts.ogg") &&
+		SettingsHandler::getMusicVolume() > 0)
+	{
+		this->menuMusic.setVolume(SettingsHandler::getMusicVolume());
+		this->menuMusic.setLoop(true);
+		this->menuMusic.play();
+	}
 }
 
 MainMenuState::~MainMenuState()
-{
-
-}
-
-void MainMenuState::handlePollEvent(const sf::Event& event)
 {
 
 }
@@ -30,11 +34,17 @@ void MainMenuState::update(float deltaTime)
 	// Start game
 	if (this->playButton.hasBeenPressed())
 	{
+		// Sound
+		this->menuMusic.stop();
+
 		GameState::setState(State::PLAY);
 	}
 	// Exit
 	else if (this->exitButton.hasBeenPressed())
 	{
+		// Sound
+		this->menuMusic.stop();
+
 		window.close();
 	}
 }
