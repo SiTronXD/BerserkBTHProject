@@ -7,7 +7,7 @@ void EntityHandler::removeEnemy(int index)
 }
 
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
-	: player(4, 4, *this), collisionHandler(gameStats, *this),
+	: player(4, 4), collisionHandler(gameStats, *this),
 	nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
 { }
 
@@ -98,11 +98,6 @@ void EntityHandler::addEnemy(sf::Vector2f newEnemyPos)
 {
 	if (this->nrOfEnemies < this->MAX_NUM_ENEMIES)
 		this->enemies[this->nrOfEnemies++] = new Enemy(newEnemyPos);
-}
-
-void EntityHandler::addEnemySpawnPoint(sf::Vector2f spawnPointPos)
-{
-	this->spawner.addSpawnPoint(spawnPointPos);
 }
 
 void EntityHandler::render(sf::RenderWindow& window)
@@ -199,17 +194,23 @@ void EntityHandler::fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[],
 	{
 		if (this->enemies[i])
 		{
-			// Position
-			positionArray[currentArraySize] = this->enemies[i]->getPositionGlsl();
+			sf::Vector2f deltaPos = this->player.getPosition() - this->enemies[i]->getPosition2D();
 
-			// Texture rect
-			textureRectsArray[currentArraySize] = this->enemies[i]->getTextureRectGlsl();
+			// Render the enemy only if it is within range
+			if (SMath::dot(deltaPos, deltaPos) <= this->player.getEntityVisibleRadiusSqrd())
+			{
+				// Position
+				positionArray[currentArraySize] = this->enemies[i]->getPositionGlsl();
 
-			// Scale
-			worldScaleArray[currentArraySize] = this->enemies[i]->getWorldScaleGlsl();
+				// Texture rect
+				textureRectsArray[currentArraySize] = this->enemies[i]->getTextureRectGlsl();
 
-			// Increment size
-			currentArraySize++;
+				// Scale
+				worldScaleArray[currentArraySize] = this->enemies[i]->getWorldScaleGlsl();
+
+				// Increment size
+				currentArraySize++;
+			}
 		}
 	}
 

@@ -1,7 +1,6 @@
 #version 130
 
 #define MARCH_STEP_SIZE 0.001
-//#define MARCH_STEP_SIZE 0.000125
 #define MARCH_MAX_NUM_STEPS 1000
 
 #define TILE_WALL_COLOR vec3(1.0f)
@@ -12,7 +11,7 @@
 // Constants
 const float PI = atan(-1.0f);
 const float FOV = PI * 0.60f;
-const int MAX_RENDER_ENTITIES = 64;
+const int MAX_RENDER_ENTITIES = 128;
 
 // Uniforms
 uniform sampler2D u_mapTexture;
@@ -168,7 +167,7 @@ void main()
 		);
 		float spriteDist = length(camToTarget);
 
-		// Check if the sprite is within range of the camera
+		// Check if the sprite is infront of the closest wall
 		if(spriteDist < currentPixelDepth)
 		{
 			vec2 camToTargetDir = camToTarget / spriteDist;

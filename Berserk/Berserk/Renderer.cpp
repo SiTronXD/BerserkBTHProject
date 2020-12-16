@@ -5,7 +5,7 @@ Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler)
 	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f), fogColor(0.0f, 0.0f, 0.0f)
 {
 	// Set screen rectangle shape
-	shaderRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
+	shaderRenderRect.setSize(sf::Vector2f((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
 	shaderRenderRect.setFillColor(sf::Color::Green);
 
 	// Create render texture
@@ -48,7 +48,7 @@ void Renderer::setFogColor(sf::Color color)
 
 sf::RenderTexture& Renderer::render()
 {
-	sf::Glsl::Vec2 resolution(SettingsHandler::getWidth(), SettingsHandler::getHeight());
+	sf::Glsl::Vec2 resolution((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight());
 
 	// Update shader uniforms
 	this->rayCastShader.setUniform("u_timer", this->timer);

@@ -8,7 +8,7 @@
 class Renderer
 {
 private:
-	static const int MAX_ENTITIES = 64;
+	static const int MAX_ENTITIES = 128;
 
 	sf::RectangleShape shaderRenderRect;
 	sf::RenderTexture shaderRenderTexture;

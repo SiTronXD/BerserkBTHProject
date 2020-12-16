@@ -185,6 +185,15 @@ void CollisionHandler::update()
 				}
 			}
 		}
+
+		// "Record" if the enemy just died 
+		// (doesn't matter if it was in the explosion or by the player)
+		if (currentEnemy->hasJustDied())
+		{
+			currentEnemy->resetJustDied();
+
+			this->gameStats.killedEnemy();
+		}
 	}
 }
 

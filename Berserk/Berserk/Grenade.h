@@ -7,7 +7,7 @@ class Grenade : public RenderEntity
 {
 private:
 	const float START_SPEED = 8.0f;
-	const float ALIVE_TIME = 1.0f;
+	const float ALIVE_TIME = 0.7f;
 
 	sf::Vector2f direction;
 	sf::Vector2f lastFramePos;

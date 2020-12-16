@@ -6,7 +6,6 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 	const sf::Color GOAL_COLOR = sf::Color(0, 255, 0, 255);
 	const sf::Color COLLECTIBLE_COLOR = sf::Color(255, 255, 0, 255);
 	const sf::Color SINGLE_ENEMY_COLOR = sf::Color(255, 0, 0, 255);
-	const sf::Color ENEMY_SPAWN_POINT_COLOR = sf::Color(255, 0, 255, 255);
 	const sf::Color PLAYER_SPAWN_POINT_COLOR = sf::Color(0, 0, 255, 255);
 
 	// Load image and size
@@ -42,10 +41,6 @@ void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
 			if (this->evaluatePixel(pixelColor, SINGLE_ENEMY_COLOR))
 				entityHandler.addEnemy(sf::Vector2f(x + 0.5f, y + 0.5f));
 
-			// Enemy spawn point
-			if (this->evaluatePixel(pixelColor, ENEMY_SPAWN_POINT_COLOR))
-				entityHandler.addEnemySpawnPoint(sf::Vector2f(x + 0.5f, y + 0.5f));
-
 			// Player spawn point
 			if (this->evaluatePixel(pixelColor, PLAYER_SPAWN_POINT_COLOR))
 				entityHandler.placePlayer(sf::Vector2f(x + 0.5f, y + 0.5f));
@@ -66,8 +61,9 @@ bool MapHandler::evaluatePixel(sf::Color currentPixel, sf::Color targetPixel)
 MapHandler::MapHandler(EntityHandler& entityHandler)
 {
 	// Load map texture
-	//this->map.loadFromFile("Resources/Maps/TestLevel.png");
-	this->map.loadFromFile("Resources/Maps/TestLevel2.png");
+	//this->map.loadFromFile("Resources/Maps/TestLevel.png");s
+	//this->map.loadFromFile("Resources/Maps/TestLevel2.png");
+	this->map.loadFromFile("Resources/Maps/MainLevel.png");
 
 	// Load entities and send them to the entityHandler
 	this->loadEntitiesFromMap(entityHandler);

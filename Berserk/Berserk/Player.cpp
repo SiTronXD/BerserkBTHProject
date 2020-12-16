@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "EntityHandler.h"
 
 enum PLAYER_ANIM
 {
@@ -296,7 +295,7 @@ void Player::updateFpsSpritePosition()
 
 
 	// Update berserker alpha color
-	sf::Color newSpriteColor = sf::Color(255, 255, 255, 255 * berserkerAnimationAlpha);
+	sf::Color newSpriteColor = sf::Color(255, 255, 255, (sf::Uint8) (255 * berserkerAnimationAlpha));
 	this->berserkSprite.setColor(newSpriteColor);
 
 	// Set texture rects
@@ -310,8 +309,8 @@ void Player::playSound(sf::SoundBuffer& sfx)
 	this->soundPlayer.play();
 }
 
-Player::Player(int x, int y, EntityHandler& entityHandler)
-	: x(x), y(y), z(0.0f), entityHandler(entityHandler), lastFrameX(x), lastFrameY(y), 
+Player::Player(float x, float y)
+	: x(x), y(y), z(0.0f), lastFrameX(x), lastFrameY(y), 
 	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), attackCooldownTimer(0.0f),
 	berserkerAnimationAlpha(1.0f), dieTimer(0.0f), health(100.0f), tryToExit(false), 
 	hasStartedAttackAnimation(false), startThrowAnimation(false),
@@ -394,8 +393,8 @@ void Player::handleInput(float deltaTime)
 		}
 
 		// Walking
-		float forwardInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
-		float rightInput = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+		float forwardInput = (float) (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S));
+		float rightInput = (float) (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A));
 
 		sf::Vector2f forwardDir(std::cos(-this->direction), std::sin(-this->direction));
 		sf::Vector2f rightDir(-forwardDir.y, forwardDir.x);
@@ -671,6 +670,11 @@ float Player::getBerserkerBlackBarAlpha() const
 		alpha = 0.0f;
 
 	return alpha;
+}
+
+float Player::getEntityVisibleRadiusSqrd() const
+{
+	return ENTITY_VISIBLE_RADIUS * ENTITY_VISIBLE_RADIUS;
 }
 
 Grenade* Player::getGrenade() const

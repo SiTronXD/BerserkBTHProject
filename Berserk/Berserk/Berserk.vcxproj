@@ -173,7 +173,6 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SettingsHandler.cpp" />
     <ClCompile Include="SMath.cpp" />
-    <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="ResTranslator.cpp" />
   </ItemGroup>
@@ -199,7 +198,6 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SettingsHandler.h" />
     <ClInclude Include="SMath.h" />
-    <ClInclude Include="Spawner.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="ResTranslator.h" />
   </ItemGroup>

@@ -26,6 +26,7 @@ private:
 	bool dead;
 	bool doDamage;
 	bool canMove;
+	bool justDied;
 
 	void setNextSoundMaxTime();
 
@@ -37,6 +38,7 @@ public:
 	void kill(bool playDeadSound = true);
 	void caughtInExplosion(float effectTimer, sf::Vector2f explosionPos);
 	void resetCaughtTime();
+	void resetJustDied();
 
 	sf::Vector2f getLastFramePosition() const;
 	sf::Vector2f getWalkStep() const;
@@ -45,4 +47,5 @@ public:
 
 	bool isDoingDamage() const;
 	bool isDead() const;
+	bool hasJustDied() const;
 };

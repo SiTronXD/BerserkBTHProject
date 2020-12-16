@@ -6,7 +6,7 @@
 class Collectible : public RenderEntity
 {
 private:
-	const float COLLISION_RADIUS = 0.8f;
+	const float COLLISION_RADIUS = 1.2f;
 
 	sf::SoundBuffer foundSound;
 

@@ -11,7 +11,7 @@ void Enemy::setNextSoundMaxTime()
 Enemy::Enemy(sf::Vector2f startPosition)
 	: lastFramePos(startPosition), walkStep(0.0f, 0.0f), noiseSoundTimer(0.0f), 
 	nextNoiseSoundMaxTime(0.0f), lastAttackFrameIndex(0), caughtTime(0.0f),
-	dead(false), doDamage(false), canMove(true)
+	dead(false), doDamage(false), canMove(true), justDied(false)
 {
 	// Set position
 	this->setPosition(startPosition);
@@ -47,75 +47,76 @@ Enemy::Enemy(sf::Vector2f startPosition)
 
 void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 {
-	this->lastFramePos = this->getPosition2D();
-
 	// Get direction
 	sf::Vector2f walkDir = targetPosition - this->getPosition2D();
 	float walkDirSqrd = SMath::dot(walkDir, walkDir);
 
-	this->noiseSoundTimer += deltaTime;
-
-	// Play noise sound
-	if (this->noiseSoundTimer >= this->nextNoiseSoundMaxTime && !this->dead)
+	// Update only if the player is within range
+	if (walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
 	{
-		this->noiseSoundTimer = 0.0f;
-		this->setNextSoundMaxTime();
-
-		// Lower volume depending on distance to target
-		float noiseVolume = SMath::clamp(1.0f - walkDirSqrd / (8 * 8), 0.0f, 1.0f);
-		float randomPitch = ((rand() % 100) - 50) * 0.01f + 1.0f;
-
-		this->playSound(this->noiseSound, noiseVolume, randomPitch);
-	}
-
-	// Update animations if the player is within range
-	if(walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
 		RenderEntity::update(deltaTime);
 
+		this->lastFramePos = this->getPosition2D();
 
-	if (!this->dead)
-	{
-		// Check if the player is too far away
-		if (walkDirSqrd > this->MAX_ATTACK_DIST * this->MAX_ATTACK_DIST)
+		this->noiseSoundTimer += deltaTime;
+
+		// Play noise sound
+		if (this->noiseSoundTimer >= this->nextNoiseSoundMaxTime && !this->dead)
 		{
-			// Check if the player is close enough for the enemy to see
-			if (walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
+			this->noiseSoundTimer = 0.0f;
+			this->setNextSoundMaxTime();
+
+			// Lower volume depending on distance to target
+			float noiseVolume = SMath::clamp(1.0f - walkDirSqrd / (8 * 8), 0.0f, 1.0f);
+			float randomPitch = ((rand() % 100) - 50) * 0.01f + 1.0f;
+
+			this->playSound(this->noiseSound, noiseVolume, randomPitch);
+		}
+
+		if (!this->dead)
+		{
+			// Check if the player is too far away
+			if (walkDirSqrd > this->MAX_ATTACK_DIST * this->MAX_ATTACK_DIST)
 			{
-				if (this->canMove)
+				// Check if the player is close enough for the enemy to see
+				if (walkDirSqrd < this->MAX_PLAYER_VISIBLE_DIST * this->MAX_PLAYER_VISIBLE_DIST)
 				{
-					SMath::vectorNormalize(walkDir);
+					if (this->canMove)
+					{
+						SMath::vectorNormalize(walkDir);
 
-					// Move new position
-					this->walkStep = walkDir * MOVEMENT_SPEED * deltaTime;
-					sf::Vector2f newPosition = this->getPosition2D() + this->walkStep;
+						// Move new position
+						this->walkStep = walkDir * MOVEMENT_SPEED * deltaTime;
+						sf::Vector2f newPosition = this->getPosition2D() + this->walkStep;
 
-					// Apply new position
-					this->setPosition(newPosition);
+						// Apply new position
+						this->setPosition(newPosition);
+					}
+
+					// Set walking animation
+					this->setAnimationIndex(0);
+				}
+			}
+			// Enemy should attack the player
+			else
+			{
+				// Switch animation if necessary
+				if (this->getCurrentAnimationIndex() != 1)
+				{
+					this->setAnimationIndex(1);
+					this->resetCurrentAnimation();
 				}
 
-				// Set walking animation
-				this->setAnimationIndex(0);
-			}
-		}
-		// Enemy should attack the player
-		else
-		{
-			// Switch animation if necessary
-			if (this->getCurrentAnimationIndex() != 1)
-			{
-				this->setAnimationIndex(1);
-				this->resetCurrentAnimation();
-			}
+				// Do damage at the start of the last attack frame
+				this->doDamage = false;
+				if (this->getCurrentAnimation().getCurrentRectIndex() >= 1)
+				{
+					if (this->getCurrentAnimation().getCurrentRectIndex() != lastAttackFrameIndex)
+						this->doDamage = true;
+				}
 
-			// Do damage at the start of the last attack frame
-			this->doDamage = false;
-			if (this->getCurrentAnimation().getCurrentRectIndex() >= 1)
-			{
-				if(this->getCurrentAnimation().getCurrentRectIndex() != lastAttackFrameIndex)
-					this->doDamage = true;
+				this->lastAttackFrameIndex = this->getCurrentAnimation().getCurrentRectIndex();
 			}
-
-			this->lastAttackFrameIndex = this->getCurrentAnimation().getCurrentRectIndex();
 		}
 	}
 }
@@ -125,6 +126,7 @@ void Enemy::kill(bool playDeadSound)
 	if (!this->dead)
 	{
 		this->dead = true;
+		this->justDied = true;
 
 		// Add death animation
 		sf::IntRect deadRect(32, 64 + 32 * enemyType, 32, 32);
@@ -190,6 +192,11 @@ void Enemy::resetCaughtTime()
 	this->caughtTime = -1.0f;
 }
 
+void Enemy::resetJustDied()
+{
+	this->justDied = false;
+}
+
 sf::Vector2f Enemy::getLastFramePosition() const
 {
 	return this->lastFramePos;
@@ -213,4 +220,9 @@ bool Enemy::isDoingDamage() const
 bool Enemy::isDead() const
 {
 	return this->dead;
+}
+
+bool Enemy::hasJustDied() const
+{
+	return this->justDied;
 }

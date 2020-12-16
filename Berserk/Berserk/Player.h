@@ -10,8 +10,6 @@
 #include "Grenade.h"
 #include "GrenadeExplosion.h"
 
-class EntityHandler;
-
 class Player
 {
 private:
@@ -27,6 +25,7 @@ private:
 	const float MOVEMENT_SPEED_ATTACKING_SCALE = 1.7f;
 	const float MAX_ATTACK_COOLDOWN_TIME_DEFAULT = 1.0f;
 	const float MAX_ATTACK_COOLDOWN_TIME_BERSERKER = 0.0f;
+
 	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
 	const float MAX_ATTACK_DIST = 2.0f;
 	const float MAX_ATTACK_TIME = 0.5f;
@@ -39,6 +38,7 @@ private:
 	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 1.0f;
 	const float MAX_BERSERKER_TIME = 4.0f;
 	const float BERSERKER_ALPHA_ANIMATION_TIME_SCALE = 3.0f;
+	const float ENTITY_VISIBLE_RADIUS = 16.0f;
 
 	sf::Texture swordTextureSheet;
 	sf::Texture grenadeThrowTextureSheet;
@@ -62,8 +62,6 @@ private:
 	Animation* currentFpsAnimation;
 	Animation* currentBerserkAnimation;
 	Animation anims[5];
-
-	EntityHandler& entityHandler;
 
 	Grenade* grenade;
 	GrenadeExplosion* grenadeExplosion;
@@ -105,7 +103,7 @@ private:
 	Player operator=(const Player& other) = delete;
 
 public:
-	Player(int x, int y, EntityHandler& entityHandler);
+	Player(float x, float y);
 	~Player();
 
 	void handleInput(float deltaTime);
@@ -137,6 +135,7 @@ public:
 	float getAttackConeAngle() const;
 	float getMaxAttackDistSqrd() const;
 	float getBerserkerBlackBarAlpha() const;
+	float getEntityVisibleRadiusSqrd() const;
 
 	Grenade* getGrenade() const;
 	GrenadeExplosion* getGrenadeExplosion() const;

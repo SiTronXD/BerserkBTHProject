@@ -1,4 +1,6 @@
 #include "PlayState.h"
+#include <iostream>
+
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	: GameState(window), entityHandler(gameStats), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
 	ui(entityHandler), gameStats(gameStats)
@@ -6,9 +8,13 @@ PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	// Reset and set stats
 	this->gameStats.reset();
 	this->gameStats.setMaxCollectibles(this->entityHandler.getNumCollectibles());
+	this->gameStats.setMaxNumEnemies(this->entityHandler.getNumEnemies());
+
+	std::cout << "Found number of collectibles: " << this->entityHandler.getNumCollectibles() << std::endl;
+	std::cout << "Found number of enemies: " << this->entityHandler.getNumEnemies() << std::endl;
 
 	// Set screen rectangle shape
-	screenRenderRect.setSize(sf::Vector2f(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
+	screenRenderRect.setSize(sf::Vector2f((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
 	screenRenderRect.setFillColor(sf::Color::Green);
 
 	// Load post processing shader
@@ -53,7 +59,7 @@ void PlayState::update(float deltaTime)
 	else if(this->entityHandler.playerHasLost())
 	{
 		// Set to slow end transition speed for a dramatic effect :p
-		this->setStateTransitionSpeedScale(1.0f, 0.4f);
+		this->setStateTransitionSpeedScale(1, 0.4f);
 
 		// Switch state
 		this->setState(State::GAME_OVER);
@@ -67,7 +73,7 @@ void PlayState::render()
 
 	// Render texture to screen
 	this->postProcessingShader.setUniform("u_screenTexture", renderTexture.getTexture());
-	this->postProcessingShader.setUniform("u_resolution", sf::Glsl::Vec2(SettingsHandler::getWidth(), SettingsHandler::getHeight()));
+	this->postProcessingShader.setUniform("u_resolution", sf::Glsl::Vec2((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
 	window.draw(this->screenRenderRect, &this->postProcessingShader);
 
 	// Render entities

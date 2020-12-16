@@ -104,9 +104,6 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Spawner.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -177,9 +174,6 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Spawner.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
