@@ -25,8 +25,8 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 	{
 		for (int x = -1; x <= 1; x++)
 		{
-			int tileX = SMath::clamp((int)(objectTilePosX + x), 0, MAX_MAP_SIZE);
-			int tileY = SMath::clamp((int)(objectTilePosY + y), 0, MAX_MAP_SIZE);
+			int tileX = SMath::clamp((int)(objectTilePosX + x), 0, MAX_MAP_SIZE - 1);
+			int tileY = SMath::clamp((int)(objectTilePosY + y), 0, MAX_MAP_SIZE - 1);
 
 			// Check for collision on the X-axis
 			if (isObjectCollidingWall(halfCollisionBoxSize, lastPos.x + walkStep.x,
@@ -37,17 +37,23 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 					newPos.x = tileX + 1 + halfCollisionBoxSize;
 				else
 					newPos.x = tileX - halfCollisionBoxSize;
+
+				// Update last pos
+				lastPos.x = newPos.x;
 			}
 
 			// Check for collision on the Y-axis
 			if (isObjectCollidingWall(halfCollisionBoxSize, lastPos.x, lastPos.y + walkStep.y,
 				tileX, tileY))
 			{
-				// Move in X
+				// Move in Y
 				if (lastPos.y - (tileY + 0.5f) > 0.0f)
 					newPos.y = tileY + 1 + halfCollisionBoxSize;
 				else
 					newPos.y = tileY - halfCollisionBoxSize;
+
+				// Update last pos
+				lastPos.y = newPos.y;
 			}
 		}
 	}
@@ -178,8 +184,9 @@ void CollisionHandler::update()
 					// Kill enemy and play sound for 1 single enemy this frame
 					currentEnemy->kill(!killedEnemyThisFrame);
 
-					// Player gains health
+					// Player gains health and affects ability cooldown
 					this->player.gainHealth();
+					this->player.killedEnemy();
 
 					killedEnemyThisFrame = true;
 				}

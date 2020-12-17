@@ -1,15 +1,6 @@
 #include "Game.h"
 #include "SettingsHandler.h"
 
-void Game::handlePollEvent(const sf::Event& event)
-{
-    if (event.type == sf::Event::KeyPressed)
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-            this->window.close();
-    }
-}
-
 void Game::update()
 {
     float deltaTime = deltaTimeClock.restart().asSeconds();
@@ -152,16 +143,15 @@ void Game::run()
 {
     while (window.isOpen())
     {
+        this->update();
+        this->render();
+
+        // Close window after updating and rendering the current state
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            this->handlePollEvent(event);
         }
-
-        this->update();
-        this->render();
     }
 }

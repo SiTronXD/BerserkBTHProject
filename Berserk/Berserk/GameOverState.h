@@ -14,8 +14,15 @@ private:
 	sf::Font font;
 	sf::Text foundCollectiblesOutlineText;
 	sf::Text playTimeOutlineText;
+	sf::Text playTimeNumberOutlineText;
+	sf::Text killedEnemiesOutlineText;
+	sf::Text killedEnemiesNumberOutlineText;
+
 	sf::Text foundCollectiblesText;
 	sf::Text playTimeText;
+	sf::Text playTimeNumberText;
+	sf::Text killedEnemiesText;
+	sf::Text killedEnemiesNumberText;
 
 	sf::Music gameOverMusic;
 	

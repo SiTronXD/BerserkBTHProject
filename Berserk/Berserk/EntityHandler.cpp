@@ -7,7 +7,7 @@ void EntityHandler::removeEnemy(int index)
 }
 
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
-	: player(4, 4), collisionHandler(gameStats, *this),
+	: player(), collisionHandler(gameStats, *this),
 	nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
 { }
 

@@ -309,8 +309,8 @@ void Player::playSound(sf::SoundBuffer& sfx)
 	this->soundPlayer.play();
 }
 
-Player::Player(float x, float y)
-	: x(x), y(y), z(0.0f), lastFrameX(x), lastFrameY(y), 
+Player::Player()
+	: x(0.0f), y(0.0f), z(0.0f), lastFrameX(x), lastFrameY(y), 
 	direction(0.0f), walkTimer(0.0f), isAttackingTimer(0.0f), attackCooldownTimer(0.0f),
 	berserkerAnimationAlpha(1.0f), dieTimer(0.0f), health(100.0f), tryToExit(false), 
 	hasStartedAttackAnimation(false), startThrowAnimation(false),
@@ -369,10 +369,11 @@ void Player::handleInput(float deltaTime)
 
 		// Grenade
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E) && 
-			this->grenadeCooldownTimer >= ABILITY_GRENADE_MAX_COOLDOWN_TIME)
+			this->grenadeCooldownCounter >= ABILITY_GRENADE_REQUIRED_NUM_KILLS &&
+			!this->grenadeExplosion)
 		{
 			// Reset cooldown
-			this->grenadeCooldownTimer = 0.0f;
+			this->grenadeCooldownCounter = 0;
 		
 			// Start animation
 			this->startThrowAnimation = true;
@@ -380,10 +381,10 @@ void Player::handleInput(float deltaTime)
 
 		// Berserker
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) && 
-			this->berserkerCooldownTimer >= ABILITY_BERSERKER_MAX_COOLDOWN_TIME)
+			this->berserkerCooldownCounter >= ABILITY_BERSERKER_REQUIRED_NUM_KILLS)
 		{
 			// Reset cooldown
-			this->berserkerCooldownTimer = 0.0f;
+			this->berserkerCooldownCounter = 0;
 
 			// Start ability timer
 			this->berserkerActiveTimer = MAX_BERSERKER_TIME;
@@ -442,11 +443,7 @@ void Player::handleInput(float deltaTime)
 void Player::update(float deltaTime)
 {
 	// Update ability cooldowns
-	this->grenadeCooldownTimer += deltaTime;
-	this->berserkerCooldownTimer += deltaTime;
 	this->berserkerActiveTimer -= deltaTime;
-	this->grenadeCooldownTimer = SMath::clamp(this->grenadeCooldownTimer, 0.0f, ABILITY_GRENADE_MAX_COOLDOWN_TIME);
-	this->berserkerCooldownTimer = SMath::clamp(this->berserkerCooldownTimer, 0.0f, ABILITY_BERSERKER_MAX_COOLDOWN_TIME);
 	this->berserkerActiveTimer = std::max(this->berserkerActiveTimer, 0.0f);
 
 	// Update open berserker timer
@@ -575,6 +572,14 @@ void Player::loseHealth()
 	this->playSound(this->damageTakenSound);
 }
 
+void Player::killedEnemy()
+{
+	this->grenadeCooldownCounter++;
+	this->berserkerCooldownCounter++;
+	this->grenadeCooldownCounter = SMath::clamp(this->grenadeCooldownCounter, 0, ABILITY_GRENADE_REQUIRED_NUM_KILLS);
+	this->berserkerCooldownCounter = SMath::clamp(this->berserkerCooldownCounter, 0, ABILITY_BERSERKER_REQUIRED_NUM_KILLS);
+}
+
 const bool Player::playerTriesToExit() const
 {
 	return this->tryToExit && !this->isHealthDepleted();
@@ -639,12 +644,12 @@ int Player::getCurrentHealth() const
 
 float Player::getGrenadeCooldownPercent() const
 {
-	return this->grenadeCooldownTimer / ABILITY_GRENADE_MAX_COOLDOWN_TIME;
+	return (float) this->grenadeCooldownCounter / ABILITY_GRENADE_REQUIRED_NUM_KILLS;
 }
 
 float Player::getBerserkerCooldownPercent() const
 {
-	return this->berserkerCooldownTimer / ABILITY_BERSERKER_MAX_COOLDOWN_TIME;
+	return (float) this->berserkerCooldownCounter / ABILITY_BERSERKER_REQUIRED_NUM_KILLS;
 }
 
 float Player::getPlayerCollisionBoxSize() const

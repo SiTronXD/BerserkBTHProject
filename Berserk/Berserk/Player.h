@@ -34,11 +34,12 @@ private:
 
 	const float SWORD_SPRITE_SCALE = 10.0f;
 	const float MAX_ATTACKING_TIME = 1.0f;
-	const float ABILITY_GRENADE_MAX_COOLDOWN_TIME = 1.0f;
-	const float ABILITY_BERSERKER_MAX_COOLDOWN_TIME = 1.0f;
-	const float MAX_BERSERKER_TIME = 4.0f;
+	const float MAX_BERSERKER_TIME = 8.0f;
 	const float BERSERKER_ALPHA_ANIMATION_TIME_SCALE = 3.0f;
 	const float ENTITY_VISIBLE_RADIUS = 16.0f;
+
+	const int ABILITY_GRENADE_REQUIRED_NUM_KILLS = 10;
+	const int ABILITY_BERSERKER_REQUIRED_NUM_KILLS = 20;
 
 	sf::Texture swordTextureSheet;
 	sf::Texture grenadeThrowTextureSheet;
@@ -77,11 +78,12 @@ private:
 	float isAttackingTimer;
 	float attackCooldownTimer;
 	float berserkerActiveTimer;
-	float grenadeCooldownTimer;
-	float berserkerCooldownTimer;
 	float berserkerAnimationAlpha;
 	float health;
 	float dieTimer;
+
+	int grenadeCooldownCounter;
+	int berserkerCooldownCounter;
 
 	bool tryToExit;
 	bool hasStartedAttackAnimation;
@@ -103,7 +105,7 @@ private:
 	Player operator=(const Player& other) = delete;
 
 public:
-	Player(float x, float y);
+	Player();
 	~Player();
 
 	void handleInput(float deltaTime);
@@ -113,6 +115,7 @@ public:
 	void setPosition(sf::Vector2f newPos);
 	void gainHealth();
 	void loseHealth();
+	void killedEnemy();
 
 	const bool playerTriesToExit() const;
 	const sf::Vector2f getPosition() const;

@@ -25,7 +25,6 @@ private:
 	float transitionAlpha;
 	int transitionDirection;
 
-	void handlePollEvent(const sf::Event& event);
 	void update();
 	void render();
 
