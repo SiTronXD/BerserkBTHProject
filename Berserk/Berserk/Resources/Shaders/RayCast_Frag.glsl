@@ -98,7 +98,7 @@ void main()
 	float oneOverDist = 1.0f / dist;
 	float fog = clamp(1.0f - (dist / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);
 	float halfWallHeight = ONE_OVER_MAP_SIZE.x * oneOverDist;
-	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.8f) * oneOverDist * ONE_OVER_MAP_SIZE.x;
+	float wallCameraHeightY = uv.y + u_cameraPosition.z * oneOverDist * ONE_OVER_MAP_SIZE.x;
 	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
 
 	// Find wall uvs

@@ -1,5 +1,4 @@
 #include "PlayState.h"
-#include <iostream>
 
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	: GameState(window), entityHandler(gameStats), mapHandler(entityHandler), renderer(mapHandler, entityHandler), 
@@ -9,9 +8,6 @@ PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 	this->gameStats.reset();
 	this->gameStats.setMaxCollectibles(this->entityHandler.getNumCollectibles());
 	this->gameStats.setMaxNumEnemies(this->entityHandler.getNumEnemies());
-
-	std::cout << "Found number of collectibles: " << this->entityHandler.getNumCollectibles() << std::endl;
-	std::cout << "Found number of enemies: " << this->entityHandler.getNumEnemies() << std::endl;
 
 	// Set screen rectangle shape
 	screenRenderRect.setSize(sf::Vector2f((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
@@ -36,33 +32,37 @@ PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)
 
 void PlayState::update(float deltaTime)
 {
-	this->entityHandler.update(deltaTime);
-	this->renderer.update(deltaTime);
-	this->ui.update(deltaTime);
-	this->gameStats.updateTimer(deltaTime);
-
-	// Stop music if the player dies
-	if (this->entityHandler.getPlayer().isHealthDepleted())
-		this->gamePlayMusic.stop();
-
-	// Player can and wants to exit
-	if (this->entityHandler.getCollisionHandler().playerIsCloseToGoal() && 
-		this->entityHandler.getPlayer().playerTriesToExit())
+	// Update only if the window has focus
+	if (this->window.hasFocus())
 	{
-		// Player won!
-		this->gameStats.flagPlayerWon();
+		this->entityHandler.update(deltaTime);
+		this->renderer.update(deltaTime);
+		this->ui.update(deltaTime);
+		this->gameStats.updateTimer(deltaTime);
 
-		// Switch state
-		this->setState(State::GAME_OVER);
-	}
-	// Player has lost
-	else if(this->entityHandler.playerHasLost())
-	{
-		// Set to slow end transition speed for a dramatic effect :p
-		this->setStateTransitionSpeedScale(1, 0.4f);
+		// Stop music if the player dies
+		if (this->entityHandler.getPlayer().isHealthDepleted())
+			this->gamePlayMusic.stop();
 
-		// Switch state
-		this->setState(State::GAME_OVER);
+		// Player can and wants to exit
+		if (this->entityHandler.getCollisionHandler().playerIsCloseToGoal() &&
+			this->entityHandler.getPlayer().playerTriesToExit())
+		{
+			// Player won!
+			this->gameStats.flagPlayerWon();
+
+			// Switch state
+			this->setState(State::GAME_OVER);
+		}
+		// Player has lost
+		else if (this->entityHandler.playerHasLost())
+		{
+			// Set to slow end transition speed for a dramatic effect :p
+			this->setStateTransitionSpeedScale(1, 0.4f);
+
+			// Switch state
+			this->setState(State::GAME_OVER);
+		}
 	}
 }
 
