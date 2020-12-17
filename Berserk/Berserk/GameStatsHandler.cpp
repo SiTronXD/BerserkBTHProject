@@ -8,6 +8,7 @@ GameStatsHandler::GameStatsHandler()
 void GameStatsHandler::reset()
 {
 	this->playerWon = false;
+	this->playTimer = 0.0f;
 	this->numCollectedCollectibles = 0;
 	this->numKilledEnemies = 0;
 }
