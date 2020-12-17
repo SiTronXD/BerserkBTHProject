@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "ResTranslator.h"
+#include "OutlineText.h"
 
 class Button
 {
@@ -10,8 +11,7 @@ private:
 	static const int DEFAULT_CHARACTER_SIZE = 45;
 
 	sf::Font font;
-	sf::Text text;
-	sf::Text outlineText;
+	OutlineText text;
 
 	sf::Sound soundPlayer;
 	sf::SoundBuffer buttonActivatedSound;

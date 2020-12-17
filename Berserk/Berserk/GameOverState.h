@@ -12,17 +12,11 @@ private:
 	Button mainMenuButton;
 
 	sf::Font font;
-	sf::Text foundCollectiblesOutlineText;
-	sf::Text playTimeOutlineText;
-	sf::Text playTimeNumberOutlineText;
-	sf::Text killedEnemiesOutlineText;
-	sf::Text killedEnemiesNumberOutlineText;
-
-	sf::Text foundCollectiblesText;
-	sf::Text playTimeText;
-	sf::Text playTimeNumberText;
-	sf::Text killedEnemiesText;
-	sf::Text killedEnemiesNumberText;
+	OutlineText foundCollectiblesText;
+	OutlineText playTimeText;
+	OutlineText playTimeNumberText;
+	OutlineText killedEnemiesText;
+	OutlineText killedEnemiesNumberText;
 
 	sf::Music gameOverMusic;
 	

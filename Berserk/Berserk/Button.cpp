@@ -4,16 +4,16 @@ void Button::updateLook()
 {
 	if (this->isPressing)
 	{
-		this->outlineText.setFillColor(sf::Color::Yellow);
+		this->text.setOutlineColor(sf::Color::Yellow);
 	}
 	else
 	{
-		this->outlineText.setFillColor(sf::Color::White);
+		this->text.setOutlineColor(sf::Color::White);
 
 		if (this->isHovering)
-			this->text.setFillColor(sf::Color::White);
+			this->text.setMainColor(sf::Color::White);
 		else
-			this->text.setFillColor(defaultColor);
+			this->text.setMainColor(defaultColor);
 	}
 }
 
@@ -21,14 +21,14 @@ Button::Button(float middleX, float middleY, std::string text, bool playSoundWhe
 	: middleX(middleX), middleY(middleY), isPressing(false), 
 	lastFrameIsPressing(false), isHovering(false), activate(false),
 	offsetSize(4), characterSize(DEFAULT_CHARACTER_SIZE), 
-	defaultColor(sf::Color::Red), buttonText(text), playSoundWhenActivated(playSoundWhenActivated)
+	defaultColor(sf::Color::Red), buttonText(text), playSoundWhenActivated(playSoundWhenActivated),
+	text(middleX, middleY, characterSize)
 {
 	// Text
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 	this->text.setFont(this->font);
-	this->text.setFillColor(sf::Color::Red);
-	this->outlineText.setFont(this->font);
-	this->outlineText.setFillColor(sf::Color::White);
+	this->text.setMainColor(sf::Color::Red);
+	this->text.setOutlineColor(sf::Color::White);
 
 	// Sound
 	this->soundPlayer.setVolume(SettingsHandler::getSoundEffectsVolume());
@@ -40,7 +40,7 @@ Button::Button(float middleX, float middleY, std::string text, bool playSoundWhe
 void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
 {
 	// Mouse is within bounds
-	this->isHovering = this->text.getGlobalBounds().contains((sf::Vector2f)mousePos);
+	this->isHovering = this->text.getBounds().contains((sf::Vector2f)mousePos);
 	if (this->isHovering)
 	{
 		this->isPressing = mouseBeingHeldDown;
@@ -69,10 +69,11 @@ void Button::update(sf::Vector2i mousePos, bool mouseBeingHeldDown)
 
 void Button::render(sf::RenderWindow& window)
 {
-	window.draw(this->outlineText);
+	this->text.drawOutlineText(window);
 
-	if(!this->isPressing)
-		window.draw(this->text);
+	// Draw main text, only if the button is not being pressed
+	if (!this->isPressing)
+		this->text.drawMainText(window);
 }
 
 // Sets the main text to a new color
@@ -92,11 +93,9 @@ void Button::set(float middleX, float middleY, std::string text)
 
 	// Set text strings
 	this->text.setString(text);
-	this->outlineText.setString(text);
 
 	// Move
-	ResTranslator::transformText(this->text, middleX, middleY, this->characterSize);
-	ResTranslator::transformText(this->outlineText, middleX - this->offsetSize, middleY + this->offsetSize, this->characterSize);
+	this->text.transformText(middleX, middleY, this->characterSize);
 }
 
 bool Button::hasBeenPressed()
