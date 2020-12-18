@@ -1,2 +1,6 @@
-﻿  Player.cpp
+﻿  Game.cpp
+  Main.cpp
+  PlayState.cpp
+  UI.cpp
+  Generating Code...
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe

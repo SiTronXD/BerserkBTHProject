@@ -208,8 +208,10 @@
     <None Include="Resources\Shaders\AbilityIcon_Vert.glsl" />
     <None Include="Resources\Shaders\PostProcessing_Frag.glsl" />
     <None Include="Resources\Shaders\PostProcessing_Vert.glsl" />
-    <None Include="Resources\Shaders\RayCast_Frag.glsl" />
-    <None Include="Resources\Shaders\RayCast_Vert.glsl" />
+    <None Include="Resources\Shaders\RayCastCompositing_Frag.glsl" />
+    <None Include="Resources\Shaders\RayCastCompositing_Vert.glsl" />
+    <None Include="Resources\Shaders\RayCastMain_Frag.glsl" />
+    <None Include="Resources\Shaders\RayCastMain_Vert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

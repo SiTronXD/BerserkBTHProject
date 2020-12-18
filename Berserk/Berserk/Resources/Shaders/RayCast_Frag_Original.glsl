@@ -6,10 +6,12 @@
 #define TILE_WALL_COLOR vec3(1.0f)
 #define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
 
+#define EPSILON 0.000001
+
 // Constants
 const float PI = atan(-1.0f);
-const float FOV = PI * 0.75f;
-const int MAX_RENDER_ENTITIES = 64;
+const float FOV = PI * 0.60f;
+const int MAX_RENDER_ENTITIES = 128;
 
 // Uniforms
 uniform sampler2D u_mapTexture;
@@ -69,10 +71,11 @@ void main()
 	// March
 	bool foundWall = false;
 	bool wallIsGoal = false;
+	float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
 	for(int i = 0; i < MARCH_MAX_NUM_STEPS && !foundWall; i++)
 	{
-		dist += MARCH_STEP_SIZE;
-		rayPos += rayDir * MARCH_STEP_SIZE;
+		dist += stepSize;
+		rayPos += rayDir * stepSize;
 
 		// Sample
 		vec3 foundCol = texture2D(u_mapTexture, rayPos).rgb;
@@ -93,10 +96,9 @@ void main()
 
 	// Fog and wall height
 	float oneOverDist = 1.0f / dist;
-	//float fog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE - dist, 0.0, dist), 0.0, 1.0);
 	float fog = clamp(1.0f - (dist / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);
-	float halfWallHeight = 0.05 * oneOverDist;
-	float wallCameraHeightY = uv.y + (u_cameraPosition.z * 0.5f) * oneOverDist * 0.1f; // Where did this 0.1 come from? D:
+	float halfWallHeight = ONE_OVER_MAP_SIZE.x * oneOverDist;
+	float wallCameraHeightY = uv.y + u_cameraPosition.z * oneOverDist * ONE_OVER_MAP_SIZE.x;
 	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
 
 	// Find wall uvs
@@ -134,11 +136,10 @@ void main()
 
 	// Sample floor texture
 	float floorDist = (0.80f / -uv.y);
-	//float floorFog = clamp(mix(MARCH_MAX_NUM_STEPS * MARCH_STEP_SIZE, 0.0, floorDist * 0.1f * 0.5f), 0.0, 1.0);
 	float floorFog = clamp(1.0f - ((floorDist * 0.8f * ONE_OVER_MAP_SIZE.x) / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);	// (floorDist * 0.1f * 0.5f * 16.0 / MAP_SIZE.x)
 	vec3 floorCol = texture2D(
 		u_floorTexture,
-		fract((camPos * MAP_SIZE + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
+		fract((camPos * MAP_SIZE * 0.92  + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
 	).rgb;
 
 
@@ -149,13 +150,14 @@ void main()
 	// Wall + floor
 	vec3 col = (wallCol * showWall) + (floorCol * showFloor);
 	col = mix(
-		u_fogColor * (uv.y > 0.0f ? max(1.0f - uv.y, wall) : 1.0f), 
+		u_fogColor * (uv.y > 0.0f ? max(1.0f - (uv.y-0.05f), wall) : 1.0f), 
 		col, 
 		(showWall + showFloor) * (wallCameraHeightY > halfWallHeight ? 0.0f : 1.0f)
 	);
 
 	// Render entities
-	float currentPixelDepth = length((rayDir * dist) * MAP_SIZE);
+	float currentPixelDepth = length(rayDir * dist * MAP_SIZE);
+	vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
 	for(int i = 0; i < u_numEntities; i++)
 	{
 		// Convert position to normalized screen coordinates
@@ -165,51 +167,74 @@ void main()
 		);
 		float spriteDist = length(camToTarget);
 
-		vec2 camToTargetDir = camToTarget / spriteDist;
-		vec2 dir = vec2(cos(u_cameraRotation.x), -sin(u_cameraRotation.x));
-
-		float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
-		
-		// A minimum cosine value of 1 is given, since the value could be undefined if the dot
-		// product between the two unit vectors are above 1, because of precision errors
-		float deltaAngle = acos(min(dot(dir, camToTargetDir), 1.0f)) * negateAngle;
-
-		float oneOverSpriteDist = 1.0f / spriteDist;
-
-		float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
-		float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
-
-		// Sprite size
-		vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
-
-		// Is pixel close enough to the sprite?
-		if(abs(uv.x - screenPosX) <= spriteSize.x && 
-			abs(uv.y - screenPosY) <= spriteSize.y && spriteDist < currentPixelDepth)
+		// Check if the sprite is infront of the closest wall
+		if(spriteDist < currentPixelDepth)
 		{
-			// Sprite texture coordinates
-			vec2 spriteUV = vec2(
-				(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
-				1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
-			);
+			vec2 camToTargetDir = camToTarget / spriteDist;
 
-			// Texture region
-			spriteUV.xy *= u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
-			spriteUV.xy += u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+			float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
+		
+			// The cosine value is clamped, since the value could be undefined if the dot
+			// product between the two unit vectors are outside the range [-1, 1], because of precision errors
+			float deltaAngle = acos(clamp(dot(dir, camToTargetDir), -1.0f, 1.0f)) * negateAngle;
 
-			vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
+			float oneOverSpriteDist = 1.0f / max(spriteDist, 0.001f);
 
-			// If pixel is not transparent
-			if(spriteCol.a > 0.0f)
+			float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
+			float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
+
+			// Sprite size
+			vec2 spriteSize = u_entityWorldScales[i] * oneOverSpriteDist;
+
+			// Is pixel close enough to the sprite?
+			if(abs(uv.x - screenPosX) <= spriteSize.x && 
+				abs(uv.y - screenPosY) <= spriteSize.y)
 			{
-				// Update depth
-				currentPixelDepth = spriteDist;
+				// Sprite texture coordinates
+				vec2 spriteUV = vec2(
+					(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
+					1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
+				);
 
-				// Apply color
-				col = spriteCol.rgb;
+				// Texture region
+				vec2 spriteRegionSize = u_entityTexRects[i].zw * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				vec2 spriteRegionTranslation = u_entityTexRects[i].xy * ONE_OVER_ENTITY_TEXTURE_SIZE;
+				spriteUV.xy *= spriteRegionSize;
+				spriteUV.xy += spriteRegionTranslation;
+
+				// Clamp coordinates within region to avoid precision glitches
+				spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation - spriteRegionSize * min(vec2(0), sign(spriteRegionSize)) + vec2(EPSILON), 
+					spriteRegionTranslation + spriteRegionSize * max(vec2(0), sign(spriteRegionSize)) - vec2(EPSILON)
+				);
+
+				// Clamping looks like this for positive region size
+				/*spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation + vec2(EPSILON), 
+					spriteRegionTranslation + spriteRegionSize - vec2(EPSILON)
+				);*/
+				// Clamping looks like this for negative region size
+				/*spriteUV.xy = clamp(
+					spriteUV.xy, 
+					spriteRegionTranslation + spriteRegionSize + vec2(EPSILON), 
+					spriteRegionTranslation - vec2(EPSILON)
+				);*/
+
+				vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
+
+				// If pixel is not transparent
+				if(spriteCol.a > 0.0f)
+				{
+					// Update depth
+					currentPixelDepth = spriteDist;
+
+					// Apply color together with sprite fog
+					col = mix(vec3(0.0f), spriteCol.rgb, clamp(16.0f - spriteDist, 0.0f, 1.0f));
+				}
 			}
-		}	
-
-		//col = vec3(deltaAngle * 1000.0f);
+		}
 	}
 
 	gl_FragColor = vec4(col, 1.0);

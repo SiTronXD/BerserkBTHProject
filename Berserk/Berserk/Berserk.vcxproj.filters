@@ -183,12 +183,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\RayCast_Frag.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Resources\Shaders\RayCast_Vert.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Resources\Shaders\PostProcessing_Frag.glsl">
       <Filter>Shaders</Filter>
     </None>
@@ -199,6 +193,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\AbilityIcon_Vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayCastCompositing_Frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayCastCompositing_Vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayCastMain_Frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayCastMain_Vert.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

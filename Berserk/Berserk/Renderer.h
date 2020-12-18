@@ -10,8 +10,10 @@ class Renderer
 private:
 	static const int MAX_ENTITIES = 128;
 
+	sf::RectangleShape rayCastRenderRect;
 	sf::RectangleShape shaderRenderRect;
 	sf::RenderTexture shaderRenderTexture;
+	sf::RenderTexture rayCastRenderTexture;
 	sf::RenderStates renderState;
 
 	sf::Texture wallTexture;
@@ -20,6 +22,7 @@ private:
 	sf::Texture entitiesTexture;
 
 	sf::Shader rayCastShader;
+	sf::Shader rayCastCompositingShader;
 
 	sf::Glsl::Vec3 fogColor;
 

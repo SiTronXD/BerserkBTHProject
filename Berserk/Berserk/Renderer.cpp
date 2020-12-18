@@ -4,11 +4,15 @@
 Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler) 
 	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f), fogColor(0.0f, 0.0f, 0.0f)
 {
-	// Set screen rectangle shape
+	// Set screen rectangle shapes
+	rayCastRenderRect.setSize(sf::Vector2f((float)SettingsHandler::getWidth(), 1.0f));
+	rayCastRenderRect.setFillColor(sf::Color::Green);
 	shaderRenderRect.setSize(sf::Vector2f((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
 	shaderRenderRect.setFillColor(sf::Color::Green);
 
-	// Create render texture
+	// Create render textures
+	if (!this->rayCastRenderTexture.create(SettingsHandler::getWidth(), 1))
+		std::cout << "Could not create rayCastRenderTexture..." << std::endl;
 	if (!this->shaderRenderTexture.create(SettingsHandler::getWidth(), SettingsHandler::getHeight()))
 		std::cout << "Could not create shaderRenderTexture..." << std::endl;
 
@@ -16,9 +20,11 @@ Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler)
 	if (!sf::Shader::isAvailable())
 		std::cout << "Shaders are not available on this device..." << std::endl;
 
-	// Load ray cast shader
-	if (!rayCastShader.loadFromFile("Resources/Shaders/RayCast_Vert.glsl", "Resources/Shaders/RayCast_Frag.glsl"))
+	// Load ray cast shaders
+	if (!rayCastShader.loadFromFile("Resources/Shaders/RayCastMain_Vert.glsl", "Resources/Shaders/RayCastMain_Frag.glsl"))
 		std::cout << "Could not load ray cast shader..." << std::endl;
+	if (!rayCastCompositingShader.loadFromFile("Resources/Shaders/RayCastCompositing_Vert.glsl", "Resources/Shaders/RayCastCompositing_Frag.glsl"))
+		std::cout << "Could not load ray cast compositing shader..." << std::endl;
 
 	// Disable alpha blending
 	this->renderState.blendMode = sf::BlendNone;
@@ -50,16 +56,27 @@ sf::RenderTexture& Renderer::render()
 {
 	sf::Glsl::Vec2 resolution((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight());
 
-	// Update shader uniforms
-	this->rayCastShader.setUniform("u_timer", this->timer);
+	// Update ray cast shader uniforms
 	this->rayCastShader.setUniform("u_cameraPosition", this->entityHandler.getPlayer().getPositionForRenderer());
 	this->rayCastShader.setUniform("u_cameraRotation", this->entityHandler.getPlayer().getRotationForRenderer());
 	this->rayCastShader.setUniform("u_mapTexture", this->mapHandler.getMapTexture());
-	this->rayCastShader.setUniform("u_wallTexture", this->wallTexture);
-	this->rayCastShader.setUniform("u_floorTexture", this->floorTexture);
-	this->rayCastShader.setUniform("u_goalTexture", this->goalTexture);
 	this->rayCastShader.setUniform("u_resolution", resolution);
-	this->rayCastShader.setUniform("u_fogColor", this->fogColor);
+
+	// Render ray cast
+	this->rayCastRenderTexture.draw(this->rayCastRenderRect, this->renderState);
+	this->rayCastRenderTexture.display();
+
+	// Update ray cast compositing shader
+	this->rayCastCompositingShader.setUniform("u_rayCastTexture", this->rayCastRenderTexture.getTexture());
+	this->rayCastCompositingShader.setUniform("u_cameraPosition", this->entityHandler.getPlayer().getPositionForRenderer());
+	this->rayCastCompositingShader.setUniform("u_cameraRotation", this->entityHandler.getPlayer().getRotationForRenderer());
+	this->rayCastCompositingShader.setUniform("u_timer", this->timer);
+	this->rayCastCompositingShader.setUniform("u_mapTexture", this->mapHandler.getMapTexture());
+	this->rayCastCompositingShader.setUniform("u_wallTexture", this->wallTexture);
+	this->rayCastCompositingShader.setUniform("u_floorTexture", this->floorTexture);
+	this->rayCastCompositingShader.setUniform("u_goalTexture", this->goalTexture);
+	this->rayCastCompositingShader.setUniform("u_fogColor", this->fogColor);
+	this->rayCastCompositingShader.setUniform("u_resolution", resolution);
 
 	// Fill array with entity positions and texture rects
 	sf::Glsl::Vec3 entityPositionsArray[MAX_ENTITIES] { };
@@ -70,14 +87,14 @@ sf::RenderTexture& Renderer::render()
 		entityWorldScale, arraySize);
 
 	// Update entity uniforms
-	this->rayCastShader.setUniform("u_entityTexture", this->entitiesTexture);
-	this->rayCastShader.setUniformArray("u_entityPositions", entityPositionsArray, MAX_ENTITIES);
-	this->rayCastShader.setUniformArray("u_entityTexRects", entityTexRectArray, MAX_ENTITIES);
-	this->rayCastShader.setUniformArray("u_entityWorldScales", entityWorldScale, MAX_ENTITIES);
-	this->rayCastShader.setUniform("u_numEntities", arraySize);
+	this->rayCastCompositingShader.setUniform("u_entityTexture", this->entitiesTexture);
+	this->rayCastCompositingShader.setUniformArray("u_entityPositions", entityPositionsArray, MAX_ENTITIES);
+	this->rayCastCompositingShader.setUniformArray("u_entityTexRects", entityTexRectArray, MAX_ENTITIES);
+	this->rayCastCompositingShader.setUniformArray("u_entityWorldScales", entityWorldScale, MAX_ENTITIES);
+	this->rayCastCompositingShader.setUniform("u_numEntities", arraySize);
 
 	// Render
-	this->shaderRenderTexture.draw(this->shaderRenderRect, &this->rayCastShader);
+	this->shaderRenderTexture.draw(this->shaderRenderRect, &this->rayCastCompositingShader);
 	this->shaderRenderTexture.display();
 
 	return this->shaderRenderTexture;
