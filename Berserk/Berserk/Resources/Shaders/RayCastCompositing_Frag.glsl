@@ -3,9 +3,6 @@
 #define MARCH_STEP_SIZE 0.001
 #define MARCH_MAX_NUM_STEPS 1000
 
-#define TILE_WALL_COLOR vec3(1.0f)
-#define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
-
 #define EPSILON 0.000001
 
 // Constants
@@ -52,17 +49,19 @@ void main()
 	// Make uvs go from -0.5 to 0.5 (with aspect correction)
 	vec2 uv = gl_FragCoord.xy / u_resolution;
 	uv -= 0.5;
-
+	
 	float aspectRatio = u_resolution.x / u_resolution.y;
 	uv.x *= aspectRatio;
 
 	// Rotate uvs
 	uv *= rotate(u_cameraRotation.y);
 	
+	// Zoom in to avoid artifacts from sampling outside u_rayCastTexture 
+	// at the corners of the window :p
+	uv /= abs(u_cameraRotation.y) * 0.3f + 1.0f;
+	
 	vec2 rayHitInfoUV = vec2(uv.x, 0.0f) / vec2(aspectRatio, 1.0f) + vec2(0.5, 0.0f);
 	vec4 rayHitInfo = texture2D(u_rayCastTexture, rayHitInfoUV);
-
-	//vec4 rayHitInfo = texelFetch(u_rayCastTexture, ivec2(gl_FragCoord.x, 0), 0);
 
 	// Keep track of camera in the world
 	vec2 camPos = u_cameraPosition.xy * ONE_OVER_MAP_SIZE;
@@ -79,7 +78,7 @@ void main()
 		dist = 1.0f;
 
 	// March
-	bool wallIsGoal = rayHitInfo.y > 0.5f;
+	bool wallIsGoal = rayHitInfo.y <= 0.0f;
 	float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
 	
 
@@ -95,7 +94,8 @@ void main()
 	float wallV = (uv.y / halfWallHeight) * 0.5f + 0.5f + u_cameraPosition.z * 0.5f;
 	vec2 wallUV = vec2(wallU, 1.0f - wallV);
 
-	// Sample wall texture
+	// Sample wall texture, multiplied with wall type color
+	float wallTypeU = wallIsGoal ? 3.5f / 8.0f : rayHitInfo.y;
 	vec3 wallCol = texture2D(
 		u_wallTexture, 
 		wallUV * vec2(0.5f, 1.0f) + vec2(floor(fract(u_timer) * 2.0f), 0.0f) * 0.5f
@@ -121,9 +121,10 @@ void main()
 	// Sample floor texture
 	float floorDist = (0.80f / -uv.y);
 	float floorFog = clamp(1.0f - ((floorDist * 0.8f * ONE_OVER_MAP_SIZE.x) / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);	// (floorDist * 0.1f * 0.5f * 16.0 / MAP_SIZE.x)
+	vec2 floorUV = (camPos * MAP_SIZE  + rayDir * floorDist / 0.8f * (u_cameraPosition.z + 1.0f));
 	vec3 floorCol = texture2D(
 		u_floorTexture,
-		fract((camPos * MAP_SIZE * 0.92  + rayDir * floorDist * (u_cameraPosition.z + 1.0f)))
+		fract(floorUV)
 	).rgb;
 
 

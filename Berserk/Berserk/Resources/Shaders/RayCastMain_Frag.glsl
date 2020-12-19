@@ -6,12 +6,9 @@
 #define TILE_WALL_COLOR vec3(1.0f)
 #define TILE_GOAL_COLOR vec3(0.0f, 1.0f, 0.0f)
 
-#define EPSILON 0.000001
-
 // Constants
 const float PI = atan(-1.0f);
 const float FOV = PI * 0.60f;
-const int MAX_RENDER_ENTITIES = 128;
 
 // Uniforms
 uniform sampler2D u_mapTexture;
@@ -56,8 +53,34 @@ void main()
 
 	// March
 	bool foundWall = false;
-	bool wallIsGoal = false;
+	float foundWallType = 1.0f;
 	float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
+	for(int i = 0; i < MARCH_MAX_NUM_STEPS && !foundWall; i++)
+	{
+		dist += stepSize;
+		rayPos += rayDir * stepSize;
+
+		// Sample
+		vec3 foundCol = texture2D(u_mapTexture, rayPos).rgb;
+		vec3 diff = foundCol - TILE_WALL_COLOR;
+
+		// Hit wall
+		if(dot(diff, diff) <= 0.1f)
+		{
+			foundWall = true;
+			foundWallType = 1.0f;
+		}
+
+		// Hit goal wall
+		diff = foundCol - TILE_GOAL_COLOR;
+		if(dot(diff, diff) <= 0.1f)
+		{
+			foundWall = true;
+			foundWallType = 0.0f;
+		}
+	}
+
+	/*float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
 	for(int i = 0; i < MARCH_MAX_NUM_STEPS && !foundWall; i++)
 	{
 		dist += stepSize;
@@ -78,7 +101,7 @@ void main()
 			foundWall = true;
 			wallIsGoal = true;
 		}
-	}
+	}*/
 
 	// Find wall uvs
 	vec2 hitPos = fract(rayPos * MAP_SIZE);
@@ -88,8 +111,6 @@ void main()
 	// Choose correct U-value based on if the normal is close to the positive diagonal or not
 	float wallU = mix(min(hitPos.x, hitPos.y), max(hitPos.x, hitPos.y), isNormalCloseToPositiveDiagonal);
 	
-	float stretchedDist = dist * 256.0 * 256.0;
-
 	//vec4(
 	//	r = wall texture U-coordinate
 	//  g = wallType
@@ -97,11 +118,13 @@ void main()
 	//  a = right 8 bits for depth
 	// );
 
+	float stretchedDist = dist * 256.0;
+
 	// Save data in color channels
 	gl_FragColor = vec4(
 		wallU, 
-		wallIsGoal ? 1.0f : 0.0f, 
-		floor(stretchedDist / 256.0f) / 256.0, 
-		float(int(stretchedDist) % 256) / 256.0
+		foundWallType, 
+		floor(stretchedDist) / 256.0, 
+		float(int(stretchedDist * 256.0) % 256) / 256.0
 	);
 }
