@@ -155,7 +155,7 @@ void CollisionHandler::update()
 			{
 				currentEnemy->caughtInExplosion(
 					grenadeExplosion->getEffectTimer(),
-					grenadeExplosion->getPosition2D() + player.getLookDirectionVec() * 1.0f // Move target behind explosion
+					grenadeExplosion->getPosition2D()
 				);
 			}
 		}

@@ -5,7 +5,7 @@ Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler)
 	: mapHandler(mapHandler), entityHandler(entityHandler), timer(0.0f), fogColor(0.0f, 0.0f, 0.0f)
 {
 	// Set screen rectangle shapes
-	rayCastRenderRect.setSize(sf::Vector2f((float)SettingsHandler::getWidth(), 1.0f));
+	rayCastRenderRect.setSize(sf::Vector2f((float)SettingsHandler::getWidth(), 1));
 	rayCastRenderRect.setFillColor(sf::Color::Green);
 	shaderRenderRect.setSize(sf::Vector2f((float) SettingsHandler::getWidth(), (float) SettingsHandler::getHeight()));
 	shaderRenderRect.setFillColor(sf::Color::Green);
@@ -15,7 +15,7 @@ Renderer::Renderer(MapHandler& mapHandler, EntityHandler& entityHandler)
 		std::cout << "Could not create rayCastRenderTexture..." << std::endl;
 	if (!this->shaderRenderTexture.create(SettingsHandler::getWidth(), SettingsHandler::getHeight()))
 		std::cout << "Could not create shaderRenderTexture..." << std::endl;
-
+	
 	// Check for shader availability
 	if (!sf::Shader::isAvailable())
 		std::cout << "Shaders are not available on this device..." << std::endl;
@@ -75,6 +75,7 @@ sf::RenderTexture& Renderer::render()
 	this->rayCastCompositingShader.setUniform("u_wallTexture", this->wallTexture);
 	this->rayCastCompositingShader.setUniform("u_floorTexture", this->floorTexture);
 	this->rayCastCompositingShader.setUniform("u_goalTexture", this->goalTexture);
+	this->rayCastCompositingShader.setUniform("u_floorEffectsTexture", this->entityHandler.getFloorEffectsTexture().getTexture());
 	this->rayCastCompositingShader.setUniform("u_fogColor", this->fogColor);
 	this->rayCastCompositingShader.setUniform("u_resolution", resolution);
 

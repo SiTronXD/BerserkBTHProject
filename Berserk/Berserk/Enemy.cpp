@@ -10,8 +10,8 @@ void Enemy::setNextSoundMaxTime()
 
 Enemy::Enemy(sf::Vector2f startPosition)
 	: lastFramePos(startPosition), walkStep(0.0f, 0.0f), noiseSoundTimer(0.0f), 
-	nextNoiseSoundMaxTime(0.0f), lastAttackFrameIndex(0), caughtTime(0.0f),
-	dead(false), doDamage(false), canMove(true), justDied(false)
+	nextNoiseSoundMaxTime(0.0f), lastAttackFrameIndex(0), caughtTime(0.0f), dropBloodTimer(0.0f),
+	readyToDropBloodTimer(0.0f), dead(false), doDamage(false), canMove(true), justDied(false)
 {
 	// Set position
 	this->setPosition(startPosition);
@@ -121,6 +121,12 @@ void Enemy::update(float deltaTime, sf::Vector2f targetPosition)
 	}
 }
 
+void Enemy::updateBloodTimer(float deltaTime)
+{
+	this->dropBloodTimer += deltaTime;
+	this->readyToDropBloodTimer += deltaTime;
+}
+
 void Enemy::kill(bool playDeadSound)
 {
 	if (!this->dead)
@@ -225,4 +231,19 @@ bool Enemy::isDead() const
 bool Enemy::hasJustDied() const
 {
 	return this->justDied;
+}
+
+bool Enemy::canDropBlood() const
+{
+	return this->dropBloodTimer < MAX_CAN_DROP_BLOOD_TIME;
+}
+
+bool Enemy::readyToDropBlood()
+{
+	bool rtdb = this->readyToDropBloodTimer >= MAX_READY_TO_DROP_BLOOD_TIME;
+
+	if (rtdb)
+		this->readyToDropBloodTimer -= MAX_READY_TO_DROP_BLOOD_TIME;
+
+	return rtdb;
 }

@@ -17,6 +17,7 @@ uniform sampler2D u_wallTexture;
 uniform sampler2D u_floorTexture;
 uniform sampler2D u_goalTexture;
 uniform sampler2D u_entityTexture;
+uniform sampler2D u_floorEffectsTexture;
 
 uniform vec4 u_entityTexRects[MAX_RENDER_ENTITIES];
 
@@ -126,6 +127,10 @@ void main()
 		u_floorTexture,
 		fract(floorUV)
 	).rgb;
+
+	// Add effects on top of floor
+	vec4 floorEffectsCol = texture2D(u_floorEffectsTexture, floorUV * ONE_OVER_MAP_SIZE);
+	floorCol = mix(floorCol, floorEffectsCol.rgb, floorEffectsCol.a);
 
 
 	// Wall/floor is visible

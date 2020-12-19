@@ -13,6 +13,11 @@ class EntityHandler
 private:
 	static const int MAX_NUM_COLLECTIBLES = 5;
 	static const int MAX_NUM_ENEMIES = 128;
+	static const int FLOOR_EFFECTS_TILE_SIZE = 16;
+	static const int FLOOR_EFFECTS_TEXTURE_SIZE = 128 * FLOOR_EFFECTS_TILE_SIZE;
+
+	sf::RectangleShape floorEffectShape;
+	sf::RenderTexture floorEffectsTexture;
 
 	sf::Color currentFogColor;
 
@@ -28,6 +33,8 @@ private:
 	bool playerIsTakingDamage;
 
 	void removeEnemy(int index);
+	void enemyBleeding(sf::Vector2f enemyPos);
+	void stampEnemyBloodIntoFloorTexture(sf::Vector2f pos, sf::Vector2i pixelOffset);
 
 	EntityHandler(const EntityHandler& other) = delete;
 	EntityHandler operator=(const EntityHandler& other) = delete;
@@ -64,4 +71,6 @@ public:
 	CollisionHandler& getCollisionHandler();
 	Collectible* getCollectible(int index);
 	Enemy* getEnemy(int index);
+
+	const sf::RenderTexture& getFloorEffectsTexture() const;
 };

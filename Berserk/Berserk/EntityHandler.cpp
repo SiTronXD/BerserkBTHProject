@@ -1,4 +1,5 @@
 #include "EntityHandler.h"
+#include <iostream>
 
 void EntityHandler::removeEnemy(int index)
 {
@@ -6,10 +7,30 @@ void EntityHandler::removeEnemy(int index)
 	this->enemies[index] = this->enemies[--this->nrOfEnemies];
 }
 
+void EntityHandler::enemyBleeding(sf::Vector2f enemyPos)
+{
+	// Stamp randomly placed particles
+	float randomAngle = (rand() % 1001) * 0.001f * 2.0f * 3.1415f;
+	float randomRadius = pow((rand() % 1001) * 0.001f, 3) * 16.0f;
+
+	float x = randomRadius * std::cos(randomAngle);
+	float y = randomRadius * std::sin(randomAngle);
+
+	// Stamp
+	this->stampEnemyBloodIntoFloorTexture(enemyPos, sf::Vector2i(x, y));
+}
+
 EntityHandler::EntityHandler(GameStatsHandler& gameStats)
 	: player(), collisionHandler(gameStats, *this),
 	nrOfCollectibles(0), nrOfEnemies(0), playerIsTakingDamage(false)
-{ }
+{ 
+	if (!this->floorEffectsTexture.create(FLOOR_EFFECTS_TEXTURE_SIZE, FLOOR_EFFECTS_TEXTURE_SIZE))
+		std::cout << "Could not create floorEffectsTexture..." << std::endl;
+
+	this->floorEffectShape.setSize(sf::Vector2f(1, 1));
+	this->floorEffectShape.setFillColor(sf::Color::Red);
+
+}
 
 EntityHandler::~EntityHandler()
 {
@@ -51,8 +72,16 @@ void EntityHandler::update(float deltaTime)
 	for (int i = 0; i < this->nrOfEnemies; ++i)
 	{
 		// Update
-		if(!this->enemies[i]->isDead())
+		if (!this->enemies[i]->isDead())
 			this->enemies[i]->update(deltaTime, this->player.getPosition());
+		else if (this->enemies[i]->canDropBlood())
+		{
+			this->enemies[i]->updateBloodTimer(deltaTime);
+
+			// Don't drop blood too fast
+			if(this->enemies[i]->readyToDropBlood())
+				this->enemyBleeding(this->enemies[i]->getPosition2D());
+		}
 
 		// Should remove?
 		if (this->enemies[i]->getShouldRemove())
@@ -165,6 +194,11 @@ Enemy* EntityHandler::getEnemy(int index)
 	return this->enemies[index];
 }
 
+const sf::RenderTexture& EntityHandler::getFloorEffectsTexture() const
+{
+	return this->floorEffectsTexture;
+}
+
 void EntityHandler::fillArraysWithEntityArrays(sf::Glsl::Vec3 positionArray[], 
 	sf::Glsl::Vec4 textureRectsArray[], sf::Glsl::Vec2 worldScaleArray[], int& arraySize)
 {
@@ -255,4 +289,15 @@ void EntityHandler::collectibleHasBeenFound(int index)
 {
 	delete this->collectibles[index];
 	this->collectibles[index] = this->collectibles[--this->nrOfCollectibles];
+}
+
+void EntityHandler::stampEnemyBloodIntoFloorTexture(sf::Vector2f pos, sf::Vector2i pixelOffset)
+{
+	this->floorEffectShape.setPosition(
+		(int) (pos.x * FLOOR_EFFECTS_TILE_SIZE + pixelOffset.x), 
+		(int) (FLOOR_EFFECTS_TEXTURE_SIZE - (pos.y * FLOOR_EFFECTS_TILE_SIZE + pixelOffset.y))
+	);
+
+	this->floorEffectsTexture.draw(floorEffectShape);
+	this->floorEffectsTexture.display();
 }

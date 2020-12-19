@@ -1,6 +1,29 @@
-﻿  Game.cpp
+﻿  CollisionHandler.cpp
+  Enemy.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(183,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+  EntityHandler.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(14,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(20,66): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(20,63): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(298,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(297,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Game.cpp
   Main.cpp
+  MapHandler.cpp
   PlayState.cpp
   Renderer.cpp
+  UI.cpp
   Generating Code...
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe
