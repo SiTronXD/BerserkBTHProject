@@ -1,10 +1,11 @@
-﻿  Button.cpp
-  Game.cpp
-  GameOverState.cpp
-  Main.cpp
-  MainMenuState.cpp
-  OutlineText.cpp
-  PlayState.cpp
+﻿  CollisionHandler.cpp
+  Enemy.cpp
+D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(185,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+  MapHandler.cpp
   UI.cpp
   Generating Code...
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe
