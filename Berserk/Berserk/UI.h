@@ -41,6 +41,8 @@ private:
 	EntityHandler& entityHandler;
 	Player& player;
 
+	int frameCounter;
+
 	float grenadeIconScale;
 	float berserkerIconScale;
 	float updateDtTimer;

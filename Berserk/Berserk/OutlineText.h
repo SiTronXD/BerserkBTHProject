@@ -11,13 +11,13 @@ private:
 
 public:
 	OutlineText();
-	OutlineText(int x, int y, int characterSize);
+	OutlineText(float x, float y, float characterSize);
 
 	void setFont(sf::Font& font);
 	void setString(std::string text);
 	void setMainColor(sf::Color color);
 	void setOutlineColor(sf::Color color);
-	void transformText(int middleX, int middleY, int characterSize, int outlineOffset = 4);
+	void transformText(float middleX, float middleY, float characterSize, int outlineOffset = 4);
 
 	void draw(sf::RenderWindow& window);
 	void drawMainText(sf::RenderWindow& window);

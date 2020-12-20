@@ -31,7 +31,7 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 
 
 		// Number of collectibles found text
-		int foundCollectiblesPositionY = -70;
+		float foundCollectiblesPositionY = -70;
 		this->foundCollectiblesText.setFont(this->font);
 		this->foundCollectiblesText.setMainColor(TEXT_COLOR);
 		this->foundCollectiblesText.setOutlineColor(OUTLINE_COLOR);
@@ -40,8 +40,8 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 
 
 		// Killed enemies text
-		int killedEnemiesPositionX = -680;
-		int killedEnemiesPositionY = -280;
+		float killedEnemiesPositionX = -680;
+		float killedEnemiesPositionY = -280;
 		this->killedEnemiesText.setFont(this->font);
 		this->killedEnemiesText.setMainColor(TEXT_COLOR);
 		this->killedEnemiesText.setOutlineColor(OUTLINE_COLOR);
@@ -60,7 +60,7 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 
 
 		// Play time text
-		int playTimeTextPositionY = -100;
+		float playTimeTextPositionY = -100;
 		this->playTimeText.setFont(this->font);
 		this->playTimeText.setMainColor(TEXT_COLOR);
 		this->playTimeText.setOutlineColor(OUTLINE_COLOR);
@@ -108,7 +108,7 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 	}
 
 	// Set start transition speed
-	this->setStateTransitionSpeedScale(-1.0f, 0.25f);
+	this->setStateTransitionSpeedScale(-1, 0.25f);
 }
 
 void GameOverState::update(float deltaTime)

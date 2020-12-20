@@ -3,7 +3,7 @@
 OutlineText::OutlineText()
 { }
 
-OutlineText::OutlineText(int x, int y, int characterSize)
+OutlineText::OutlineText(float x, float y, float characterSize)
 {
 	this->transformText(x, y, characterSize);
 }
@@ -30,7 +30,7 @@ void OutlineText::setOutlineColor(sf::Color color)
 	this->outlineText.setFillColor(color);
 }
 
-void OutlineText::transformText(int middleX, int middleY, int characterSize, int outlineOffset)
+void OutlineText::transformText(float middleX, float middleY, float characterSize, int outlineOffset)
 {
 	ResTranslator::transformText(
 		this->text, 

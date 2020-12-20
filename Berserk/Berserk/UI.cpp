@@ -3,7 +3,7 @@
 UI::UI(EntityHandler& entityHandler)
 	: entityHandler(entityHandler), player(entityHandler.getPlayer()),
 	updateDtTimer(1.0f), berserkerActiveTimer(0.0f), grenadeActiveTimer(0.0f),
-	damageTakenTimer(0.0f), showMessageTimer(0.0f)
+	damageTakenTimer(0.0f), showMessageTimer(0.0f), frameCounter(0)
 {
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
 
@@ -71,13 +71,16 @@ void UI::update(float deltaTime)
 	this->updateDtTimer += deltaTime;
 
 	// Update frames per second text
-	if (this->updateDtTimer >= 0.25f)
+	if (this->updateDtTimer >= 1.0f)
 	{
-		std::string fpsText = "FPS: " + std::to_string((int)(1.0f / deltaTime));
+		std::string fpsText = "FPS: " + std::to_string(this->frameCounter);
 		this->fpsText.setString(fpsText);
 
 		this->updateDtTimer = 0.0f;
+		this->frameCounter = 0;
 	}
+	else
+		this->frameCounter++;
 
 	// Grenade is ready
 	if (this->player.getGrenadeCooldownPercent() >= 1.0f)
