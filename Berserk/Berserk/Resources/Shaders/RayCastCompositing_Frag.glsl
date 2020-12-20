@@ -68,7 +68,7 @@ void main()
 	vec2 camPos = u_cameraPosition.xy * ONE_OVER_MAP_SIZE;
 
 	// Create ray
-	float decompressedDist = (rayHitInfo.z * 256 * 256 + rayHitInfo.w * 256) / (256.0 * 256.0);
+	float decompressedDist = (rayHitInfo.z * 65280.0 + rayHitInfo.w * 255.0) / (65535.0);
 	float dist = decompressedDist;
 	float screenAngle = uv.x * FOV;
 	float angle = -(u_cameraRotation.x + screenAngle);	// Flip since y is inverted

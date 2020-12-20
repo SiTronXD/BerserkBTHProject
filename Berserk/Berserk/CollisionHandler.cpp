@@ -1,6 +1,8 @@
 #include "CollisionHandler.h"
 #include "EntityHandler.h"
 
+const float CollisionHandler::EPSILON = 0.001f;
+
 bool CollisionHandler::isObjectCollidingWall(float halfCollisionBoxSize, float objectX, float objectY, int wallX, int wallY)
 {
 	bool colliding = false;
@@ -18,12 +20,12 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 {
 	sf::Vector2f newPos = currentPos;
 
-	int objectTilePosX = (int)lastPos.x;
-	int objectTilePosY = (int)lastPos.y;
+	float objectTilePosX = lastPos.x;
+	float objectTilePosY = lastPos.y;
 
-	for (int y = -1; y <= 1; y++)
+	for (int y = -1; y <= 1; ++y)
 	{
-		for (int x = -1; x <= 1; x++)
+		for (int x = -1; x <= 1; ++x)
 		{
 			int tileX = SMath::clamp((int)(objectTilePosX + x), 0, MAX_MAP_SIZE - 1);
 			int tileY = SMath::clamp((int)(objectTilePosY + y), 0, MAX_MAP_SIZE - 1);
@@ -34,9 +36,9 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 			{
 				// Move in X
 				if (lastPos.x - (tileX + 0.5f) > 0.0f)
-					newPos.x = tileX + 1 + halfCollisionBoxSize;
+					newPos.x = tileX + 1 + halfCollisionBoxSize + EPSILON;
 				else
-					newPos.x = tileX - halfCollisionBoxSize;
+					newPos.x = tileX - halfCollisionBoxSize - EPSILON;
 
 				// Update last pos
 				lastPos.x = newPos.x;
@@ -48,9 +50,9 @@ sf::Vector2f CollisionHandler::getNonCollidingPosition(sf::Vector2f currentPos,
 			{
 				// Move in Y
 				if (lastPos.y - (tileY + 0.5f) > 0.0f)
-					newPos.y = tileY + 1 + halfCollisionBoxSize;
+					newPos.y = tileY + 1 + halfCollisionBoxSize + EPSILON;
 				else
-					newPos.y = tileY - halfCollisionBoxSize;
+					newPos.y = tileY - halfCollisionBoxSize - EPSILON;
 
 				// Update last pos
 				lastPos.y = newPos.y;

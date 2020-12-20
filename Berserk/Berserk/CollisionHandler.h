@@ -12,6 +12,8 @@ class EntityHandler;
 class CollisionHandler
 {
 private:
+	static const float EPSILON;
+
 	static const int MAX_MAP_SIZE = 128;
 
 	Player& player;

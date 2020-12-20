@@ -118,7 +118,21 @@ void main()
 	//  a = right 8 bits for depth
 	// );
 
-	float stretchedDist = dist * 256.0;
+	int stretchedDist = int(dist * (65535.0)); // 256.0 * 256.0 - 1.0
+
+	int alphaPart = stretchedDist % 256;
+	int bluePart = stretchedDist - alphaPart;
+
+	// Save data in color channels
+	gl_FragColor = vec4(
+		wallU, 
+		foundWallType, 
+		float(bluePart) / (65280.0),	// 256 * 255
+		float(alphaPart) / 255.0
+	);
+
+
+	/*float stretchedDist = dist * 256.0;
 
 	// Save data in color channels
 	gl_FragColor = vec4(
@@ -126,5 +140,5 @@ void main()
 		foundWallType, 
 		floor(stretchedDist) / 256.0, 
 		float(int(stretchedDist * 256.0) % 256) / 256.0
-	);
+	);*/
 }

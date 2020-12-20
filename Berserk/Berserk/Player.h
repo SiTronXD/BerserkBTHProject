@@ -27,7 +27,7 @@ private:
 	const float MAX_ATTACK_COOLDOWN_TIME_BERSERKER = 0.0f;
 
 	const float ATTACK_CONE_ANGLE = 3.1415f * 0.3f;
-	const float MAX_ATTACK_DIST = 2.0f;
+	const float MAX_ATTACK_DIST = 1.0f;
 	const float MAX_ATTACK_TIME = 0.5f;
 	const float MAX_DIE_ANIMATION_TIME = 0.9f;
 	const float MAX_POST_DIE_ANIMATION_TIME = 1.0f;
