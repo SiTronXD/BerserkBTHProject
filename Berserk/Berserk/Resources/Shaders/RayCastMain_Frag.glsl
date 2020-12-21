@@ -79,7 +79,7 @@ void main()
 	hit.dist = 100.0;
 	hit.wallType = 1.0;
 
-	// March vertical planes
+	// March vertically and check horizontal planes
     if(rayDir.y != 0.0)
     {
 		float verticalWallType = 1.0;
@@ -112,7 +112,7 @@ void main()
 		hit.wallType = verticalWallType;
     }
     
-    // March horizontal planes
+    // March horizontally and check vertical planes
     if(rayDir.x != 0.0)
     {
 		float horizontalWallType = 1.0;
