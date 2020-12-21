@@ -2,7 +2,7 @@
 
 UI::UI(EntityHandler& entityHandler)
 	: entityHandler(entityHandler), player(entityHandler.getPlayer()),
-	updateDtTimer(1.0f), berserkerActiveTimer(0.0f), grenadeActiveTimer(0.0f),
+	updateFpsTimer(0.0f), berserkerActiveTimer(0.0f), grenadeActiveTimer(0.0f),
 	damageTakenTimer(0.0f), showMessageTimer(0.0f), frameCounter(0)
 {
 	this->font.loadFromFile("Resources/Fonts/Pixellari.ttf");
@@ -68,15 +68,15 @@ UI::UI(EntityHandler& entityHandler)
 
 void UI::update(float deltaTime)
 {
-	this->updateDtTimer += deltaTime;
+	this->updateFpsTimer += deltaTime;
 
 	// Update frames per second text
-	if (this->updateDtTimer >= 1.0f)
+	if (this->updateFpsTimer >= 1.0f)
 	{
 		std::string fpsText = "FPS: " + std::to_string(this->frameCounter);
 		this->fpsText.setString(fpsText);
 
-		this->updateDtTimer = 0.0f;
+		this->updateFpsTimer = 0.0f;
 		this->frameCounter = 0;
 	}
 	else

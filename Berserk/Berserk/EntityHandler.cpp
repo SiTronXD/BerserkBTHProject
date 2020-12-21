@@ -11,10 +11,10 @@ void EntityHandler::enemyBleeding(sf::Vector2f enemyPos)
 {
 	// Stamp randomly placed particles
 	float randomAngle = (rand() % 1001) * 0.001f * 2.0f * 3.1415f;
-	float randomRadius = pow((rand() % 1001) * 0.001f, 3) * 16.0f;
+	float randomRadius = (float) (pow((rand() % 1001) * 0.001f, 3) * 16.0);
 
-	float x = randomRadius * std::cos(randomAngle);
-	float y = randomRadius * std::sin(randomAngle);
+	int x = (int) (randomRadius * std::cos(randomAngle));
+	int y = (int) (randomRadius * std::sin(randomAngle));
 
 	// Stamp
 	this->stampEnemyBloodIntoFloorTexture(enemyPos, sf::Vector2i(x, y));

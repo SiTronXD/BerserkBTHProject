@@ -1,24 +1,6 @@
-﻿  CollisionHandler.cpp
-  EntityHandler.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(14,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(20,66): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(20,63): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
+﻿  EntityHandler.cpp
 D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(298,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(297,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Game.cpp
-  Main.cpp
-  MapHandler.cpp
-  PlayState.cpp
-  Renderer.cpp
-  UI.cpp
   Generating code
   0 of 514 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation

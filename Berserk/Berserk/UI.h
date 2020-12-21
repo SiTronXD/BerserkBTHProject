@@ -45,7 +45,7 @@ private:
 
 	float grenadeIconScale;
 	float berserkerIconScale;
-	float updateDtTimer;
+	float updateFpsTimer;
 	float grenadeActiveTimer;
 	float berserkerActiveTimer;
 	float showMessageTimer;

@@ -1,13 +1,10 @@
 #version 130
 
-#define MARCH_STEP_SIZE 0.001
-#define MARCH_MAX_NUM_STEPS 1000
-
 #define EPSILON 0.000001
 
 // Constants
-const float PI = atan(-1.0f);
-const float FOV = PI * 0.60f;
+const float PI = atan(-1.0);
+const float FOV = PI * 0.6;
 const int MAX_RENDER_ENTITIES = 128;
 
 // Uniforms
@@ -34,8 +31,8 @@ uniform float u_timer;
 uniform int u_numEntities;
 
 vec2 MAP_SIZE = textureSize(u_mapTexture, 0);
-vec2 ONE_OVER_MAP_SIZE = 1.0f / MAP_SIZE;
-vec2 ONE_OVER_ENTITY_TEXTURE_SIZE = 1.0f / textureSize(u_entityTexture, 0);
+vec2 ONE_OVER_MAP_SIZE = 1.0 / MAP_SIZE;
+vec2 ONE_OVER_ENTITY_TEXTURE_SIZE = 1.0 / textureSize(u_entityTexture, 0);
 
 mat2x2 rotate(float a)
 {
@@ -59,9 +56,9 @@ void main()
 	
 	// Zoom in to avoid artifacts from sampling outside u_rayCastTexture 
 	// at the corners of the window :p
-	uv /= abs(u_cameraRotation.y) * 0.3f + 1.0f;
+	uv /= abs(u_cameraRotation.y) * 0.3 + 1.0;
 	
-	vec2 rayHitInfoUV = vec2(uv.x, 0.0f) / vec2(aspectRatio, 1.0f) + vec2(0.5, 0.0f);
+	vec2 rayHitInfoUV = vec2(uv.x, 0.0) / vec2(aspectRatio, 1.0) + vec2(0.5, 0.0);
 	vec4 rayHitInfo = texture2D(u_rayCastTexture, rayHitInfoUV);
 
 	// Keep track of camera in the world
@@ -74,39 +71,37 @@ void main()
 	float angle = -(u_cameraRotation.x + screenAngle);	// Flip since y is inverted
 	vec2 rayDir = vec2(cos(angle), sin(angle));
 
-	// Temporary fix for when the camera is rotated and u_rayCastTexture is not wide enough
-	if(rayHitInfoUV.x < 0.0f || rayHitInfoUV.y > 1.0f)
-		dist = 1.0f;
-
 	// March
-	bool wallIsGoal = rayHitInfo.y <= 0.0f;
-	float stepSize = MARCH_STEP_SIZE * 16.0 * ONE_OVER_MAP_SIZE.x;
+	bool wallIsGoal = rayHitInfo.y <= 0.0;
+	float distMaxLength = 16.0 * ONE_OVER_MAP_SIZE.x;
 	
-
 	// Fog and wall height
-	float oneOverDist = 1.0f / dist;
-	float fog = clamp(1.0f - (dist / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);
+	float oneOverDist = 1.0 / dist;
+	float fog = clamp(1.0 - (dist / distMaxLength), 0.0, 1.0);
 	float halfWallHeight = ONE_OVER_MAP_SIZE.x * oneOverDist;
 	float wallCameraHeightY = uv.y + u_cameraPosition.z * oneOverDist * ONE_OVER_MAP_SIZE.x;
-	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0f : 0.0f;
+	float wall = abs(wallCameraHeightY) < halfWallHeight ? 1.0 : 0.0;
 
 	// Choose correct U-value based on if the normal is close to the positive diagonal or not
 	float wallU = rayHitInfo.x;
-	float wallV = (uv.y / halfWallHeight) * 0.5f + 0.5f + u_cameraPosition.z * 0.5f;
-	vec2 wallUV = vec2(wallU, 1.0f - wallV);
+	float wallV = (uv.y / halfWallHeight) * 0.5 + 0.5 + u_cameraPosition.z * 0.5;
+	vec2 wallUV = vec2(wallU, 1.0 - wallV);
 
 	// Sample wall texture, multiplied with wall type color
-	float wallTypeU = wallIsGoal ? 3.5f / 8.0f : rayHitInfo.y;
+	float wallTypeU = wallIsGoal ? 3.5 / 8.0 : rayHitInfo.y;
+	float xOffset = floor(fract(u_timer) * 2.0) * 0.5; 
+	vec2 animatedWallUV = wallUV * vec2(0.49, 1.0) + vec2(xOffset, 0.0);	// 0.49 since 0.5 gave bad precision in certain map corners
+
 	vec3 wallCol = texture2D(
 		u_wallTexture, 
-		wallUV * vec2(0.5f, 1.0f) + vec2(floor(fract(u_timer) * 2.0f), 0.0f) * 0.5f
+		animatedWallUV
 	).rgb;
 
 	// Sample goal texture
 	if(wallIsGoal)
 	{
 		// Flip u-coordinate to animate
-		float tempWallU = fract(u_timer * 2.0f) < 0.5f ? 1.0f - wallUV.x : wallUV.x;
+		float tempWallU = fract(u_timer * 2.0) < 0.5 ? 1.0 - wallUV.x : wallUV.x;
 
 		vec4 goalWallCol = texture2D(
 			u_goalTexture, 
@@ -120,9 +115,9 @@ void main()
 	}
 
 	// Sample floor texture
-	float floorDist = (0.80f / -uv.y);
-	float floorFog = clamp(1.0f - ((floorDist * 0.8f * ONE_OVER_MAP_SIZE.x) / (MARCH_MAX_NUM_STEPS * stepSize)), 0.0, 1.0);	// (floorDist * 0.1f * 0.5f * 16.0 / MAP_SIZE.x)
-	vec2 floorUV = (camPos * MAP_SIZE  + rayDir * floorDist / 0.8f * (u_cameraPosition.z + 1.0f));
+	float floorDist = (0.8 / -uv.y);
+	float floorFog = clamp(1.0 - ((floorDist * 1.25 * ONE_OVER_MAP_SIZE.x) / distMaxLength), 0.0, 1.0);
+	vec2 floorUV = (camPos * MAP_SIZE  + rayDir * floorDist / 0.8 * (u_cameraPosition.z + 1.0));
 	vec3 floorCol = texture2D(
 		u_floorTexture,
 		fract(floorUV)
@@ -134,15 +129,15 @@ void main()
 
 
 	// Wall/floor is visible
-	float showWall = pow(wall * fog, 0.2f);
+	float showWall = pow(wall * fog, 0.2);
 	float showFloor = (1.0 - wall) * floorFog;
 
 	// Wall + floor
 	vec3 col = (wallCol * showWall) + (floorCol * showFloor);
 	col = mix(
-		u_fogColor * (uv.y > 0.0f ? max(1.0f - (uv.y-0.05f), wall) : 1.0f), 
+		u_fogColor * (uv.y > 0.0 ? max(1.0 - (uv.y-0.05), wall) : 1.0), 
 		col, 
-		(showWall + showFloor) * (wallCameraHeightY > halfWallHeight ? 0.0f : 1.0f)
+		(showWall + showFloor) * (wallCameraHeightY > halfWallHeight ? 0.0 : 1.0)
 	);
 
 	// Render entities
@@ -162,13 +157,13 @@ void main()
 		{
 			vec2 camToTargetDir = camToTarget / spriteDist;
 
-			float negateAngle = cross(vec3(camToTarget, 0.0f), vec3(dir, 0.0f)).z < 0.0f ? -1.0f : 1.0f;
+			float negateAngle = cross(vec3(camToTarget, 0.0), vec3(dir, 0.0)).z < 0.0 ? -1.0 : 1.0;
 		
 			// The cosine value is clamped, since the value could be undefined if the dot
 			// product between the two unit vectors are outside the range [-1, 1], because of precision errors
-			float deltaAngle = acos(clamp(dot(dir, camToTargetDir), -1.0f, 1.0f)) * negateAngle;
+			float deltaAngle = acos(clamp(dot(dir, camToTargetDir), -1.0, 1.0)) * negateAngle;
 
-			float oneOverSpriteDist = 1.0f / max(spriteDist, 0.001f);
+			float oneOverSpriteDist = 1.0 / max(spriteDist, 0.001);
 
 			float screenPosX = deltaAngle / FOV;	// deltaAngle / (FOV * 0.5f) * 0.5f
 			float screenPosY = (u_entityPositions[i].z - u_cameraPosition.z) * oneOverSpriteDist;
@@ -182,8 +177,8 @@ void main()
 			{
 				// Sprite texture coordinates
 				vec2 spriteUV = vec2(
-					(uv.x - screenPosX) / spriteSize.x * 0.5f + 0.5f,
-					1.0f - ((uv.y - screenPosY) / spriteSize.y * 0.5f + 0.5f)
+					(uv.x - screenPosX) / spriteSize.x * 0.5 + 0.5,
+					1.0 - ((uv.y - screenPosY) / spriteSize.y * 0.5 + 0.5)
 				);
 
 				// Texture region
@@ -215,7 +210,7 @@ void main()
 				vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
 
 				// If pixel is not transparent
-				if(spriteCol.a > 0.0f)
+				if(spriteCol.a > 0.0)
 				{
 					// Update depth
 					currentPixelDepth = spriteDist;
@@ -224,7 +219,7 @@ void main()
 					col = mix(
 						u_fogColor, 
 						spriteCol.rgb, 
-						clamp(16.0f - spriteDist, 0.0f, 1.0f)
+						clamp(16.0 - spriteDist, 0.0, 1.0)
 					);
 				}
 			}
