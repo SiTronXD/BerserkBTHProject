@@ -35,8 +35,8 @@ GameOverState::GameOverState(sf::RenderWindow& window, GameStatsHandler& gameSta
 		this->foundCollectiblesText.setFont(this->font);
 		this->foundCollectiblesText.setMainColor(TEXT_COLOR);
 		this->foundCollectiblesText.setOutlineColor(OUTLINE_COLOR);
-		this->foundCollectiblesText.setString("Found collectibles: \n          (" + std::to_string(this->gameStats.getNumCollected()) + "/" + std::to_string(this->gameStats.getMaxNumCollectibles()) + ")");
-		this->foundCollectiblesText.transformText(-670, foundCollectiblesPositionY, 60, 2);
+		this->foundCollectiblesText.setString("Found secrets: \n       (" + std::to_string(this->gameStats.getNumCollected()) + "/" + std::to_string(this->gameStats.getMaxNumCollectibles()) + ")");
+		this->foundCollectiblesText.transformText(-670, foundCollectiblesPositionY, 63, 2);
 
 
 		// Killed enemies text

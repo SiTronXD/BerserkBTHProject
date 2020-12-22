@@ -132,8 +132,6 @@ Game::Game()
     this->setWindowIcon();
     this->setupTransition();
     this->setState(State::MAIN_MENU);
-
-    //this->setState(State::PLAY);
 }
 
 Game::~Game()

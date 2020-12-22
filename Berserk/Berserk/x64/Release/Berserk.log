@@ -1,9 +1,7 @@
-﻿  EntityHandler.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(298,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(297,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  Game.cpp
   Generating code
-  0 of 514 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  2 of 514 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Release\Berserk.exe
