@@ -137,8 +137,7 @@ void Player::updateAnimationLogic(float deltaTime)
 	}
 
 	// Switch to attack animation
-	if (this->isAttackingTimer > 0.0f && !hasStartedAttackAnimation && 
-		this->currentFpsAnimation != &this->anims[PLAYER_ANIM::SWORD_ATTACK])
+	if (this->isAttackingTimer > 0.0f && !hasStartedAttackAnimation)
 	{
 		this->hasStartedAttackAnimation = true;
 

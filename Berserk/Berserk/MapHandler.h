@@ -11,7 +11,7 @@ private:
 
 	sf::Texture map;
 
-	void loadEntitiesFromMap(EntityHandler& entityHandler);
+	void loadFromMap(EntityHandler& entityHandler);
 
 	bool evaluatePixel(sf::Color currentPixel, sf::Color targetPixel);
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "UI.h"
 
 UI::UI(EntityHandler& entityHandler)

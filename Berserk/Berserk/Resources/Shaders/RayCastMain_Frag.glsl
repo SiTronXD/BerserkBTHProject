@@ -150,6 +150,10 @@ void main()
     }
 	hit.dist *= ONE_OVER_MAP_SIZE.x;
 
+	// hit.dist goes from 0 to 1 if the player could see as far as the map is wide.
+	// The player does however not see that far, so this part could therefore be optimized
+	// to give greater precision in bigger maps. But that is not needed in this case.
+
 	// The fish eye effect is not gonna be fixed here. 
 	// The reason being that the entire horizontal fov could be greater than 
 	// or equal to 180 degrees depending on the aspect ratio 

@@ -1,6 +1,6 @@
 #include "MapHandler.h"
 
-void MapHandler::loadEntitiesFromMap(EntityHandler& entityHandler)
+void MapHandler::loadFromMap(EntityHandler& entityHandler)
 {
 	const sf::Color WALL_COLOR = sf::Color(255, 255, 255, 255);
 	const sf::Color GOAL_COLOR = sf::Color(0, 255, 0, 255);
@@ -65,7 +65,7 @@ MapHandler::MapHandler(EntityHandler& entityHandler)
 	//this->map.loadFromFile("Resources/Maps/BenchmarkLevel.png");
 
 	// Load entities and send them to the entityHandler
-	this->loadEntitiesFromMap(entityHandler);
+	this->loadFromMap(entityHandler);
 }
 
 const sf::Texture& MapHandler::getMapTexture() const

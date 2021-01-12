@@ -194,18 +194,6 @@ void main()
 					spriteRegionTranslation + spriteRegionSize * max(vec2(0), sign(spriteRegionSize)) - vec2(EPSILON)
 				);
 
-				// Clamping looks like this for positive region size
-				/*spriteUV.xy = clamp(
-					spriteUV.xy, 
-					spriteRegionTranslation + vec2(EPSILON), 
-					spriteRegionTranslation + spriteRegionSize - vec2(EPSILON)
-				);*/
-				// Clamping looks like this for negative region size
-				/*spriteUV.xy = clamp(
-					spriteUV.xy, 
-					spriteRegionTranslation + spriteRegionSize + vec2(EPSILON), 
-					spriteRegionTranslation - vec2(EPSILON)
-				);*/
 
 				vec4 spriteCol = texture2D(u_entityTexture, spriteUV);
 

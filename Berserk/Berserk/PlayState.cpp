@@ -1,3 +1,4 @@
+#include <iostream>
 #include "PlayState.h"
 
 PlayState::PlayState(sf::RenderWindow& window, GameStatsHandler& gameStats)

@@ -1,7 +1,11 @@
 ﻿  Game.cpp
+  Main.cpp
+  MapHandler.cpp
+  PlayState.cpp
+  Renderer.cpp
   Generating code
-  2 of 514 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+  4 of 514 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    22 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Release\Berserk.exe
