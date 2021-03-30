@@ -9,3 +9,6 @@
 * High performance by utilizing shaders from SFML
 
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase1.png)
+
+# Disclaimer
+Everything in the project was made by me, which includes the code, graphics and sound effects. The game used to have music but was removed since I do not own the soundtracks.
