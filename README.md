@@ -6,6 +6,7 @@
 * Custom fog color
 * Decals for applying effects onto the floor
 * Sprites rendered in a correct order
+* Camera position to allow effects such as head bobbing or falling to the ground
 * High performance by utilizing shaders from SFML
 
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase1.png)
