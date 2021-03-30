@@ -1,11 +1,74 @@
-﻿  CollisionHandler.cpp
+﻿  Animation.cpp
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Animation.cpp(86,29): warning C4018: '<': signed/unsigned mismatch
+  Button.cpp
+  Collectible.cpp
+  CollisionHandler.cpp
   Enemy.cpp
-D:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(185,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\Enemy.cpp(183,15): warning C4244: 'initializing': conversion from 'const _Ty' to 'float', possible loss of data
           with
           [
               _Ty=double
           ]
+  EntityHandler.cpp
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(298,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\EntityHandler.cpp(297,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Game.cpp
+  GameOverState.cpp
+  GameState.cpp
+  GameStatsHandler.cpp
+  Goal.cpp
+  Grenade.cpp
+  GrenadeExplosion.cpp
+  Main.cpp
+  MainMenuState.cpp
   MapHandler.cpp
-  UI.cpp
+  OutlineText.cpp
+  Player.cpp
+  PlayState.cpp
+  RenderEntity.cpp
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\RenderEntity.cpp(97,10): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\RenderEntity.cpp(96,10): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\RenderEntity.cpp(95,10): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\RenderEntity.cpp(94,10): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
   Generating Code...
-  Berserk.vcxproj -> D:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe
+  Compiling...
+  Renderer.cpp
+  SettingsHandler.cpp
+  SMath.cpp
+  UI.cpp
+  ResTranslator.cpp
+E:\VisualStudioProjs\BerserkBTHProject\Berserk\Berserk\ResTranslator.cpp(46,18): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  Berserk.vcxproj -> E:\VisualStudioProjs\BerserkBTHProject\Berserk\x64\Debug\Berserk.exe
