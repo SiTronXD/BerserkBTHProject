@@ -11,5 +11,8 @@
 
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase1.png)
 
+# Running the Project
+It is recommended to use Visual Studio 2017 or 2019. The project was never configured to build for x86, and therefore x64 is used.
+
 # Disclaimer
 Everything in the project was made by me, which includes the code, graphics and sound effects. The game used to have music but was removed since I do not own the soundtracks.
