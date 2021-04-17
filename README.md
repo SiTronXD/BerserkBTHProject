@@ -1,4 +1,17 @@
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase2.png)
+
+# Controls
+* WASD - move the player
+* Mouse - rotate the player
+* Left Mouse Button - leap forward and swing your sword
+* E - (ability 1) throw the Behelit Grenade, which will explode and create a whirl wind that kills your enemies
+* Q - (ability 2) active the Berserker Armor to temporarily gain greater speeds and immortality
+
+"Settings.ini" under /Resources/ can be modified before starting the game.
+
+# Goal
+Reach the green portal as quickly as possible without dying. Kill the enemies to charge your abilities and find as many secret Skull Knights as you can!
+
 # Rendering features
 * Textured walls using ray casting
 * DDA algorithm for calculating precise intersection points
