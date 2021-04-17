@@ -1,5 +1,5 @@
 #include "Grenade.h"
-#include "SettingsHandler.h"
+#include "../Engine/SettingsHandler.h"
 
 Grenade::Grenade(sf::Vector2f startPos, sf::Vector2f direction)
 	: direction(direction), aliveTimer(ALIVE_TIME), grenadeExplosion(nullptr),

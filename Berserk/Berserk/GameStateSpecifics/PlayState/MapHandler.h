@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "EntityHandler.h"
-#include "SMath.h"
+#include "../../Engine/SMath.h"
 
 class MapHandler
 {

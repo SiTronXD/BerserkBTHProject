@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "RenderEntity.h"
+#include "../Engine/RenderEntity.h"
 
 class Collectible : public RenderEntity
 {

@@ -35,151 +35,151 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="Engine\Animation.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsHandler.cpp">
+    <ClCompile Include="Engine\Button.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="GameState.cpp">
+    <ClCompile Include="Engine\Game.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
+    <ClCompile Include="Engine\GameState.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Engine\OutlineText.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RenderEntity.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ResTranslator.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SettingsHandler.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SMath.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Collectible.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayState.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityHandler.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClCompile>
-    <ClCompile Include="SMath.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="MapHandler.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClCompile>
-    <ClCompile Include="Goal.cpp">
+    <ClCompile Include="Entities\Enemy.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="ResTranslator.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="Entities\Goal.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuState.cpp">
-      <Filter>GameStateSpecifics\MainMenu</Filter>
+    <ClCompile Include="Entities\Grenade.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionHandler.cpp">
-      <Filter>GameStateSpecifics\PlayState</Filter>
+    <ClCompile Include="Entities\GrenadeExplosion.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="GameOverState.cpp">
-      <Filter>GameStateSpecifics\GameOver</Filter>
+    <ClCompile Include="Entities\Player.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="GameStatsHandler.cpp">
+    <ClCompile Include="GameStateSpecifics\GameStatsHandler.cpp">
       <Filter>GameStateSpecifics</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="GameStateSpecifics\GameOver\GameOverState.cpp">
+      <Filter>GameStateSpecifics\GameOver</Filter>
     </ClCompile>
-    <ClCompile Include="Collectible.cpp">
-      <Filter>Entities</Filter>
+    <ClCompile Include="GameStateSpecifics\MainMenu\MainMenuState.cpp">
+      <Filter>GameStateSpecifics\MainMenu</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEntity.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="GameStateSpecifics\PlayState\CollisionHandler.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClCompile>
-    <ClCompile Include="Grenade.cpp">
-      <Filter>Entities</Filter>
+    <ClCompile Include="GameStateSpecifics\PlayState\EntityHandler.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClCompile>
-    <ClCompile Include="GrenadeExplosion.cpp">
-      <Filter>Entities</Filter>
+    <ClCompile Include="GameStateSpecifics\PlayState\MapHandler.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Entities</Filter>
+    <ClCompile Include="GameStateSpecifics\PlayState\PlayState.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClCompile>
-    <ClCompile Include="OutlineText.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="GameStateSpecifics\PlayState\UI.cpp">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="Engine\Animation.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsHandler.h">
+    <ClInclude Include="Engine\Button.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
+    <ClInclude Include="Engine\Game.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
+    <ClInclude Include="Engine\GameState.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Engine\OutlineText.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderEntity.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResTranslator.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SettingsHandler.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SMath.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Collectible.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayState.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityHandler.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClInclude>
-    <ClInclude Include="SMath.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="MapHandler.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
-    </ClInclude>
-    <ClInclude Include="Goal.h">
+    <ClInclude Include="Entities\Enemy.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="ResTranslator.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Entities\Goal.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuState.h">
-      <Filter>GameStateSpecifics\MainMenu</Filter>
+    <ClInclude Include="Entities\Grenade.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionHandler.h">
-      <Filter>GameStateSpecifics\PlayState</Filter>
+    <ClInclude Include="Entities\GrenadeExplosion.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="GameOverState.h">
-      <Filter>GameStateSpecifics\GameOver</Filter>
+    <ClInclude Include="Entities\Player.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="GameStatsHandler.h">
+    <ClInclude Include="GameStateSpecifics\GameStatsHandler.h">
       <Filter>GameStateSpecifics</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="GameStateSpecifics\GameOver\GameOverState.h">
+      <Filter>GameStateSpecifics\GameOver</Filter>
     </ClInclude>
-    <ClInclude Include="Collectible.h">
-      <Filter>Entities</Filter>
+    <ClInclude Include="GameStateSpecifics\MainMenu\MainMenuState.h">
+      <Filter>GameStateSpecifics\MainMenu</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEntity.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="GameStateSpecifics\PlayState\CollisionHandler.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
-    <ClInclude Include="Grenade.h">
-      <Filter>Entities</Filter>
+    <ClInclude Include="GameStateSpecifics\PlayState\EntityHandler.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
-    <ClInclude Include="GrenadeExplosion.h">
-      <Filter>Entities</Filter>
+    <ClInclude Include="GameStateSpecifics\PlayState\MapHandler.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Entities</Filter>
+    <ClInclude Include="GameStateSpecifics\PlayState\PlayState.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
-    <ClInclude Include="OutlineText.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="GameStateSpecifics\PlayState\UI.h">
+      <Filter>GameStateSpecifics\PlayState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

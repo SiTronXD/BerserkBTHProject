@@ -2,8 +2,8 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "ResTranslator.h"
-#include "Player.h"
+#include "../../Engine/ResTranslator.h"
+#include "../../Entities/Player.h"
 #include "EntityHandler.h"
 
 class UI

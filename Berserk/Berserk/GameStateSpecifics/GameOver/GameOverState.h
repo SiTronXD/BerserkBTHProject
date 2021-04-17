@@ -1,9 +1,9 @@
 #pragma once
 
-#include "GameState.h"
-#include "Button.h"
-#include "GameStatsHandler.h"
-#include "ResTranslator.h"
+#include "../../Engine/GameState.h"
+#include "../../Engine/Button.h"
+#include "../../Engine/ResTranslator.h"
+#include "../GameStatsHandler.h"
 
 class GameOverState : public GameState
 {

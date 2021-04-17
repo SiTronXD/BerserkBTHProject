@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RenderEntity.h"
+#include "../Engine/RenderEntity.h"
 #include "GrenadeExplosion.h"
 
 class Grenade : public RenderEntity

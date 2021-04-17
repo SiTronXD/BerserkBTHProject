@@ -1,11 +1,11 @@
 #pragma once
 
-#include "GameState.h"
+#include "../../Engine/GameState.h"
+#include "../../Engine/Renderer.h"
+#include "../GameStatsHandler.h"
 #include "EntityHandler.h"
 #include "MapHandler.h"
-#include "Renderer.h"
 #include "UI.h"
-#include "GameStatsHandler.h"
 
 class PlayState : public GameState
 {

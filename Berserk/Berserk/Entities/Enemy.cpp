@@ -1,7 +1,7 @@
 #include <ctime>
 #include "Enemy.h"
-#include "SMath.h"
-#include "SettingsHandler.h"
+#include "../Engine/SMath.h"
+#include "../Engine/SettingsHandler.h"
 
 void Enemy::setNextSoundMaxTime()
 {

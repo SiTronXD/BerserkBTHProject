@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Player.h"
-#include "Collectible.h"
-#include "Goal.h"
-#include "GameStatsHandler.h"
-#include "SMath.h"
-#include "Enemy.h"
+#include "../../Entities/Player.h"
+#include "../../Entities/Collectible.h"
+#include "../../Entities/Goal.h"
+#include "../../Entities/Enemy.h"
+#include "../../GameStateSpecifics/GameStatsHandler.h"
+#include "../../Engine/SMath.h"
 
 class EntityHandler;
 

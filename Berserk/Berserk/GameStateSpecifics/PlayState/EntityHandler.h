@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Player.h"
-#include "Goal.h"
-#include "Collectible.h"
-#include "Grenade.h"
-#include "Enemy.h"
+#include "../../Entities/Player.h"
+#include "../../Entities/Goal.h"
+#include "../../Entities/Collectible.h"
+#include "../../Entities/Grenade.h"
+#include "../../Entities/Enemy.h"
 #include "CollisionHandler.h"
-#include "GameStatsHandler.h"
+#include "../../GameStateSpecifics/GameStatsHandler.h"
 
 class EntityHandler
 {

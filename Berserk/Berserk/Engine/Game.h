@@ -1,10 +1,10 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "MainMenuState.h"
-#include "PlayState.h"
-#include "GameOverState.h"
-#include "GameStatsHandler.h"
+#include "../GameStateSpecifics/MainMenu/MainMenuState.h"
+#include "../GameStateSpecifics/PlayState/PlayState.h"
+#include "../GameStateSpecifics/GameOver/GameOverState.h"
+#include "../GameStateSpecifics/GameStatsHandler.h"
 
 class Game
 {

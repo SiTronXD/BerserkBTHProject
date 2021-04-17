@@ -3,12 +3,12 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
-#include "ResTranslator.h"
-#include "SettingsHandler.h"
-#include "SMath.h"
-#include "Animation.h"
-#include "Grenade.h"
-#include "GrenadeExplosion.h"
+#include "../Engine/ResTranslator.h"
+#include "../Engine/SettingsHandler.h"
+#include "../Engine/SMath.h"
+#include "../Engine/Animation.h"
+#include "../Entities/Grenade.h"
+#include "../Entities/GrenadeExplosion.h"
 
 class Player
 {
