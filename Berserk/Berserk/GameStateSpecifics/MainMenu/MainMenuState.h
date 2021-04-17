@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "GameState.h"
-#include "Button.h"
+#include "../../Engine/GameState.h"
+#include "../../Engine/Button.h"
 
 class MainMenuState : public GameState
 {

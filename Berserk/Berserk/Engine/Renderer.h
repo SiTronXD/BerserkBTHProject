@@ -1,9 +1,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "MapHandler.h"
+#include "../GameStateSpecifics/PlayState/MapHandler.h"
+#include "../GameStateSpecifics/PlayState/EntityHandler.h"
 #include "SettingsHandler.h"
-#include "EntityHandler.h"
 
 class Renderer
 {
