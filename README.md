@@ -28,5 +28,5 @@ Reach the green portal as quickly as possible without dying. Kill the enemies to
 # Running the Project
 It is recommended to use Visual Studio 2017 or 2019. The project was never configured to build for x86, and therefore x64 is used.
 
-# Disclaimer
+# Clarification
 Everything in the project was made by me, which includes the code, graphics and sound effects. The game used to have music but was removed since I do not own the soundtracks.
