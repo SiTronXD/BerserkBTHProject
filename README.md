@@ -21,6 +21,7 @@ Reach the green portal as quickly as possible without dying. Kill the enemies to
 * Sprites rendered in a correct order
 * Vertical camera position to allow effects such as head bobbing or falling to the ground
 * High performance by utilizing shaders in SFML
+* UI rendering system for handling different resolutions and aspect ratios
 
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase1.png)
 
