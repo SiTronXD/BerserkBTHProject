@@ -23,10 +23,12 @@ Reach the green portal as quickly as possible without dying. Kill the enemies to
 * High performance by utilizing shaders in SFML
 * UI rendering system for handling different resolutions and aspect ratios
 
+You can read a more extensive [explanation of the rendering here](https://docs.google.com/document/d/1X5MkdK-D9uOxcb6W8Eh87L9YaQbh6RkGU8NYF-vxTUM/edit?usp=sharing).
+
 ![github-small](Berserk/Berserk/Resources/Textures/Showcase1.png)
 
 # Running the Project
 It is recommended to use Visual Studio 2017 or 2019. The project was never configured to build for x86, and therefore x64 is used.
 
-# Clarification
-Everything in the project was made by me, which includes the code, graphics and sound effects. The game used to have music but was removed since I do not own the soundtracks.
+# Disclaimer
+Everything except the story and characters in the project was made by me, which includes the code, graphics and sound effects. The game used to have music but was removed since I do not own the soundtracks.
